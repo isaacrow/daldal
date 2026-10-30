@@ -94,7 +94,7 @@ struct LiveAPI: Sendable {
 
     func reports(in box: GeoBox) async throws -> [LiveReport] {
         struct Reply: Decodable { let reports: [LiveReport] }
-        return try JSONDecoder().decode(Reply.self, from: get("v1/reports", query: [URLQueryItem(name: "bbox", value: box.query)])).reports
+        return try JSONDecoder().decode(Reply.self, from: await get("v1/reports", query: [URLQueryItem(name: "bbox", value: box.query)])).reports
     }
 
     func report(_ type: ReportType, at location: CLLocation) async throws -> String {
@@ -102,7 +102,7 @@ struct LiveAPI: Sendable {
         struct Reply: Decodable { let id: String }
         let body = Body(type: type, lat: location.coordinate.latitude, lon: location.coordinate.longitude,
                         heading: location.course >= 0 ? location.course : nil)
-        return try JSONDecoder().decode(Reply.self, from: post("v1/reports", body, identified: true)).id
+        return try JSONDecoder().decode(Reply.self, from: await post("v1/reports", body, identified: true)).id
     }
 
     func vote(reportID: String, stillThere: Bool) async throws {
@@ -123,7 +123,7 @@ struct LiveAPI: Sendable {
     /// Confirmed closures, as polygons for Valhalla's `exclude_polygons` ([[lon, lat], ...] rings).
     func closures() async throws -> [[[Double]]] {
         struct Reply: Decodable { let polygons: [[[Double]]] }
-        return try JSONDecoder().decode(Reply.self, from: get("v1/closures", query: [])).polygons
+        return try JSONDecoder().decode(Reply.self, from: await get("v1/closures", query: [])).polygons
     }
 
     // MARK: Transport

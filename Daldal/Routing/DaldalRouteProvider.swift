@@ -4,7 +4,7 @@ import Foundation
 import Valhalla
 import ValhallaConfigModels
 
-enum RoutingConfig {
+nonisolated enum RoutingConfig {
     /// FOSSGIS's public Valhalla server: fair use, development only. Self-host before launch
     /// (same Docker image as `scripts/pack/build-iraq-pack.sh`).
     static let onlineEndpoint = "https://valhalla1.openstreetmap.de/route"
@@ -61,11 +61,11 @@ actor DaldalRouteProvider: CustomRouteProvider {
     }
 
     func getRoutes(userLocation: UserLocation, waypoints: [Waypoint]) async throws -> [Route] {
+        let options = RoutingConfig.options(closures: await closures())
         let generator = try createValhallaRequestGenerator(
             endpointUrl: RoutingConfig.onlineEndpoint,
             profile: RoutingConfig.profile,
-            optionsJson: String(data: JSONSerialization.data(withJSONObject: RoutingConfig.options(closures: await closures())),
-                                encoding: .utf8)
+            optionsJson: String(data: JSONSerialization.data(withJSONObject: options), encoding: .utf8)
         )
         guard case let .httpPost(url, headers, body) = try generator.generateRequest(userLocation: userLocation, waypoints: waypoints)
         else { throw RoutingError.unexpectedRequest }
@@ -114,7 +114,7 @@ extension DaldalRouteProvider {
     }
 }
 
-enum RoutingError: LocalizedError {
+nonisolated enum RoutingError: LocalizedError {
     case unexpectedRequest, server, noRoute
 
     var errorDescription: String? {

@@ -10,7 +10,7 @@ enum PackConfig {
 }
 
 /// Describes one published version of the Iraq pack. Written by `scripts/pack/write_manifest.py`.
-struct PackManifest: Codable, Sendable, Equatable {
+nonisolated struct PackManifest: Codable, Sendable, Equatable {
     struct File: Codable, Sendable, Equatable {
         let path: String
         let url: URL
@@ -25,7 +25,7 @@ struct PackManifest: Codable, Sendable, Equatable {
 }
 
 /// The installed pack's files, as the map, router and search see them.
-struct InstalledPack: Sendable, Equatable {
+nonisolated struct InstalledPack: Sendable, Equatable {
     let version: String
     let directory: URL
 
