@@ -1,0 +1,1106 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "%@ of %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ من %2$@"
+          }
+        }
+      }
+    },
+    "+%@ traffic": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%@ ازدحام"
+          }
+        }
+      }
+    },
+    "AR is for walking. It pauses while you're in a vehicle.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الواقع المعزز مخصص للمشي، ويتوقف أثناء وجودك في مركبة."
+          }
+        }
+      }
+    },
+    "Accident": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حادث"
+          }
+        }
+      }
+    },
+    "Allow camera access in Settings to see sites in AR.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسمح بالوصول إلى الكاميرا من الإعدادات لرؤية المواقع بالواقع المعزز."
+          }
+        }
+      }
+    },
+    "Arrival": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوصول"
+          }
+        }
+      }
+    },
+    "Check your connection and try again. Offline search arrives with downloadable maps.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحقق من اتصالك وحاول مرة أخرى. سيتوفر البحث دون إنترنت مع الخرائط القابلة للتنزيل."
+          }
+        }
+      }
+    },
+    "Checking files…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ التحقق من الملفات…"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إغلاق"
+          }
+        }
+      }
+    },
+    "Copy coordinates": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخ الإحداثيات"
+          }
+        }
+      }
+    },
+    "Couldn't get directions right now. Try again in a moment.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعذّر الحصول على الاتجاهات الآن. حاول بعد قليل."
+          }
+        }
+      }
+    },
+    "Directions": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاتجاهات"
+          }
+        }
+      }
+    },
+    "Directions to": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاتجاهات إلى"
+          }
+        }
+      }
+    },
+    "Dismiss": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إخفاء"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم"
+          }
+        }
+      }
+    },
+    "Download": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تنزيل"
+          }
+        }
+      }
+    },
+    "Downloaded": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم التنزيل"
+          }
+        }
+      }
+    },
+    "Downloaded · version %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم التنزيل · الإصدار %@"
+          }
+        }
+      }
+    },
+    "Downloading… you can leave the app.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ التنزيل… يمكنك مغادرة التطبيق."
+          }
+        }
+      }
+    },
+    "Drag sideways to line the marker up with the site.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسحب جانبياً لمحاذاة العلامة مع الموقع."
+          }
+        }
+      }
+    },
+    "Dropped pin": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دبوس مُسقط"
+          }
+        }
+      }
+    },
+    "End": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إنهاء"
+          }
+        }
+      }
+    },
+    "End this trip?": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إنهاء هذه الرحلة؟"
+          }
+        }
+      }
+    },
+    "End trip": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إنهاء الرحلة"
+          }
+        }
+      }
+    },
+    "Faster route": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طريق أسرع"
+          }
+        }
+      }
+    },
+    "Fastest": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأسرع"
+          }
+        }
+      }
+    },
+    "Finding a better route…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ إيجاد طريق أفضل…"
+          }
+        }
+      }
+    },
+    "Finding the best route…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ إيجاد أفضل طريق…"
+          }
+        }
+      }
+    },
+    "Finding your position…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ تحديد موقعك…"
+          }
+        }
+      }
+    },
+    "Flooded road": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طريق غارق بالمياه"
+          }
+        }
+      }
+    },
+    "For clearer directions, download an Enhanced Arabic voice in Settings › Accessibility › Spoken Content › Voices › Arabic.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لتوجيه أوضح، نزّل صوتاً عربياً محسّناً من الإعدادات › تسهيلات الاستخدام › المحتوى المنطوق › الأصوات › العربية."
+          }
+        }
+      }
+    },
+    "Gone": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زال"
+          }
+        }
+      }
+    },
+    "Hazard": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خطر على الطريق"
+          }
+        }
+      }
+    },
+    "Help with live traffic": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساهم في حركة المرور المباشرة"
+          }
+        }
+      }
+    },
+    "Heritage site": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موقع تراثي"
+          }
+        }
+      }
+    },
+    "Heritage sites near you": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مواقع تراثية قريبة منك"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المنزل"
+          }
+        }
+      }
+    },
+    "Iraq": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العراق"
+          }
+        }
+      }
+    },
+    "Live traffic": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حركة المرور المباشرة"
+          }
+        }
+      }
+    },
+    "Loading the 3D model…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ تحميل النموذج ثلاثي الأبعاد…"
+          }
+        }
+      }
+    },
+    "Map theme: automatic": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مظهر الخريطة: تلقائي"
+          }
+        }
+      }
+    },
+    "Map theme: day": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مظهر الخريطة: نهاري"
+          }
+        }
+      }
+    },
+    "Map theme: night": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مظهر الخريطة: ليلي"
+          }
+        }
+      }
+    },
+    "Map, search and directions": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الخريطة والبحث والاتجاهات"
+          }
+        }
+      }
+    },
+    "Mute voice": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كتم الصوت"
+          }
+        }
+      }
+    },
+    "No": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا"
+          }
+        }
+      }
+    },
+    "No internet connection. The download continues when you're back online.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يوجد اتصال بالإنترنت. سيستمر التنزيل عند عودة الاتصال."
+          }
+        }
+      }
+    },
+    "No results in Iraq": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد نتائج في العراق"
+          }
+        }
+      }
+    },
+    "Not enough free space. The Iraq map needs about %@.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد مساحة كافية. تحتاج خريطة العراق إلى نحو %@."
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حسناً"
+          }
+        }
+      }
+    },
+    "Offline": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دون إنترنت"
+          }
+        }
+      }
+    },
+    "Offline maps": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الخرائط دون إنترنت"
+          }
+        }
+      }
+    },
+    "Photo: Wikimedia Commons": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الصورة: ويكيميديا كومنز"
+          }
+        }
+      }
+    },
+    "Places, streets, cities": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أماكن، شوارع، مدن"
+          }
+        }
+      }
+    },
+    "Point north": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توجيه الخريطة نحو الشمال"
+          }
+        }
+      }
+    },
+    "Police": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرطة"
+          }
+        }
+      }
+    },
+    "Recent": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأخيرة"
+          }
+        }
+      }
+    },
+    "Recenter": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة التوسيط"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إزالة"
+          }
+        }
+      }
+    },
+    "Remove the Iraq map from this iPhone?": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إزالة خريطة العراق من هذا الآيفون؟"
+          }
+        }
+      }
+    },
+    "Report": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بلّغ"
+          }
+        }
+      }
+    },
+    "Retry": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة المحاولة"
+          }
+        }
+      }
+    },
+    "Road closed": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طريق مغلق"
+          }
+        }
+      }
+    },
+    "Route calculated on your phone, without internet": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم حساب المسار على هاتفك دون إنترنت"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حفظ"
+          }
+        }
+      }
+    },
+    "Saves %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يوفّر %@"
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بحث"
+          }
+        }
+      }
+    },
+    "Search in Iraq": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ابحث في العراق"
+          }
+        }
+      }
+    },
+    "Search isn't available": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "البحث غير متاح"
+          }
+        }
+      }
+    },
+    "Set as home": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعيين كمنزل"
+          }
+        }
+      }
+    },
+    "Set as work": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعيين كعمل"
+          }
+        }
+      }
+    },
+    "Set home": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعيين المنزل"
+          }
+        }
+      }
+    },
+    "Set work": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعيين العمل"
+          }
+        }
+      }
+    },
+    "Share": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشاركة"
+          }
+        }
+      }
+    },
+    "Show my location": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعرض موقعي"
+          }
+        }
+      }
+    },
+    "Some map files were damaged in transfer. Tap Retry to download them again.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تلفت بعض ملفات الخريطة أثناء النقل. اضغط إعادة المحاولة لتنزيلها مجدداً."
+          }
+        }
+      }
+    },
+    "Speed limit %lld": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حد السرعة %lld"
+          }
+        }
+      }
+    },
+    "Start": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ابدأ"
+          }
+        }
+      }
+    },
+    "Still there?": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هل ما زال موجوداً؟"
+          }
+        }
+      }
+    },
+    "Switch": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدّل"
+          }
+        }
+      }
+    },
+    "Switch to 2D": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التبديل إلى ثنائي الأبعاد"
+          }
+        }
+      }
+    },
+    "Switch to 3D": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التبديل إلى ثلاثي الأبعاد"
+          }
+        }
+      }
+    },
+    "Tap to set": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اضغط للتعيين"
+          }
+        }
+      }
+    },
+    "Thanks. Other drivers will see it.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شكراً. سيراه السائقون الآخرون."
+          }
+        }
+      }
+    },
+    "The download didn't finish. Tap Retry.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يكتمل التنزيل. اضغط إعادة المحاولة."
+          }
+        }
+      }
+    },
+    "There's no drivable route to this place.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يوجد طريق صالح للقيادة إلى هذا المكان."
+          }
+        }
+      }
+    },
+    "This iPhone doesn't support AR.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هذا الآيفون لا يدعم الواقع المعزز."
+          }
+        }
+      }
+    },
+    "Traffic jam": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ازدحام مروري"
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حاول مرة أخرى"
+          }
+        }
+      }
+    },
+    "Try the name in Arabic or English, or a nearby street.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جرّب الاسم بالعربية أو الإنجليزية، أو اسم شارع قريب."
+          }
+        }
+      }
+    },
+    "Turn left to face the site": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استدر يساراً لتواجه الموقع"
+          }
+        }
+      }
+    },
+    "Turn off": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إيقاف"
+          }
+        }
+      }
+    },
+    "Turn right to face the site": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استدر يميناً لتواجه الموقع"
+          }
+        }
+      }
+    },
+    "UNESCO World Heritage Site": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موقع تراث عالمي (يونسكو)"
+          }
+        }
+      }
+    },
+    "Unmute voice": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تشغيل الصوت"
+          }
+        }
+      }
+    },
+    "Update": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحديث"
+          }
+        }
+      }
+    },
+    "Using a high-quality voice": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم صوتاً عالي الجودة"
+          }
+        }
+      }
+    },
+    "Using the basic voice": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم الصوت الأساسي"
+          }
+        }
+      }
+    },
+    "View in AR": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعرض بالواقع المعزز"
+          }
+        }
+      }
+    },
+    "Voice guidance": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التوجيه الصوتي"
+          }
+        }
+      }
+    },
+    "Waiting for better GPS (now ±%lld m). Step into the open sky.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بانتظار دقة أفضل لنظام تحديد المواقع (حالياً ±%lld م). انتقل إلى مكان مكشوف."
+          }
+        }
+      }
+    },
+    "Waiting for your location. Make sure Location is on for Daldal.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بانتظار تحديد موقعك. تأكد من تفعيل خدمة الموقع لتطبيق دلدل."
+          }
+        }
+      }
+    },
+    "While you drive, Daldal anonymously shares your speed so everyone sees live traffic. The start and end of every trip are never sent.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أثناء القيادة، يشارك دلدل سرعتك دون كشف هويتك ليرى الجميع حركة المرور المباشرة. لا تُرسَل بداية أي رحلة ولا نهايتها أبداً."
+          }
+        }
+      }
+    },
+    "While you navigate, your speed is shared anonymously: a new random code each trip, never the first or last 300 m, and only averages from several drivers are kept.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أثناء التنقل تُشارَك سرعتك دون كشف هويتك: رمز عشوائي جديد لكل رحلة، ولا يُرسَل أول 300 متر ولا آخرها، ولا يُحفَظ إلا متوسط عدة سائقين."
+          }
+        }
+      }
+    },
+    "Wikidata": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ويكي بيانات"
+          }
+        }
+      }
+    },
+    "With the Iraq map on your phone, the map, search and directions all work without internet. Live traffic still needs a connection.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مع خريطة العراق على هاتفك، تعمل الخريطة والبحث والاتجاهات كلها دون إنترنت. أما حركة المرور المباشرة فتحتاج إلى اتصال."
+          }
+        }
+      }
+    },
+    "Work": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العمل"
+          }
+        }
+      }
+    },
+    "Yes": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نعم"
+          }
+        }
+      }
+    },
+    "You're at": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت الآن في"
+          }
+        }
+      }
+    },
+    "km/h": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كم/س"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+# Local stack: `docker compose up`. The first start builds the Iraq routing graph (~20-40 minutes).
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: daldal
+      POSTGRES_PASSWORD: daldal
+      POSTGRES_DB: daldal
+    ports: ["${DB_PORT:-5432}:5432"] # DB_PORT=55432 if another Postgres already uses 5432
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U daldal"]
+      interval: 5s
+      retries: 20
+
+  valhalla:
+    # Builds tiles from the Geofabrik Iraq extract on first start, then serves them on :8002.
+    # Use the same Valhalla version as the app's offline pack (3.9).
+    image: ghcr.io/valhalla/valhalla-scripted:latest
+    environment:
+      tile_urls: https://download.geofabrik.de/asia/iraq-latest.osm.pbf
+      serve_tiles: "True"
+      build_admins: "True"
+      build_time_zones: "True"
+    ports: ["8002:8002"]
+    volumes: [valhalla:/custom_files]
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://daldal:daldal@db:5432/daldal
+      VALHALLA_URL: http://valhalla:8002
+      ID_SALT: ${ID_SALT:-dev-only-salt-change-me}
+    ports: ["8080:8080"]
+    depends_on:
+      db: { condition: service_healthy }
+
+  worker:
+    build: .
+    command: ["python", "-m", "daldal_api.worker"]
+    environment:
+      DATABASE_URL: postgresql://daldal:daldal@db:5432/daldal
+      VALHALLA_URL: http://valhalla:8002
+    depends_on:
+      db: { condition: service_healthy }
+
+volumes:
+  pgdata:
+  valhalla:

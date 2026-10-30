@@ -1,0 +1,36 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "CFBundleDisplayName": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلدل"
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم دلدل الكاميرا لعرض المعالم والمواقع التراثية بالواقع المعزز في أماكنها الحقيقية."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم دلدل موقعك لعرض مكانك على الخريطة، والعثور على الأماكن القريبة، ووضع المواقع التراثية بالواقع المعزز."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+SELECT ?item ?ar ?en ?coord ?image ?wh WHERE {
+  ?item wdt:P17 wd:Q796; wdt:P625 ?coord.
+  { ?item wdt:P1435 wd:Q9259. BIND(true AS ?wh) }
+  UNION
+  { ?item wdt:P31/wdt:P279* wd:Q839954. ?item wikibase:sitelinks ?n. FILTER(?n >= 25) }
+  UNION
+  { VALUES ?t { wd:Q32815 wd:Q23413 wd:Q4989906 wd:Q12518 } ?item wdt:P31 ?t. ?item wikibase:sitelinks ?n2. FILTER(?n2 >= 20) }
+  OPTIONAL { ?item rdfs:label ?ar FILTER(lang(?ar)="ar") }
+  OPTIONAL { ?item rdfs:label ?en FILTER(lang(?en)="en") }
+  OPTIONAL { ?item wdt:P18 ?image }
+}
