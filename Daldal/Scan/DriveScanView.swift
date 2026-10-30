@@ -129,7 +129,6 @@ private struct RoadScene: View {
     var body: some View {
         RealityView { content in
             content.camera = .virtual
-            content.environment.background = .color(UIColor(red: 0.035, green: 0.045, blue: 0.065, alpha: 1))
 
             let world = Entity()
             world.name = "world"
