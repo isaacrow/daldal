@@ -1352,6 +1352,24 @@
         }
       }
     },
+    "app.language-code": {
+      "comment": "Not shown. The interface language's code; the app reads it to pick map labels and place names.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ar"
+          }
+        }
+      }
+    },
     "km/h": {
       "localizations": {
         "ar": {

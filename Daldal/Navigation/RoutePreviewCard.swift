@@ -62,6 +62,7 @@ struct RoutePreviewCard: View {
         }
         .padding(Theme.Spacing.l)
         .animation(.smooth, value: nav.phase)
+        .accessibilityIdentifier("routes.panel")
     }
 
     private var routeOptions: some View {

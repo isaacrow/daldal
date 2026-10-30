@@ -98,9 +98,25 @@ jobs:
           DEVICE=$(pick)
           if [ -z "$DEVICE" ]; then xcodebuild -downloadPlatform iOS; DEVICE=$(pick); fi
           echo "Simulator: $DEVICE"
-          xcodebuild test -project Daldal.xcodeproj -scheme Daldal -destination "id=$DEVICE" \
-            -skipMacroValidation -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO | tee test.log | grep -E "error:|Test .*(passed|failed)|TEST (SUCCEEDED|FAILED)" || true
+          # A phone standing near the Imam Husayn shrine in Karbala, with location already allowed.
+          xcrun simctl boot "$DEVICE" || true
+          xcrun simctl privacy "$DEVICE" grant location-always app.daldal.ios || true
+          xcrun simctl location "$DEVICE" set 32.6200,44.0300 || true
+          xcodebuild test -project Daldal.xcodeproj -scheme Daldal -destination "id=$DEVICE" -resultBundlePath Results.xcresult \
+            -skipMacroValidation -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO | tee test.log | grep -E "error:|Test .*(passed|failed)|TEST (SUCCEEDED|FAILED)|XCTAssert" || true
           grep -q "TEST SUCCEEDED" test.log
+      - name: Export UI test screenshots
+        if: always()
+        run: |
+          mkdir -p screenshots
+          xcrun xcresulttool export attachments --path Results.xcresult --output-path screenshots || true
+          ls screenshots | head -40
+      - name: Upload UI test screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screenshots
+          path: screenshots
       - name: Print crash reports
         if: failure()
         run: |

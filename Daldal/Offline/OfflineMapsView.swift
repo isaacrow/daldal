@@ -60,7 +60,8 @@ struct OfflineMapsView: View {
                         .accessibilityLabel("Close")
                 }
             }
-            .task { if cities.catalog == nil { await cities.loadCatalog() } }
+            // Every time the screen opens: new cities and weekly updates appear without restarting the app.
+            .task { await cities.loadCatalog() }
             .refreshable { await cities.loadCatalog() }
             .confirmationDialog(
                 Text("Remove \(confirmingDelete?.name(languageCode: languageCode) ?? "") from this iPhone?"),

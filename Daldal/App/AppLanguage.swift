@@ -2,8 +2,9 @@ import Foundation
 
 /// The language the app is actually shown in: Arabic or English.
 ///
-/// Read from the bundle, not the phone's locale. A phone set to French or Kurdish shows Daldal in
-/// Arabic (the development region), and map labels, search and voice must follow the UI, not the phone.
+/// Read through the string catalog, the same way every on-screen label is, so it can never disagree
+/// with the interface. (Bundle.preferredLocalizations reported "en" on Arabic phones, which showed
+/// English city names and map labels in an Arabic app.)
 enum AppLanguage {
-    static let code: String = Bundle.main.preferredLocalizations.first == "en" ? "en" : "ar"
+    static let code: String = String(localized: "app.language-code", defaultValue: "en") == "ar" ? "ar" : "en"
 }

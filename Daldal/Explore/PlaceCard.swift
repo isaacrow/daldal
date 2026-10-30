@@ -59,17 +59,20 @@ struct PlaceCard: View {
                     Label { Text("Directions") } icon: { Icon(.navigate, size: 18) }
                 }
                 .buttonStyle(.glassProminent)
+                .accessibilityIdentifier("place.directions")
 
                 Button { onWalk(place) } label: {
                     Label { Text("Walk with AR") } icon: { Icon(.walk, size: 18) }
                 }
                 .buttonStyle(.glass)
+                .accessibilityIdentifier("place.walk")
 
                 if site != nil {
                     Button { onOpenAR(place) } label: {
                         Label { Text("View in AR") } icon: { Icon(.arView, size: 18) }
                     }
                     .buttonStyle(.glass)
+                    .accessibilityIdentifier("place.ar")
                 }
 
                 ShareLink(item: shareURL, subject: Text(place.name)) {

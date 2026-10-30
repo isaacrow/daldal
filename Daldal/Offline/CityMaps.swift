@@ -131,11 +131,13 @@ final class CityMapsStore: NSObject {
     }
 
     func loadCatalog() async {
-        isLoadingCatalog = true
+        isLoadingCatalog = catalog == nil // Only show a spinner when there's nothing to show yet.
         defer { isLoadingCatalog = false }
         do {
-            var request = URLRequest(url: CityMapsConfig.catalogURL)
-            request.cachePolicy = .reloadIgnoringLocalCacheData
+            // The query defeats any cache between us and GitHub; "latest" moves every week.
+            let fresh = CityMapsConfig.catalogURL.appending(queryItems: [URLQueryItem(name: "t", value: String(Int(Date.now.timeIntervalSince1970)))])
+            var request = URLRequest(url: fresh)
+            request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
             request.timeoutInterval = 20
             let (data, response) = try await URLSession.shared.data(for: request)
             guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }

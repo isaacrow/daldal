@@ -42,6 +42,7 @@ struct WalkARView: View {
         }
         .onDisappear { model.stop() }
         .statusBarHidden()
+        .accessibilityIdentifier("walk.screen")
     }
 
     @ViewBuilder private var banner: some View {

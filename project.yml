@@ -91,7 +91,7 @@ targets:
         script: 'sh "${SRCROOT}/scripts/check-no-emoji.sh" "${SRCROOT}/Daldal"'
         basedOnDependencyAnalysis: false
     scheme:
-      testTargets: [DaldalTests]
+      testTargets: [DaldalTests, DaldalUITests]
 
   DaldalTests:
     type: bundle.unit-test
@@ -103,3 +103,15 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+
+  DaldalUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: DaldalUITests
+    dependencies:
+      - target: Daldal
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated

@@ -31,6 +31,7 @@ struct GeoARView: View {
         }
         .onDisappear { model.stop() }
         .statusBarHidden()
+        .accessibilityIdentifier("ar.screen")
     }
 
     /// Dragging sideways rotates the scene around the user to fix compass error.

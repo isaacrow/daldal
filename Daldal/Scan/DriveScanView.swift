@@ -37,6 +37,7 @@ struct DriveScanView: View {
             UIApplication.shared.isIdleTimerDisabled = false
         }
         .statusBarHidden()
+        .accessibilityIdentifier("scan.screen")
         .preferredColorScheme(.dark)
     }
 

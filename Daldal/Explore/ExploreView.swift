@@ -100,6 +100,7 @@ struct ExploreView: View {
         .fullScreenCover(isPresented: scanBinding(whenPanelOpen: false)) {
             DriveScanView(voice: nav.voice)
         }
+        .task { openPlaceForUITest() }
         .onChange(of: nav.routes) { showRoutePreview(fit: true) }
         .onChange(of: live.reports) { map.showLive(traffic: live.traffic, reports: live.reports) }
         .onChange(of: live.traffic) { map.showLive(traffic: live.traffic, reports: live.reports) }
@@ -127,6 +128,14 @@ struct ExploreView: View {
         case nil:
             EmptyView()
         }
+    }
+
+    /// UI tests launch with `-uitest-heritage <English name>` to open that site's card directly.
+    private func openPlaceForUITest() {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-uitest-heritage"), args.indices.contains(i + 1),
+              let site = heritage.sites.first(where: { $0.nameEn == args[i + 1] }) else { return }
+        select(site.place(languageCode: languageCode), record: false)
     }
 
     private func scanBinding(whenPanelOpen: Bool) -> Binding<Bool> {
@@ -190,6 +199,7 @@ struct ExploreView: View {
 
                 GlassIconButton(icon: .scan, label: "Drive Scan") { scanning = true }
                     .glassEffectID("scan", in: glass)
+                    .accessibilityIdentifier("map.scan")
 
                 GlassIconButton(icon: .layers, label: map.base == .satellite ? "Show map" : "Show satellite",
                                 isActive: map.base == .satellite) {
