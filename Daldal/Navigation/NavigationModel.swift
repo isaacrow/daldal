@@ -314,7 +314,10 @@ final class NavigationModel {
 }
 
 /// Ferrostar's delegate: reroute on deviation and switch to the new route as soon as it loads.
-private final class CoreDelegate: FerrostarCoreDelegate {
+///
+/// nonisolated: Ferrostar calls these from its own background tasks (rerouting). Under the project's
+/// main-actor default, a main-actor delegate makes Swift 6 trap at runtime the first time you leave the route.
+nonisolated private final class CoreDelegate: FerrostarCoreDelegate {
     var config: SwiftNavigationControllerConfig?
 
     func core(_ core: FerrostarCore, didStartWith route: Route) {}

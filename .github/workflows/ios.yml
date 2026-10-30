@@ -101,6 +101,13 @@ jobs:
           xcodebuild test -project Daldal.xcodeproj -scheme Daldal -destination "id=$DEVICE" \
             -skipMacroValidation -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO | tee test.log | grep -E "error:|Test .*(passed|failed)|TEST (SUCCEEDED|FAILED)" || true
           grep -q "TEST SUCCEEDED" test.log
+      - name: Print crash reports
+        if: failure()
+        run: |
+          # Simulator app crashes are written on the host; print Daldal's so the log names the crashing line.
+          for f in $(ls -t ~/Library/Logs/DiagnosticReports/Daldal*.ips 2>/dev/null | head -3); do
+            echo "=== $f"; head -c 60000 "$f"; echo
+          done
       - name: Upload test log
         if: always()
         uses: actions/upload-artifact@v4
