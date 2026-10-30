@@ -44,6 +44,7 @@ final class NavigationModel {
     @ObservationIgnored let locationProvider: CoreLocationProvider
     @ObservationIgnored let voice: VoiceGuide
     @ObservationIgnored let live: LiveStore
+    @ObservationIgnored let stats: DriverStats
     @ObservationIgnored private let probes = ProbeRecorder()
     @ObservationIgnored private var liveTask: Task<Void, Never>?
     @ObservationIgnored private var announcedReports: Set<String> = []
@@ -66,9 +67,10 @@ final class NavigationModel {
         snappedLocationCourseFiltering: .snapToRoute
     )
 
-    init(cities: CityMapsStore, voice: VoiceGuide, live: LiveStore) {
+    init(cities: CityMapsStore, voice: VoiceGuide, live: LiveStore, stats: DriverStats) {
         self.voice = voice
         self.live = live
+        self.stats = stats
         locationProvider = CoreLocationProvider(activityType: .automotiveNavigation, allowBackgroundLocationUpdates: true)
         routeProvider = DaldalRouteProvider(
             cities: { [weak cities] in cities?.installedCities ?? [] },
@@ -163,6 +165,7 @@ final class NavigationModel {
             UIApplication.shared.isIdleTimerDisabled = true // Never let the screen sleep mid-drive.
             phase = .navigating
             probes.begin()
+            stats.tripStarted()
             announcedReports = []
             askedReports = []
             startLiveLoop()
@@ -192,6 +195,7 @@ final class NavigationModel {
         guard phase == .navigating, let newState else { return }
         if case .complete = newState.tripState {
             probes.end()
+            stats.tripEnded()
             liveTask?.cancel()
             voice.arrived(destinationName: destination?.name)
             UIApplication.shared.isIdleTimerDisabled = false
@@ -205,6 +209,7 @@ final class NavigationModel {
         }
         if let location = newState.preferredUserLocation?.clLocation {
             probes.record(location)
+            stats.drove(to: location)
             checkReports(near: location, state: newState)
         }
     }
@@ -256,6 +261,7 @@ final class NavigationModel {
     func answerStillThere(_ yes: Bool) {
         guard let report = stillThere else { return }
         live.vote(report, stillThere: yes)
+        stats.confirmed()
         stillThere = nil
     }
 

@@ -14,10 +14,13 @@ LIFETIME_MIN = {
     "hazard": 180,
     "flood": 360,    # Baghdad streets can stay flooded for hours after heavy rain.
     "closure": 720,
+    "pothole": 7 * 24 * 60,   # Potholes stay until someone confirms they're fixed.
+    "roadwork": 3 * 24 * 60,
+    "brokenLight": 24 * 60,
 }
 TYPES = frozenset(LIFETIME_MIN)
 # Reports about one side of the road: a jam heading north says nothing about southbound traffic.
-DIRECTIONAL = frozenset({"jam", "accident", "police", "hazard"})
+DIRECTIONAL = frozenset({"jam", "accident", "police", "hazard", "pothole"})
 
 DUPLICATE_RADIUS_M = 150
 DUPLICATE_WINDOW = timedelta(minutes=30)

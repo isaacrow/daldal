@@ -50,6 +50,7 @@ jobs:
             -derivedDataPath build -clonedSourcePackagesDirPath build/SourcePackages \
             -skipMacroValidation -skipPackagePluginValidation \
             ESRI_API_KEY="${{ secrets.ESRI_API_KEY }}" \
+            ELEVENLABS_AGENT_ID="${{ secrets.ELEVENLABS_AGENT_ID }}" \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             | tee build.log | grep -E "error:|warning: .*(deprecated|unavailable)|BUILD (SUCCEEDED|FAILED)" || true
           grep -q "BUILD SUCCEEDED" build.log

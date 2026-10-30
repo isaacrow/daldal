@@ -31,6 +31,8 @@ struct MapPalette: Sendable {
     var background, water, park, wood, residential, building, buildingTop: String
     var roadMinor, roadMinorCasing, roadMajor, roadMajorCasing, motorway, motorwayCasing: String
     var label, labelHalo, waterLabel: String
+    /// How dark the drop shadow under roads and green areas is.
+    var shadowOpacity: Double { background.hasPrefix("#1") ? 0.55 : 0.18 }
 
     static let day = MapPalette(
         background: "#F3F1EC", water: "#A8D0EA", park: "#CDE6C2", wood: "#BEDDB2",
@@ -42,11 +44,11 @@ struct MapPalette: Sendable {
     )
 
     static let night = MapPalette(
-        background: "#14181D", water: "#0C2131", park: "#15251B", wood: "#132219",
-        residential: "#181D23", building: "#20262E", buildingTop: "#2A313A",
-        roadMinor: "#2B313A", roadMinorCasing: "#1A1F25",
-        roadMajor: "#4B4535", roadMajorCasing: "#2C291F",
-        motorway: "#6E5426", motorwayCasing: "#3A2D16",
+        background: "#161B22", water: "#0E2A40", park: "#1F4430", wood: "#1A3A29",
+        residential: "#1A2029", building: "#252C36", buildingTop: "#323B47",
+        roadMinor: "#3A4452", roadMinorCasing: "#1B2129",
+        roadMajor: "#5E6578", roadMajorCasing: "#262C37",
+        motorway: "#7C6A43", motorwayCasing: "#3A311E",
         label: "#C9CED6", labelHalo: "#0E1114", waterLabel: "#6E9CC0"
     )
 }
@@ -180,6 +182,25 @@ enum MapStyleBuilder {
         let major = ["primary", "secondary", "tertiary", "trunk"]
         let motorway = ["motorway"]
 
+        func shadow(_ id: String, classes: [String], width: Any, opacity: Double) -> [String: Any] {
+            layer(id, [
+                "type": "line", "source-layer": "transportation", "minzoom": 11,
+                "filter": ["all", ["match", ["get", "class"], classes, true, false], ["!=", ["get", "brunnel"], "tunnel"]],
+                "layout": ["line-cap": "round", "line-join": "round"],
+                "paint": ["line-color": "#000000", "line-width": width, "line-opacity": opacity,
+                          "line-blur": 3, "line-translate": [0, 3], "line-translate-anchor": "viewport"],
+            ])
+        }
+        func highlight(_ id: String, classes: [String], width: Any) -> [String: Any] {
+            layer(id, [
+                "type": "line", "source-layer": "transportation", "minzoom": 13,
+                "filter": ["all", ["match", ["get", "class"], classes, true, false], ["!=", ["get", "brunnel"], "tunnel"]],
+                "layout": ["line-cap": "round", "line-join": "round"],
+                "paint": ["line-color": "#FFFFFF", "line-width": width, "line-opacity": 0.16,
+                          "line-blur": 1, "line-translate": [0, -1], "line-translate-anchor": "viewport"],
+            ])
+        }
+
         if satellite {
             // On photos, only main roads, softly: the picture carries the rest.
             return [
@@ -194,7 +215,15 @@ enum MapStyleBuilder {
             layer("park", ["type": "fill", "source-layer": "park", "paint": ["fill-color": p.park]]),
             layer("wood", ["type": "fill", "source-layer": "landcover",
                            "filter": ["match", ["get", "class"], ["wood", "grass", "farmland"], true, false],
-                           "paint": ["fill-color": p.wood, "fill-opacity": 0.7]]),
+                           "paint": ["fill-color": p.wood, "fill-opacity": 0.8]]),
+            // Green zones rise a little when you zoom in: lawns 2 m, woods and orchards 6 m.
+            layer("park-3d", ["type": "fill-extrusion", "source-layer": "park", "minzoom": 14,
+                              "paint": ["fill-extrusion-color": p.park, "fill-extrusion-opacity": 0.85,
+                                        "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 14, 0, 15.5, 2]]]),
+            layer("wood-3d", ["type": "fill-extrusion", "source-layer": "landcover", "minzoom": 14,
+                              "filter": ["==", ["get", "class"], "wood"],
+                              "paint": ["fill-extrusion-color": p.wood, "fill-extrusion-opacity": 0.85,
+                                        "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 14, 0, 15.5, 6]]]),
         ]
         if terrain {
             // Relief shading: the Kurdistan mountains and the Hamrin hills read at a glance.
@@ -206,12 +235,14 @@ enum MapStyleBuilder {
             layer("water", ["type": "fill", "source-layer": "water", "paint": ["fill-color": p.water]]),
             layer("waterway", ["type": "line", "source-layer": "waterway",
                                "paint": ["line-color": p.water, "line-width": roadWidth(0.5, 6)]]),
+            shadow("road-shadow", classes: minor + major + motorway, width: roadWidth(1.5, 30), opacity: p.shadowOpacity),
             roads("road-minor-casing", classes: minor, color: p.roadMinorCasing, width: roadWidth(0.5, 20), minzoom: 12),
             roads("road-major-casing", classes: major, color: p.roadMajorCasing, width: roadWidth(1, 26)),
             roads("motorway-casing", classes: motorway, color: p.motorwayCasing, width: roadWidth(1.5, 30)),
             roads("road-minor", classes: minor, color: p.roadMinor, width: roadWidth(0.3, 17), minzoom: 12),
             roads("road-major", classes: major, color: p.roadMajor, width: roadWidth(0.8, 22)),
             roads("motorway", classes: motorway, color: p.motorway, width: roadWidth(1.2, 26)),
+            highlight("road-highlight", classes: major + motorway, width: roadWidth(0.2, 5)),
             layer(buildingsFlatLayer, ["type": "fill", "source-layer": "building", "minzoom": 14,
                                        "layout": ["visibility": "none"],
                                        "paint": ["fill-color": p.building, "fill-outline-color": p.roadMinorCasing]]),

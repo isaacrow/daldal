@@ -150,8 +150,8 @@ private struct RoadScene: View {
             world.addChild(fill)
 
             let camera = PerspectiveCamera()
-            camera.camera.fieldOfViewInDegrees = 48
-            camera.look(at: [0, 0.4, -16], from: [0, 5.2, 9.5], relativeTo: nil)
+            camera.camera.fieldOfViewInDegrees = 50
+            camera.look(at: [0, 0.4, -18], from: [0, 7.5, 14], relativeTo: nil)
             world.addChild(camera)
             content.add(world)
         } update: { content in
@@ -185,6 +185,21 @@ private enum Road {
         let surface = ModelEntity(mesh: .generatePlane(width: 11.5, depth: 75), materials: [asphalt])
         surface.position = [0, 0, -30]
         road.addChild(surface)
+
+        var pavement = PhysicallyBasedMaterial()
+        pavement.baseColor = .init(tint: UIColor(red: 0.30, green: 0.31, blue: 0.33, alpha: 1))
+        pavement.roughness = 0.9
+        var kerb = PhysicallyBasedMaterial()
+        kerb.baseColor = .init(tint: UIColor(white: 0.72, alpha: 1))
+        kerb.roughness = 0.7
+        for side: Float in [-1, 1] {
+            let walk = ModelEntity(mesh: .generateBox(width: 2.4, height: 0.16, depth: 75), materials: [pavement])
+            walk.position = [side * 7.0, 0.08, -30]
+            road.addChild(walk)
+            let stone = ModelEntity(mesh: .generateBox(width: 0.22, height: 0.2, depth: 75), materials: [kerb])
+            stone.position = [side * 5.85, 0.1, -30]
+            road.addChild(stone)
+        }
 
         let edge = UnlitMaterial(color: UIColor(white: 0.92, alpha: 0.9))
         for x: Float in [-5.25, 5.25] {
@@ -270,6 +285,37 @@ private enum CarModel {
     }
 }
 
+/// A person: head, body, arms and legs, in a bright hi-vis orange so pedestrians always stand out.
+private enum PersonModel {
+    static func make() -> Entity {
+        var cloth = PhysicallyBasedMaterial()
+        cloth.baseColor = .init(tint: UIColor(red: 1, green: 0.58, blue: 0.16, alpha: 1))
+        cloth.roughness = 0.6
+        var skin = PhysicallyBasedMaterial()
+        skin.baseColor = .init(tint: UIColor(red: 0.86, green: 0.70, blue: 0.56, alpha: 1))
+        skin.roughness = 0.5
+        let person = Entity()
+        let torso = ModelEntity(mesh: .generateBox(width: 0.42, height: 0.62, depth: 0.24, cornerRadius: 0.1), materials: [cloth])
+        torso.position.y = 1.22
+        person.addChild(torso)
+        let head = ModelEntity(mesh: .generateSphere(radius: 0.13), materials: [skin])
+        head.position.y = 1.68
+        person.addChild(head)
+        for side: Float in [-1, 1] {
+            let arm = ModelEntity(mesh: .generateBox(width: 0.1, height: 0.58, depth: 0.1, cornerRadius: 0.05), materials: [cloth])
+            arm.position = [side * 0.28, 1.2, 0]
+            arm.orientation = simd_quatf(angle: side * 0.12, axis: [0, 0, 1])
+            person.addChild(arm)
+            let leg = ModelEntity(mesh: .generateBox(width: 0.15, height: 0.86, depth: 0.15, cornerRadius: 0.06),
+                                  materials: [SimpleMaterial(color: UIColor(white: 0.18, alpha: 1), isMetallic: false)])
+            leg.position = [side * 0.11, 0.45, 0]
+            person.addChild(leg)
+        }
+        person.components.set(GroundingShadowComponent(castsShadow: true))
+        return person
+    }
+}
+
 /// Readable shapes for each kind of road user.
 private enum ObjectModels {
     static func make(_ kind: ScannedObject.Kind) -> Entity {
@@ -291,13 +337,24 @@ private enum ObjectModels {
             rider.position = [0, 1.45, 0.1]
             root.addChild(rider)
         case .person:
-            let figure = UnlitMaterial(color: UIColor(red: 1, green: 0.62, blue: 0.2, alpha: 1))
-            let torso = ModelEntity(mesh: .generateBox(width: 0.42, height: 1.15, depth: 0.28, cornerRadius: 0.14), materials: [figure])
-            torso.position.y = 0.75
-            root.addChild(torso)
-            let head = ModelEntity(mesh: .generateSphere(radius: 0.15), materials: [figure])
-            head.position.y = 1.55
+            root.addChild(PersonModel.make())
+        case .animal:
+            var hide = PhysicallyBasedMaterial()
+            hide.baseColor = .init(tint: UIColor(red: 0.62, green: 0.50, blue: 0.38, alpha: 1))
+            hide.roughness = 0.85
+            let body = ModelEntity(mesh: .generateBox(width: 0.5, height: 0.55, depth: 1.3, cornerRadius: 0.22), materials: [hide])
+            body.position.y = 0.85
+            root.addChild(body)
+            let head = ModelEntity(mesh: .generateBox(width: 0.3, height: 0.3, depth: 0.42, cornerRadius: 0.12), materials: [hide])
+            head.position = [0, 1.1, -0.78]
             root.addChild(head)
+            for (x, z) in [(-0.18, -0.48), (0.18, -0.48), (-0.18, 0.48), (0.18, 0.48)] as [(Float, Float)] {
+                let leg = ModelEntity(mesh: .generateCylinder(height: 0.6, radius: 0.06), materials: [hide])
+                leg.position = [x, 0.3, z]
+                root.addChild(leg)
+            }
+        case .train:
+            root.addChild(CarModel.make(paint: CarModel.graphite, lit: false, length: 20, width: 3, height: 3.8))
         case .trafficLight:
             let pole = ModelEntity(mesh: .generateCylinder(height: 4.6, radius: 0.07), materials: [CarModel.graphite])
             pole.position.y = 2.3

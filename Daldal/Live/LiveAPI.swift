@@ -18,7 +18,7 @@ enum InstallID {
 }
 
 enum ReportType: String, Codable, CaseIterable, Identifiable, Sendable {
-    case jam, accident, police, hazard, flood, closure
+    case jam, accident, police, hazard, flood, closure, pothole, roadwork, brokenLight
     var id: String { rawValue }
 
     var icon: DaldalIcon {
@@ -29,6 +29,9 @@ enum ReportType: String, Codable, CaseIterable, Identifiable, Sendable {
         case .hazard: .reportHazard
         case .flood: .reportFlood
         case .closure: .reportClosure
+        case .pothole: .reportPothole
+        case .roadwork: .reportRoadwork
+        case .brokenLight: .reportLight
         }
     }
 
@@ -40,6 +43,9 @@ enum ReportType: String, Codable, CaseIterable, Identifiable, Sendable {
         case .hazard: "Hazard"
         case .flood: "Flooded road"
         case .closure: "Road closed"
+        case .pothole: "Pothole"
+        case .roadwork: "Road works"
+        case .brokenLight: "Broken traffic light"
         }
     }
 
@@ -52,6 +58,9 @@ enum ReportType: String, Codable, CaseIterable, Identifiable, Sendable {
         case .hazard: (0.90, 0.68, 0.10)
         case .flood: (0.13, 0.60, 0.80)
         case .closure: (0.45, 0.45, 0.50)
+        case .pothole: (0.55, 0.36, 0.20)
+        case .roadwork: (0.96, 0.45, 0.10)
+        case .brokenLight: (0.62, 0.30, 0.78)
         }
     }
 }

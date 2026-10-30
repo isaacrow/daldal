@@ -129,7 +129,7 @@ async def post_eta(body: EtaRequest, request: Request) -> dict:
 # MARK: Reports
 
 class NewReport(BaseModel):
-    type: Literal["jam", "accident", "police", "hazard", "flood", "closure"]
+    type: Literal["jam", "accident", "police", "hazard", "flood", "closure", "pothole", "roadwork", "brokenLight"]
     lat: float
     lon: float
     heading: float | None = Field(None, ge=0, lt=360)

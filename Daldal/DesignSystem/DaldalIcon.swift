@@ -10,6 +10,8 @@ enum DaldalIcon: String, CaseIterable, Sendable {
     case volume, volumeOff = "volume-off", download, trash, route, report, traffic, walk, scan
     case reportJam = "report-jam", reportAccident = "report-accident", reportPolice = "report-police"
     case reportHazard = "report-hazard", reportFlood = "report-flood", reportClosure = "report-closure"
+    case reportPothole = "report-pothole", reportRoadwork = "report-roadwork", reportLight = "report-light"
+    case profile, assistant
     // Maneuvers. Drawn for right turns; ManeuverIcon mirrors them for left turns.
     case turnStraight = "turn-straight", turnRight = "turn-right", turnSlight = "turn-slight"
     case turnSharp = "turn-sharp", turnUTurn = "turn-uturn", turnMerge = "turn-merge", turnFork = "turn-fork"

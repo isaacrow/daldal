@@ -23,7 +23,7 @@ struct EndToEndTests {
     private static var keepAlive: [AnyObject] = []
 
     @Test func directionsFromTahrirToKadhimiya() async throws {
-        let nav = NavigationModel(cities: CityMapsStore(), voice: VoiceGuide(languageCode: "ar"), live: LiveStore())
+        let nav = NavigationModel(cities: CityMapsStore(), voice: VoiceGuide(languageCode: "ar"), live: LiveStore(), stats: DriverStats(defaults: UserDefaults(suiteName: "test.stats")!))
         Self.keepAlive.append(nav)
         nav.planRoute(to: kadhimiya, from: tahrir)
         #expect(nav.phase == .planning)

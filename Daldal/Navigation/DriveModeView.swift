@@ -48,7 +48,7 @@ struct DriveModeView: View {
                     ArrivalCard(title: phraser.arrived(at: nav.destination?.name)) { nav.stop() }
                 } else if let upcoming {
                     ManeuverBanner(maneuver: upcoming.maneuver, distance: upcoming.distance,
-                                   lanes: upcoming.lanes, phraser: phraser)
+                                   lanes: upcoming.lanes, then: upcoming.then, phraser: phraser)
                 }
                 if let report = nav.stillThere {
                     StillThereCard(report: report) { nav.answerStillThere($0) }
@@ -109,6 +109,7 @@ struct DriveModeView: View {
             DriveScanView(voice: nav.voice)
         }
         .onChange(of: live.reports) { overlay.apply(live) }
+        .onChange(of: nav.state?.preferredUserLocation) { overlay.showCar(nav.state?.preferredUserLocation) }
         .onChange(of: live.traffic) { overlay.apply(live) }
         .sensoryFeedback(.success, trigger: reportSent) { _, sent in sent }
         .confirmationDialog("End this trip?", isPresented: $confirmingEnd, titleVisibility: .visible) {
@@ -147,6 +148,7 @@ struct DriveModeView: View {
         guard let location = nav.state?.preferredUserLocation?.clLocation else { return }
         Task {
             if await live.send(type, at: location) {
+                nav.stats.reportSent()
                 reportSent = true
                 try? await Task.sleep(for: .seconds(2.5))
                 reportSent = false
@@ -158,13 +160,18 @@ struct DriveModeView: View {
         nav.state?.preferredUserLocation?.speed?.value
     }
 
-    private var upcoming: (maneuver: Maneuver, distance: Double, lanes: [LaneInfo])? {
+    private var upcoming: (maneuver: Maneuver, distance: Double, lanes: [LaneInfo], then: Maneuver?)? {
         guard let steps = nav.state?.remainingSteps, let step = steps.first,
               let maneuver = Maneuver(step: step, next: steps.dropFirst().first),
               let distance = nav.state?.currentProgress?.distanceToNextManeuver else { return nil }
         let lanes = nav.state?.currentVisualInstruction?.subContent?.laneInfo
             ?? nav.state?.currentVisualInstruction?.primaryContent.laneInfo ?? []
-        return (maneuver, distance, lanes)
+        // "Then": the turn after this one, shown when it follows closely enough to plan for.
+        var then: Maneuver?
+        if steps.count > 2, steps[1].distance < 500 {
+            then = Maneuver(step: steps[1], next: steps[2])
+        }
+        return (maneuver, distance, lanes, then)
     }
 }
 
@@ -174,6 +181,7 @@ private struct ManeuverBanner: View {
     let maneuver: Maneuver
     let distance: Double
     let lanes: [LaneInfo]
+    let then: Maneuver?
     let phraser: ManeuverPhraser
 
     var body: some View {
@@ -196,6 +204,18 @@ private struct ManeuverBanner: View {
                     }
                 }
                 Spacer(minLength: 0)
+            }
+            if let then {
+                HStack(spacing: Theme.Spacing.s) {
+                    Text("Then")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Theme.accent)
+                    ManeuverIcon(maneuver: then, size: 22)
+                    Text(phraser.action(then))
+                        .font(.subheadline)
+                        .lineLimit(1)
+                }
+                .accessibilityElement(children: .combine)
             }
             if lanes.count > 1 {
                 HStack(spacing: 2) {

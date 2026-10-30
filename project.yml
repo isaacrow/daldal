@@ -27,6 +27,9 @@ packages:
   MapLibreSwiftUI:
     url: https://github.com/maplibre/swiftui-dsl
     from: 0.26.1 # Same range Ferrostar 0.59 requires; Drive Mode uses its camera type.
+  ElevenLabs:
+    url: https://github.com/elevenlabs/elevenlabs-swift-sdk
+    from: 3.4.0 # Voice assistant (test): ElevenLabs Conversational AI over LiveKit WebRTC.
   ValhallaMobile:
     url: https://github.com/Rallista/valhalla-mobile
     exactVersion: 0.6.4 # Valhalla 3.9; the pack's routing tiles must be built with the same version.
@@ -55,6 +58,8 @@ targets:
         product: MapLibreSwiftUI
       - package: ValhallaMobile
         product: Valhalla
+      - package: ElevenLabs
+        product: ElevenLabs
       - package: ValhallaModels
         product: ValhallaConfigModels
     info:
@@ -80,6 +85,9 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         # Filled from the ESRI_API_KEY GitHub secret at build time; empty means the free satellite imagery.
         EsriAPIKey: $(ESRI_API_KEY)
+        # Public ElevenLabs agent for the voice assistant, from the ELEVENLABS_AGENT_ID GitHub secret.
+        ElevenLabsAgentID: $(ELEVENLABS_AGENT_ID)
+        NSMicrophoneUsageDescription: "Daldal uses the microphone only while you talk to the voice assistant."
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.daldal.ios

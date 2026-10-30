@@ -9,7 +9,7 @@ import Vision
 /// Something the camera sees on the road, placed in metres relative to the phone.
 nonisolated struct ScannedObject: Identifiable, Equatable, Sendable {
     enum Kind: String, Sendable {
-        case car, truck, bus, motorbike, bicycle, person, trafficLight, stopSign
+        case car, truck, bus, motorbike, bicycle, person, trafficLight, stopSign, animal, train
 
         /// Typical real height in metres, used to turn on-screen size into distance.
         var realHeight: Double {
@@ -22,6 +22,8 @@ nonisolated struct ScannedObject: Identifiable, Equatable, Sendable {
             case .person: 1.7
             case .trafficLight: 0.9 // the lamp housing
             case .stopSign: 0.75
+            case .animal: 1.2 // sheep and dogs are lower, cows and horses taller: a middle value
+            case .train: 3.8
             }
         }
 
@@ -36,6 +38,9 @@ nonisolated struct ScannedObject: Identifiable, Equatable, Sendable {
             case "person": self = .person
             case "traffic light": self = .trafficLight
             case "stop sign": self = .stopSign
+            // Animals on the road are a real hazard on Iraqi highways and rural roads.
+            case "dog", "horse", "sheep", "cow", "cat": self = .animal
+            case "train": self = .train
             default: return nil
             }
         }

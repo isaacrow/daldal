@@ -31,6 +31,16 @@
           }
         }
       }
+    },
+    "NSMicrophoneUsageDescription": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم دلدل الميكروفون فقط أثناء حديثك مع المساعد الصوتي."
+          }
+        }
+      }
     }
   }
 }

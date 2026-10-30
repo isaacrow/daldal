@@ -1,3 +1,4 @@
+@preconcurrency import FerrostarCoreFFI
 import MapLibre
 import SwiftUI
 
@@ -5,6 +6,12 @@ import SwiftUI
 @MainActor
 final class DriveMapOverlay {
     weak var style: MLNStyle?
+
+    func showCar(_ location: UserLocation?) {
+        guard let style, let location else { return }
+        let heading = location.courseOverGround.map { Double($0.degrees) } ?? 0
+        UserCarLayer.update(in: style, at: location.coordinates.coordinate2D, heading: heading)
+    }
 
     func apply(_ live: LiveStore) {
         guard let style else { return }

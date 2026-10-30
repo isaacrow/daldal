@@ -13,6 +13,7 @@ struct ExploreView: View {
     @Environment(LocationService.self) private var location
     @Environment(LiveStore.self) private var live
     @Environment(CityGuideStore.self) private var guide
+    @Environment(DriverStats.self) private var stats
 
     /// What the bottom panel shows. One sheet whose content changes, like Apple Maps: switching content
     /// never closes and reopens a sheet, which iOS ignores when it happens mid-animation.
@@ -22,6 +23,8 @@ struct ExploreView: View {
         case routes
         case maps
         case discover
+        case stats
+        case assistant
     }
 
     @State private var panel: Panel?
@@ -132,6 +135,10 @@ struct ExploreView: View {
             )
         case .maps:
             OfflineMapsView()
+        case .stats:
+            StatsView()
+        case .assistant:
+            VoiceAssistantView()
         case .discover:
             DiscoverView(near: location.location?.coordinate ?? map.visibleCenter) { place in
                 select(place.place(languageCode: languageCode), record: true)
@@ -208,6 +215,14 @@ struct ExploreView: View {
                 }
                 .glassEffectID("offline", in: glass)
 
+                GlassIconButton(icon: .assistant, label: "Voice assistant") { show(.assistant, at: .large) }
+                    .glassEffectID("assistant", in: glass)
+                    .accessibilityIdentifier("map.assistant")
+
+                GlassIconButton(icon: .profile, label: "My driving") { show(.stats, at: .large) }
+                    .glassEffectID("stats", in: glass)
+                    .accessibilityIdentifier("map.stats")
+
                 GlassIconButton(icon: .heritage, label: "Discover") { show(.discover, at: .large) }
                     .glassEffectID("discover", in: glass)
                     .accessibilityIdentifier("map.discover")
@@ -280,6 +295,7 @@ struct ExploreView: View {
 
     private func select(_ place: Place, record: Bool) {
         if record { saved.recordVisit(place) }
+        if let id = place.guideID ?? place.heritageID { stats.explored(id) }
         show(.place(place), at: .medium) // Tall enough that the action buttons are never at the edge.
         map.show(place)
     }

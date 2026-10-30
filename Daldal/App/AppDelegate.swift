@@ -6,7 +6,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     let connectivity = Connectivity()
     let voice = VoiceGuide(languageCode: AppLanguage.code)
     let live = LiveStore()
-    lazy var navigation = NavigationModel(cities: cities, voice: voice, live: live)
+    let stats = DriverStats()
+    lazy var navigation = NavigationModel(cities: cities, voice: voice, live: live, stats: stats)
 
     /// iOS relaunches the app when a background city download finishes; hand the session back to it.
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String,

@@ -24,6 +24,7 @@ struct DaldalApp: App {
                 .environment(services.connectivity)
                 .environment(services.navigation)
                 .environment(services.live)
+                .environment(services.stats)
                 .onAppear {
                     search.currentLocation = { [location] in location.location }
                     search.service = HybridSearchService(online: PhotonSearchService()) { [cities = services.cities, location] in

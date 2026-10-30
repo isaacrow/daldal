@@ -12,12 +12,62 @@
         }
       }
     },
+    "%lld points": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld نقطة"
+          }
+        }
+      }
+    },
     "+%@ traffic": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "+%@ ازدحام"
+          }
+        }
+      }
+    },
+    "1. Create a free account at elevenlabs.io and open Agents.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. أنشئ حساباً مجانياً في elevenlabs.io وافتح قسم Agents."
+          }
+        }
+      }
+    },
+    "2. Create an agent: pick an Arabic voice and describe it as Daldal's navigation helper for Iraq.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. أنشئ وكيلاً: اختر صوتاً عربياً وصِفه بأنه مساعد التنقل في دلدل للعراق."
+          }
+        }
+      }
+    },
+    "3. In the agent's security settings, allow public access, then copy its agent ID.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. في إعدادات الأمان للوكيل، اسمح بالوصول العام، ثم انسخ معرّف الوكيل."
+          }
+        }
+      }
+    },
+    "4. On GitHub, add the secret ELEVENLABS_AGENT_ID with that ID. The next build turns this screen on.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. في GitHub، أضف السر ELEVENLABS_AGENT_ID بهذا المعرّف. ستُفعّل النسخة التالية هذه الشاشة."
           }
         }
       }
@@ -72,6 +122,26 @@
         }
       }
     },
+    "Ask about places, roads and directions, in Arabic or English.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسأل عن الأماكن والطرق والاتجاهات بالعربية أو الإنجليزية."
+          }
+        }
+      }
+    },
+    "Broken traffic light": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشارة ضوئية معطلة"
+          }
+        }
+      }
+    },
     "Car ahead": {
       "localizations": {
         "ar": {
@@ -122,12 +192,42 @@
         }
       }
     },
+    "Connecting…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ الاتصال…"
+          }
+        }
+      }
+    },
+    "Conversation ended": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتهت المحادثة"
+          }
+        }
+      }
+    },
     "Copy coordinates": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "نسخ الإحداثيات"
+          }
+        }
+      }
+    },
+    "Couldn't connect to the assistant. Check your internet and try again.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعذّر الاتصال بالمساعد. تحقق من الإنترنت وحاول مرة أخرى."
           }
         }
       }
@@ -188,6 +288,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "إخفاء"
+          }
+        }
+      }
+    },
+    "Distance driven": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المسافة المقطوعة"
           }
         }
       }
@@ -278,6 +388,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "مسح الطريق"
+          }
+        }
+      }
+    },
+    "Driver": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سائق"
           }
         }
       }
@@ -492,6 +612,16 @@
         }
       }
     },
+    "Listening…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستمع…"
+          }
+        }
+      }
+    },
     "Live traffic": {
       "localizations": {
         "ar": {
@@ -562,12 +692,52 @@
         }
       }
     },
+    "Mute": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كتم"
+          }
+        }
+      }
+    },
     "Mute voice": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "كتم الصوت"
+          }
+        }
+      }
+    },
+    "My driving": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قيادتي"
+          }
+        }
+      }
+    },
+    "Newcomer": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مبتدئ"
+          }
+        }
+      }
+    },
+    "Next: %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التالي: %@"
           }
         }
       }
@@ -682,6 +852,16 @@
         }
       }
     },
+    "Places explored": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأماكن المستكشفة"
+          }
+        }
+      }
+    },
     "Places from Wikidata; descriptions from Wikipedia (CC BY-SA 4.0).": {
       "localizations": {
         "ar": {
@@ -728,6 +908,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "شرطة"
+          }
+        }
+      }
+    },
+    "Pothole": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حفرة"
           }
         }
       }
@@ -802,6 +992,26 @@
         }
       }
     },
+    "Reports confirmed": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "البلاغات المؤكَّدة"
+          }
+        }
+      }
+    },
+    "Reports sent": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "البلاغات المرسلة"
+          }
+        }
+      }
+    },
     "Retry": {
       "localizations": {
         "ar": {
@@ -818,6 +1028,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "طريق مغلق"
+          }
+        }
+      }
+    },
+    "Road guide": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دليل الطريق"
+          }
+        }
+      }
+    },
+    "Road master": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سيّد الطرق"
+          }
+        }
+      }
+    },
+    "Road regular": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سائق دائم"
+          }
+        }
+      }
+    },
+    "Road works": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أعمال طريق"
           }
         }
       }
@@ -932,6 +1182,16 @@
         }
       }
     },
+    "Set up the voice assistant": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعداد المساعد الصوتي"
+          }
+        }
+      }
+    },
     "Set work": {
       "localizations": {
         "ar": {
@@ -992,6 +1252,26 @@
         }
       }
     },
+    "Something went wrong. End and try again.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حدث خطأ. أنهِ المحادثة وحاول مرة أخرى."
+          }
+        }
+      }
+    },
+    "Speaking…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يتحدث…"
+          }
+        }
+      }
+    },
     "Speed limit %lld": {
       "localizations": {
         "ar": {
@@ -1008,6 +1288,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ابدأ"
+          }
+        }
+      }
+    },
+    "Start talking": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ابدأ الحديث"
           }
         }
       }
@@ -1072,6 +1362,16 @@
         }
       }
     },
+    "Test feature: your voice is sent to ElevenLabs to answer you.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ميزة تجريبية: يُرسَل صوتك إلى ElevenLabs للرد عليك."
+          }
+        }
+      }
+    },
     "Thanks. Other drivers will see it.": {
       "localizations": {
         "ar": {
@@ -1112,12 +1412,32 @@
         }
       }
     },
+    "Then": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثم"
+          }
+        }
+      }
+    },
     "There's no drivable route to this place.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "لا يوجد طريق صالح للقيادة إلى هذا المكان."
+          }
+        }
+      }
+    },
+    "Thinking…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يفكر…"
           }
         }
       }
@@ -1132,12 +1452,32 @@
         }
       }
     },
+    "Time driving": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقت القيادة"
+          }
+        }
+      }
+    },
     "Traffic jam": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "ازدحام مروري"
+          }
+        }
+      }
+    },
+    "Trips": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الرحلات"
           }
         }
       }
@@ -1202,6 +1542,16 @@
         }
       }
     },
+    "Unmute": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إلغاء الكتم"
+          }
+        }
+      }
+    },
     "Unmute voice": {
       "localizations": {
         "ar": {
@@ -1258,6 +1608,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اعرض بالواقع المعزز"
+          }
+        }
+      }
+    },
+    "Voice assistant": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المساعد الصوتي"
           }
         }
       }
@@ -1408,6 +1768,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وصلت."
+          }
+        }
+      }
+    },
+    "Your record stays on this iPhone. Reports and confirmations help other drivers see what's on the road.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يبقى سجلك على هذا الآيفون فقط. بلاغاتك وتأكيداتك تساعد السائقين الآخرين على معرفة ما في الطريق."
           }
         }
       }

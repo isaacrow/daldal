@@ -72,6 +72,20 @@ final class PlaceCardButtonsUITests: XCTestCase {
         listen.tap()
     }
 
+    func testStatsAndAssistantOpen() {
+        let app = launchWithCard()
+        app.buttons["map.stats"].tap()
+        XCTAssertTrue(app.staticTexts["Distance driven"].waitForExistence(timeout: 15), "My driving didn't open")
+        shot("stats")
+        app.buttons["Close"].firstMatch.tap()
+        app.buttons["map.assistant"].tap()
+        // Without an agent id built in, the assistant explains how to set it up; with one, it offers to start.
+        let setup = app.staticTexts["Set up the voice assistant"]
+        let start = app.buttons["Start talking"]
+        XCTAssertTrue(setup.waitForExistence(timeout: 15) || start.exists, "the voice assistant didn't open")
+        shot("assistant")
+    }
+
     func testDriveScanOpensWithCardShowing() {
         let app = launchWithCard()
         app.buttons["map.scan"].tap()

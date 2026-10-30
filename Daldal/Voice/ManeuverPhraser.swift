@@ -67,6 +67,9 @@ struct ManeuverPhraser {
             case .hazard: "خطر على الطريق"
             case .flood: "مياه على الطريق"
             case .closure: "طريق مغلق"
+            case .pothole: "حفرة في الطريق"
+            case .roadwork: "أعمال طريق"
+            case .brokenLight: "إشارة ضوئية معطلة"
             }
             return "انتبه، \(name) بعد \(d)"
         }
@@ -77,6 +80,9 @@ struct ManeuverPhraser {
         case .hazard: "Hazard"
         case .flood: "Flooded road"
         case .closure: "Road closed"
+        case .pothole: "Pothole"
+        case .roadwork: "Road works"
+        case .brokenLight: "Broken traffic light"
         }
         return "\(name) reported in \(d)"
     }

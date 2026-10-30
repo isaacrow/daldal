@@ -71,6 +71,9 @@ struct MapCanvas: UIViewRepresentable {
         var parent: MapCanvas
         private var loadedStyleKey: String?
         private var isDark = false
+        /// The map jumps to the user on the first good fix, so the app always opens where you are.
+        private var centeredOnUser = false
+        private var lastHeading: CLLocationDirection = 0
 
         init(_ parent: MapCanvas) { self.parent = parent }
 
@@ -143,6 +146,26 @@ struct MapCanvas: UIViewRepresentable {
 
         func mapView(_ mapView: MLNMapView, didChange mode: MLNUserTrackingMode, animated: Bool) {
             parent.controller.trackingModeDidChange(mode)
+        }
+
+        /// The 3D car replaces MapLibre's blue dot: an empty view for the user location.
+        func mapView(_ mapView: MLNMapView, viewFor annotation: any MLNAnnotation) -> MLNAnnotationView? {
+            annotation is MLNUserLocation ? MLNUserLocationAnnotationView(frame: .zero) : nil
+        }
+
+        func mapView(_ mapView: MLNMapView, didUpdate userLocation: MLNUserLocation?) {
+            guard let location = userLocation?.location, location.horizontalAccuracy >= 0,
+                  location.horizontalAccuracy < 200 else { return }
+            if !centeredOnUser {
+                centeredOnUser = true
+                mapView.setCenter(location.coordinate, zoomLevel: 15.5, animated: false)
+                mapView.setUserTrackingMode(.follow, animated: false, completionHandler: nil)
+            }
+            // Point the car where it's going; standing still, keep the last direction.
+            if location.course >= 0, location.speed > 1 { lastHeading = location.course }
+            if let style = mapView.style {
+                UserCarLayer.update(in: style, at: location.coordinate, heading: lastHeading)
+            }
         }
 
         func mapView(_ mapView: MLNMapView, imageFor annotation: any MLNAnnotation) -> MLNAnnotationImage? {
