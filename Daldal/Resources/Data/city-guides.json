@@ -1,0 +1,1339 @@
+[
+ {
+  "id": "baghdad",
+  "name_ar": "بغداد",
+  "name_en": "Baghdad",
+  "center": [
+   33.31528,
+   44.36611
+  ],
+  "places": [
+   {
+    "id": "Q192541",
+    "lat": 33.093611,
+    "lon": 44.580556,
+    "kind": "archaeological",
+    "name_ar": "قطيسفون",
+    "name_en": "Ctesiphon",
+    "wiki_ar": "طيسفون",
+    "wiki_en": "Ctesiphon",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Ctesiphon.jpg?width=800",
+    "summary_ar": "طيسفون وأصلها طوسفون وتعرف كذلك باسم قطيسفون أو طسيفون أو كما سماها العرب المدائن؛ مدينة عراقية بناها الإغريق قبل الميلاد وورثها الفرس، والتي بَقَت مركزًا رئيسيًا للبلاد حتى حلت محلها بغداد في القرن الثامن. وكانت عاصمة الساسانيين والفرثيين. بنيت المدينة على الضفة الشرقية لنهر دجلة قرب بلدة المدائن/سلمان باك الحالية ما يقارب ال35 كم جنوب شرق بغداد. يقع موقع طيسفون قرب موقع مدينة سلوقية الأثرية التي بناها السلوقيون. من أشهر معالم طيسفون بناء طاق كسرى أو إيوان كسرى الذي كان مقر الحكم الساساني.",
+    "summary_en": "Ctesiphon was an ancient city in modern Iraq, on the eastern bank of the Tigris, about 35 kilometres (22 mi) (22 mi) southeast of Baghdad. Ctesiphon served as a royal capital of the Iranian empires for over eight hundred years, in the Parthian and Sasanian periods. It fell in 637, during the Muslim conquest of Persia."
+   },
+   {
+    "id": "Q619707",
+    "lat": 33.06667,
+    "lon": 44.25,
+    "kind": "archaeological",
+    "name_ar": "سيبار",
+    "name_en": "Sippar",
+    "wiki_ar": "سيبار",
+    "wiki_en": "Sippar",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Hammurabi%27s%20Babylonia%201.svg?width=800",
+    "summary_ar": "سيبار كلمة تعني باللغة الكلدانية مدينة الطيور كانت مدينة سومرية قديماً وبابلية لاحقاً تقع على الضفة الشرقية من الفرات حوالي 60 كيلومترَ شمال بابل، في موقع تل أبو حبة الحديث بالقرب من اليوسفية في محافظة بغداد العراقية. الاسم القديم للمدينة سيبار يمكن أن يشير أيضًا إلى شقيقتها سيبار-أمنانوم ؛ التصنيف الأكثر تحديدًا للمدينة المشهورة باسم Sippar هو سيبار يهروروم Sippar-Yahrurum.",
+    "summary_en": "Sippar was an ancient Near Eastern Sumerian and later Babylonian city on the east bank of the Euphrates river. Its tell is located at the site of modern Tell Abu Habbah near Yusufiyah in Iraq's Baghdad Governorate, some 69 km (43 mi) north of Babylon and 30 km (19 mi) southwest of Baghdad. The city's ancient name, Sippar, could also refer to its sister city, Sippar-Amnanum ; a more specific designation for the city here referred to as Sippar was Sippar-Yaḫrurum (Sippar-Jaḫrurum). The name comes from the Amorite Yaḫrurum tribe that lived in the area along with the Amorite Amnanum tribe. The Babylonian Map of the World was found in Sippar."
+   },
+   {
+    "id": "Q1136681",
+    "lat": 33.1,
+    "lon": 44.52,
+    "kind": "archaeological",
+    "name_ar": "سلوقية",
+    "name_en": "Seleucia",
+    "wiki_ar": "سلوقية",
+    "wiki_en": "Seleucia",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Karte%20Seleucia%20Ktesiphon-it.png?width=800",
+    "summary_ar": "سلوقية هو اسم مدينة أسسها السلوقيون في العراق على ضفة نهر دجلة عام 307 ق.م. لتصبح عاصمة الإمبراطورية السلوقية ، أنشأ المدينة سلوقس الأول، استولى عليها الفرثيون عام 140 ق.م.تقع قطسيفون عاصمة الساسانيين بالقرب من سلوقية. عند دخول العرب المسلمين للعراق أسسوا مدينة المدائن على أنقاض سلوقية وقطسيفون.",
+    "summary_en": "Seleucia, also known as Seleucia-on-Tigris, Seleucia on the Tigris or Seleucia ad Tigrim, was a major Mesopotamian city, located on the west bank of the Tigris River within the present-day Baghdad Governorate in Iraq. It was founded around 305 BC by Seleucus I Nicator as the first capital of the Seleucid Empire, and remained an important center of trade and Hellenistic culture after the imperial capital relocated to Antioch. The city continued to flourish under Parthian rule beginning in 141 BC; ancient texts claim that it reached a population of 600,000. Seleucia was destroyed in 165 AD by Roman general Avidius Cassius and gradually faded into obscurity in the subsequent centuries."
+   },
+   {
+    "id": "Q154116",
+    "lat": 33.37997,
+    "lon": 44.33796,
+    "kind": "mosque",
+    "name_ar": "العتبة الكاظمية المقدسة",
+    "name_en": "Al-Kadhimiya Mosque",
+    "wiki_ar": "العتبة الكاظمية",
+    "wiki_en": "Al-Kazimiyya Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D8%A7%D9%84%D8%B9%D8%AA%D8%A8%D8%A9%20%D8%A7%D9%84%D9%83%D8%A7%D8%B8%D9%85%D9%8A%D8%A9%20%284%29.jpg?width=800",
+    "summary_ar": "مسجد الكاظمية هو مسجد وضريح شيعي إمامي ، يقع في منطقة الكاظمية في العاصمة العراقية بغداد. يضم المسجد مرقدي الإمامين السابع والتاسع لدى الشيعة الإثني عشرية، وهما موسى الكاظم وحفيده محمد الجواد. كما يضم المسجد ضمن أروقته ضريحي العالِمين التاريخيين الشيخ المفيد والشيخ نصير الدين الطوسي. يوجد بجوار المسجد مباشرة ضريحان أصغر حجماً، ينتميان إلى الأخوين السيد راضي والسيد مرتضى والقاضي أبو يوسف اللولبي",
+    "summary_en": "The Kadhimiyya Mosque is a Twelver Shi'ite mosque and shrine located in the Kādhimiya suburb of Baghdad, in the Baghdad Governorate of Iraq. It contains the tombs of the seventh and ninth Twelver Shī'ī Imāms, respectively Mūsā al-Kādhim and his grandson Muhammad al-Jawad. Also buried within the premises of this mosque are the historical scholars Shaykh Mufīd and Shaykh Naṣīr ad-Dīn aṭ-Ṭūsi. Directly adjacent to the mosque are two smaller shrines, belonging to the brothers Sayyid Raḍī and Sayyid Murtadā and Qadi Abu Yusuf al-Ansari."
+   },
+   {
+    "id": "Q1486703",
+    "lat": 33.093722,
+    "lon": 44.580722,
+    "kind": "archaeological",
+    "name_ar": "إيوان المدائن",
+    "name_en": "Taq-i Kisra",
+    "wiki_ar": "إيوان المدائن",
+    "wiki_en": "Taq Kasra",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/001125-TaqKasra-Iraq-IMG%207914-2.jpg?width=800",
+    "summary_ar": "إيوان المدائن كما يعرف محلياً، هو الأثر الباقي من أحد قصور كسرى أنوشروان، يقع جنوب مدينة بغداد في موقع مدينة طيسفون الواقعة في منطقة المدائن التابعة إدارياً إلى محافظة بغداد، وتعرف محلياً ولدى العامة ب على اسم الصحابي الشهير سلمان الفارسي المدفون هناك.",
+    "summary_en": "Tāq Kasrā, also transcribed as Taq-i Kisra or Taq-e Kesra or Ayvān-e Kesrā are the remains of a Sasanian-era Persian monument, dated to c. the 3rd to 6th centuries, which is sometimes called the Arch of Ctesiphon. It is located near the modern town of Salman Pak, Iraq. It was the facade of the main palace in Ctesiphon, and is the only visible remaining structure of the ancient capital city. The archway is considered a landmark in the history of architecture, and is the second largest single-span vault of unreinforced brickwork in the world after the Gavmishan Bridge in Iran."
+   },
+   {
+    "id": "Q622719",
+    "lat": 33.35372,
+    "lon": 44.20229,
+    "kind": "archaeological",
+    "name_ar": "زقورة عقرقوف",
+    "name_en": "Dur-Kurigalzu",
+    "wiki_ar": "زقورة عقرقوف",
+    "wiki_en": "Dur-Kurigalzu",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20ziggurat%20at%20Aqar%20Quf.jpg?width=800",
+    "summary_ar": "زقورة عقرقوف وهي زقورة تَقع في العراق، قرب العاصمة بغداد، وكانت معلم إحدى المُدن في جنوب بلاد وادي الرافدين بالقرب من التقاء نهري دِجلة وديالى على بعد 30 كيلو متر من غرب مركز بغداد، ولقد تأسست من قبل ملك الكيشين كوريغالزو الأول في القرن الرابع عشر قبل الميلاد، وكانت تُعتبر عاصمة الكيشين وأنتهت أهميتها بعد سقوط سلالة الكيشين، وتحتوي الزقورة على المعابد المكرسة لآلهة السومريين فضلاً عن القَصر الملكي، وليس من السهل الحفاظ عليها من اثار التقادم الزمني والاندثار، ويبلغ أرتفاع الزقورة نحو 170 قدم.",
+    "summary_en": "Dur-Kurigalzu was a city in southern Mesopotamia, near the confluence of the Tigris and Diyala rivers, about 30 kilometres (19 mi) west of the center of Baghdad. It was founded by a Kassite king of Babylon, Kurigalzu I and was abandoned after the fall of the Kassite dynasty. The city was of such importance that it appeared on toponym lists in the funerary temple of the Egyptian pharaoh, Amenophis III at Kom el-Hettan\". The prefix Dur is an Akkadian term meaning \"fortress of\", while the Kassite royal name Kurigalzu is believed to have meant \"shepherd of the Kassites\". The tradition of naming new towns Dur dates back to the Old Babylonian period with an example being Dūr-Ammī-ditāna."
+   },
+   {
+    "id": "Q334716",
+    "lat": 33.371981,
+    "lon": 44.358406,
+    "kind": "mosque",
+    "name_ar": "جامع الإمام الأعظم",
+    "name_en": "Abu Hanifa Mosque",
+    "wiki_ar": "جامع الإمام الأعظم",
+    "wiki_en": "Abu Hanifa Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D9%85%D8%AF%D8%AE%D9%84%20%D8%AC%D8%A7%D9%85%D8%B9%20%D8%A7%D9%84%D8%A5%D9%85%D8%A7%D9%85%20%D8%A7%D9%84%D8%A3%D8%B9%D8%B8%D9%85.jpg?width=800",
+    "summary_ar": "جامع الإمام الأعظم أو جامع أبو حنيفة النعمان هو أحد المساجد والمدارس التاريخية في مدينة بغداد، وتسمى المنطقة حول الجامع منطقة الأعظمية نسبة إليهِ وتقع في شمال بغداد على جهة الرصافة ويقابلها منطقة الكاظمية نسبة إلى مرقد موسى الكاظم الذي يقع فيها، ولقد بني المسجد عام 375 هـ بجوار قبر الإمام أبي حنيفة النعمان، ثم في عام 459 هـ/ 1066م، بني مشهد وقبة على القبر وكذلك مدرسة كبيرة، وتعتبر مدرسة أبي حنيفة الفقهية من أقدم المدارس وتسمى حالياً كلية الإمام الأعظم، وهي واحدة من ثلاثة أقدم جامعات على مستوى العالم، حيث سبقتها جامعة القرويين في المغرب، إذ بني جامع القرويين في عام 859م، والجامع الأزهر في مصر الذي تأسس في عام 972م، ولقد بنيت أول الجامعات الأوروبية بعد ذلك في عام 1088م،",
+    "summary_en": "The Abu Hanifa Mosque, also known as the Grand Imam Mosque, is a Sunni mosque and shrine, located in the A'dhamiyya district of northern Baghdad, in the Baghdad Governorate of Iraq. The complex is one of the most prominent mosques in Baghdad, that is built around the tomb of Islamic scholar Abu Hanifa al-Nu'man, the founder of the Hanafi school, an Islamic school of Islamic religious jurisprudence."
+   },
+   {
+    "id": "Q12204233",
+    "lat": 33.339123,
+    "lon": 44.397691,
+    "kind": "mosque",
+    "name_ar": "جامع الخلفاء",
+    "name_en": "AlKhulafa Mosque",
+    "wiki_ar": "جامع الخلفاء",
+    "wiki_en": "Al-Khulafa Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D9%85%D8%B3%D8%AC%D8%AF%20%D8%A7%D9%84%D8%AE%D9%84%D9%81%D8%A7%D8%A1%20%D9%81%D9%8A%20%D8%A8%D8%BA%D8%AF%D8%A7%D8%AF.jpg?width=800",
+    "summary_ar": "جامع الخلفاء هو من مساجد بغداد التراثية الأثرية، ولقد بناهُ الخليفة المكتفي بالله العباسي لكي يكون المسجد الجامع لصلاة الجمعة في شرقي القصر الحسني، وكان يعرف بجامع القصر، ثم أطلق عليهِ اسم جامع الخليفة، وسمي بجامع الخلفاء في الفترة الأخيرة، وهو من معالم بغداد التاريخية، وشيد وبني لأول مرة في عام ، ثم في عام 1193-1196هـ، 1779-1802م شيد جامع الخلفاء للمرة الثانية في سوق الغزل موضع جامع الخليفة العتيق، ويقع في جانب الرصافة من بغداد على شارع الجمهورية بمحلة سوق الغزل قرب الشورجة، وتعتبر مئذنة جامع الخلفاء، من المآذن التأريخية والمتميزة بعمارتها، وهي الأثر المعماري الباقي من دار الخلافة العباسية ومساجدها، وقد بنيت هذه المنارة قبل أكثر من سبعة قرون، وهي من الآجر فقط،",
+    "summary_en": "The Al-Khulafa Mosque, also known as the Al-Qasr Mosque, is a Sunni mosque located in the al-Rusafa district of Baghdad, in the Baghdad Governorate of Iraq. Situated on Jumhuriya Street, it is the oldest surviving mosque in Baghdad. It was first built in 908 CE and was completely rebuilt and restored in the 1960s by the Ministry of Awqaf in its current shape."
+   },
+   {
+    "id": "Q1325641",
+    "lat": 33.337711,
+    "lon": 44.296058,
+    "kind": "mosque",
+    "name_ar": "جامع أم القرى",
+    "name_en": "Umm al-Qura Mosque",
+    "wiki_ar": "جامع أم القرى",
+    "wiki_en": "Umm al-Qura Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D8%AC%D8%A7%D9%85%D8%B9%20%D8%A3%D9%85%20%D8%A7%D9%84%D9%82%D8%B1%D9%89%20-%20%D8%A8%D9%88%D8%A7%D8%A8%D8%A9%20%D8%AF%D8%AE%D9%88%D9%84%20%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF.jpg?width=800",
+    "summary_ar": "جامع أم القرى أحد مساجد العراق الحديثة والكبيرة التي شيدت وبنيت في عهد الرئيس السابق صدام حسين في بغداد، وسمي بجامع أم المعارك لأنه كان الأسم الرسمي لحرب الخليج الثانية في العراق، ولقد بدأ تنفيذ بناء المسجد في أواخر عام 1999م، واكتمل البناء في شهر نيسان من عام 2001م، ولقد كلف بناؤه في وقتها 7.5 مليون دولار تقريبا، وبعد الغزو الأمريكي للعراق في عام 2003م تغير أسمه، وسمي المسجد بجامع أم القرى وأصبح مقراً لهيئة علماء المسلمين، وفي عام 2012 شغل مباني الجامع رئاسة ديوان الوقف السني.\nوتقام فيهِ حالياً صلاة الجمعة وصلاة العيدين والصلوات الخمس.",
+    "summary_en": "The Umm al-Qura Mosque, also known as the Umm al-Ma'arik Mosque, is a Sunni mosque located in Baghdad, in the Baghdad Governorate of Iraq. It was the city's largest place of worship for Sunnis, but it has also become the location of a Shi'a hawza and a place of refuge for many fleeing the terrorists' depredations in the Anbar Province. It was designed to commemorate former Iraqi President Saddam Hussein's self-proclaimed victory in the Gulf War (1990–1991) and was intended to serve as a personal tribute to Saddam himself. It is located in the Sunni-populated al-Adel area of western Baghdad."
+   },
+   {
+    "id": "Q310023",
+    "lat": 33.3433,
+    "lon": 44.4459,
+    "kind": "monument",
+    "name_ar": "نصب الشهيد",
+    "name_en": "Al-Shaheed Monument",
+    "wiki_ar": "نصب الشهيد",
+    "wiki_en": "Al-Shaheed Monument",
+    "summary_ar": "نُصُبُ اَلشَّهِيدِ نُصُبٌ تَذكاريٌّ، صمَّمه النحَّات العراقي إسماعيل فتاح الترك سنةً 1983 م، وهو في عاصمة العراق بغدادَ في جانب الرُّصافة من بغداد. بني هذا النُصُب تخليدا لذكرى الجنود العراقيين الذين قتلوا في الحرب العراقية الإيرانية. ومع ذلك، يعتبره العراقيون اليوم بشكل عام إحياءً لذكرى جميع شهداء العراق.",
+    "summary_en": "Al-Shaheed Monument, also known as the Martyr's Memorial, is a monument designed by Iraqi sculptor Ismail Fatah al-Turk and situated in the Iraqi capital, Baghdad. It was originally dedicated to the Iraqi soldiers killed in the Iran–Iraq War and has since grown to become generally considered to be a commemoration of all Iraqi martyrs."
+   },
+   {
+    "id": "Q10424690",
+    "lat": 33.3401,
+    "lon": 44.3895,
+    "kind": "museum",
+    "name_ar": "المتحف البغدادي",
+    "name_en": "Baghdadi Museum",
+    "wiki_ar": "المتحف البغدادي",
+    "wiki_en": "Baghdadi Museum",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D9%81%D8%B1%D9%82%D8%A9%20%D8%A7%D9%84%D9%85%D9%82%D8%A7%D9%85%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A7%D9%82%D9%8A1.jpg?width=800",
+    "summary_ar": "المتحف البغدادي هو متحفٌ للتاريخ المحلي ومعلمٌ سياحي يقع في العاصمة بغداد في العراق. أُفتتح عام 1970. يقع على ضفاف نهر دجلة، بين جسر الشهداء وساحة معروف الرصافي، ويضم 45 مشهدًا تُجسّد المهن التقليدية والعادات الشعبية في بغداد، مُمثّلة بمنحوتات ملونة بالحجم الطبيعي. تعرّض المتحف لأضرار عام 2003، وأُعيد افتتاحه رسميًا في أغسطس 2008.",
+    "summary_en": "The Baghdadi Museum is a local history museum and a tourist landmark located in and about the capital city of Baghdad, Iraq. It was established in 1970."
+   },
+   {
+    "id": "Q2349688",
+    "lat": 33.314845,
+    "lon": 44.376417,
+    "kind": "park",
+    "name_ar": "حديقة حيوانات بغداد",
+    "name_en": "Baghdad Zoo",
+    "wiki_ar": "حديقة حيوانات بغداد",
+    "wiki_en": "Baghdad Zoo",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/U.S.%20Tigers%20Donated%20To%20Baghdad%20Zoo.jpg?width=800",
+    "summary_ar": "حديقة حيوانات بغداد هي حديقة حيوانات تقع في حديقة الزوراء وسط بغداد وقد اعتبرت حديقة الزوراء من أكبر وأقدم حدائق الحيوانات في الشرق الأوسط. حيث تبلغ مساحتها 810 كيلومتر\nوقد كانت حديقة الحيوانات موجودة في منطقة قريبة من موقع حديقة الزوراء الحالية، لكن عند تأسيس حديقة الزوراء تم نقل موقع الحديقة إلى نطاق حديقة الزوراء عام 1971.\nتعرضت الحديقة إلى ضرر كبير خلال المعارك التي سبقت احتلال العراق عام 2003، وما تبعها من عمليات نهب وسرقة. ثم أجريت عليها أعمال الصيانة والترميم في الأعوام التالية.",
+    "summary_en": "The Baghdad Zoo is a 200-acre (81 ha) zoo originally opened in 1971 and located in Baghdad, Iraq, in the Al-Zawraa Park area along with the Al Zawra’a Dream Park and Zawra'a Tower. Before the 2003 invasion of Iraq, the zoo housed 650 animals. After being nearly destroyed during the 2003 Iraqi war, when only about 35 animals survived, the zoo was reopened in 2003 and now houses about 1,070 animals."
+   }
+  ]
+ },
+ {
+  "id": "basra",
+  "name_ar": "البصرة",
+  "name_en": "Basra",
+  "center": [
+   30.515,
+   47.81
+  ],
+  "places": [
+   {
+    "id": "Q28114309",
+    "lat": 30.497384,
+    "lon": 47.86099,
+    "kind": "museum",
+    "name_ar": "متحف البصرة الحضاري",
+    "name_en": "Basrah Museum",
+    "wiki_ar": "متحف البصرة الحضاري",
+    "wiki_en": "Basrah Museum",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Basrah%20Museum%20in%20Iraq.jpg?width=800",
+    "summary_ar": "متحف البصرة الحضاري، هو متحف للآثار يقع في مدينة البصرة جنوب العراق حيث تم إنشاءه في بناية أحد القصور الرئاسية التي تعود إلى النظام السابق على شط العرب. ويحتوي المتحف على 440 قطعة أثرية يعود بعضها إلى 300 عام قبل الميلاد.",
+    "summary_en": "The Basrah Museum is a museum in the Iraqi city of Basra, It is located on the banks of the Shatt al-Arab some 3 km south‐east of Basra’s historic city centre. Housed in a former palace of Saddam Hussein, its collection is related to Mesopotamian, Babylonian, Persian civilisations, as well as the history of the city itself. Basrah Museum opened its doors to the public in March 2019. The Director of the Basrah Antiquities & Heritage is Qahtan Al Abeed, who has managed the project from the start with the cooperation of the State Board of Antiquities & Heritage and the Ministry of Culture and with support from the UK Friends of Basrah Museum (FOBM)."
+   },
+   {
+    "id": "Q20410450",
+    "lat": 30.5217,
+    "lon": 47.8373,
+    "kind": "mosque",
+    "name_ar": "جامع المقام",
+    "name_en": "Al-Maqam Mosque",
+    "wiki_ar": "جامع المقام",
+    "wiki_en": "Al-Maqam Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D8%AC%D8%A7%D9%85%D8%B9%20%D8%A7%D9%84%D9%85%D9%82%D8%A7%D9%85.jpg?width=800",
+    "summary_ar": "يقع جامع المقام في منطقة العشار في البصرة، وهو من مساجد العراق التاريخية التي يرتبط تاريخ إنشائها وأسمها بحكم الدولة العثمانية في العراق.",
+    "summary_en": "The Al-Maqam Mosque is a historic mosque and shrine, located in the Al-'Ashara region, in the city of Basra, in the Basra Governorate of Iraq."
+   },
+   {
+    "id": "Q12242708",
+    "lat": 30.39966,
+    "lon": 47.73386,
+    "kind": "mosque",
+    "name_ar": "جامع خطوة الإمام علي",
+    "name_en": "Imam Ali Mosque",
+    "wiki_ar": "جامع خطوة الإمام علي",
+    "wiki_en": "Imam Ali Mosque (Basra)",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Imam%20Ali%20Mosque%20in%20Basra.jpg?width=800",
+    "summary_ar": "مسجد البصرة القديم أو جامع خطوة الإمام علي وهو أول مسجد في الإسلام خارج مكة والمدينة المنورة شيد في عهد الخليفة عمر بن الخطاب من قبل عتبة بن غزوان والي البصرة كان في بداياته مبني من أجذاع النخيل لكنهُ تدمر بالحريق الكبير وأعيد بنائه من اللبن والطين من ثم اعيد بناءه في خلافة عمر بن عبد العزيز ثم تدمر في عهد الدولة العباسية جراء الفيضان الكبير الذي أصاب مدينة البصرة وتضائلت أهميته بعد انتقال معظم أهل البصرة من موقعها القديم إلى الجديد، ولقد شهد هذا المسجد مراحل مهمة من تأريخ الإسلام والمسلمين، ومنها زيارة علي بن أبي طالب وعائشة لهُ بعد موقعة الجمل، وخطبة زياد بن أبيه التي سميت بالبتراء، وكذلك مجزرة الحجاج التي راح ضحيتها مئات كبار العرب في البصرة، وثورة الزنج. ويعتبر أول مدرسة للفقه،",
+    "summary_en": "The Imam Ali Mosque, also known as the Old Mosque of Basra and as the Jami Khatwa ʿAli, is the first mosque that was built in the historical setting of Basra, in the Basra Governorate of Iraq. Completed in c. 635 CE, it is among the oldest mosques in the history of Islam; reputedly, the third Islamic mosque built, and the first mosque outside Mecca and Medina. Remnants of this 7th-century structure remain, whilst a new structure was completed in 2000."
+   },
+   {
+    "id": "Q22689848",
+    "lat": 30.3842,
+    "lon": 47.6999,
+    "kind": "shrine",
+    "name_ar": "مرقد الإمام الحسن البصري",
+    "name_en": "Mausoleum of Imam al-Hasan of Basra",
+    "wiki_ar": "مرقد الإمام الحسن البصري",
+    "wiki_en": "Mausoleum of Imam al-Hasan of Basra",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Al%20Hasan%20of%20Basra%20Shrine.jpg?width=800",
+    "summary_ar": "مرقد الإمام الحسن البصري من المراقد الإسلامية القديمة الأثرية في العراق، والحسن البصري من التابعين وعلم من أعلام مدينة البصرة، وكان فقيهاً زاهداً، وهو إمام وعالم من علماء أهل السنة والجماعة ويكنى بـأبي سعيد، ولقد ولد قبل سنتين من نهاية خلافة عمر بن الخطاب في المدينة عام واحد وعشرين من الهجرة، وتوفي في مدينة البصرة.",
+    "summary_en": "The Mausoleum of Imam Hasan of Basra is a historic mausoleum and shrine in Basra, in the Basra Governorate of Iraq. The shrine commemorating the renowned Sunni Islamic ulama, Hasan of Basra. Hasan of Basra, nicknamed as Abi Sayeed, was born two years before the end of the era of the second Caliph Umar. The mausoleum is located in the Zubayr district where many cemeteries are situated."
+   },
+   {
+    "id": "Q22689855",
+    "lat": 30.398737,
+    "lon": 47.739936,
+    "kind": "shrine",
+    "name_ar": "مرقد ومسجد طلحة بن عبيد الله",
+    "name_en": "Mausoleum of Talha ibn 'Ubayd Allah",
+    "wiki_ar": "مرقد ومسجد طلحة بن عبيد الله",
+    "wiki_en": "Mausoleum of Talha ibn 'Ubayd Allah",
+    "summary_ar": "مرقد ومسجد الصحابي طلحة بن عبيد الله التَّيمي القُرشي الكناني.",
+    "summary_en": "The Mausoleum of Talha ibn 'Ubayd Allah is an incomplete Sunni mausoleum or funerary monument located at Az Zubayr in the city of Basra, in the Basra Governorate of Iraq. The monument is being constructed over the purported grave of Talha ibn Ubaidullah, one of the Sahaba who is revered in Sunni Islam. As of 2025, the mausoleum was incomplete and undergoing construction."
+   },
+   {
+    "id": "Q22686636",
+    "lat": 30.5007,
+    "lon": 47.8164,
+    "kind": "mosque",
+    "name_ar": "جامع البصرة الكبير",
+    "name_en": "Basrah Great Mosque",
+    "wiki_ar": "جامع البصرة الكبير",
+    "summary_ar": "جامع البصرة الكبير وهو من مساجد العراق الحديثة، ويقع في مدينة البصرة، ويسمى حالياً جامع الشهيد يوسف الحسان، نسبة إلى اسم الإمام والخطيب الذي أغتيل في فترة الفتنة الطائفية، وكان يشغل منصب الإمامة والخطابة فيهِ، وأخوهُ هو الشيخ نعمة الحسان، ولقد بني الجامع في بداية عقد الثمانينيات من القرن العشرين، ويتميز الجامع بمساحته الواسعة ، حيث يحوي على مصلى كبير يتسع لأكثر من 2000 مصل، ولكن عدد المصلين حاليا لا يتجاوز 500 مصل في صلاة الجمعة، كما يحتوي على دار سكن وغرف وقاعة، ويطل على الشارع العام، ويعلو مبنى الحرم قبة جميلة مكسوة بالكاشي الكربلائي الأزرق، وفي الجامع منارة مئذنة مرتفعة ذات طراز معماري إسلامي، والجامع هو من أكبر الجوامع التي يديرها ديوان الوقف السني في مدينة البصرة،",
+    "summary_en": null
+   },
+   {
+    "id": "Q26821309",
+    "lat": 30.5011,
+    "lon": 47.7821,
+    "kind": "mosque",
+    "name_ar": "جامع الإمام موسى الكاظم",
+    "name_en": "Imam Mosa Al Kadhim Grand Mousque",
+    "wiki_ar": "جامع الإمام موسى الكاظم",
+    "wiki_en": "Imam Mosa Al Kadhim Grand Mosque",
+    "summary_ar": "جامع الإمام موسى الكاظم ، وهو من مساجد العراق القديمة الأثرية الواقعة في محافظة البصرة، كما يذكر انه تم تعميره في عام 2012م، ويقع بالقرب من مدينة المشراق وبالقرب من الحيانية في البصرة.",
+    "summary_en": "The Imam Mosa Al Kadhim Grand Mosque is a Twelver Shi'ite congregational mosque located in the city of Basra, in the Basra Governorate of Iraq. The mosque is located near the city of Mishraq and near Hayaniya. The mosque is named in honor of the Seventh Twelver Imam, Mūsā al-Kādhim, who was also known as Abu 'I-Hassan and al-Kazim."
+   },
+   {
+    "id": "Q26879363",
+    "lat": 30.48232,
+    "lon": 47.83015,
+    "kind": "mosque",
+    "name_ar": "جامع العقرب",
+    "name_en": "Mosque Scorpio",
+    "wiki_ar": "مسجد الأجبال",
+    "wiki_en": "Al-Ajbal Mosque",
+    "summary_ar": "مسجد الأجبال، المعروف أيضاً باسم مسجد العقرب أو مسجد المناوي لجم الصغير، هو مسجد تاريخي يقع في حي العميطية في منطقة المناوي لجم بالقرب من أبو الخصيب في البصرة، في البصرة في العراق. يمكن أن يستوعب ما لا يقل عن 150 مصلياً. يعود تاريخ المسجد إلى أواخر القرن الرابع عشر؛ وقد خضع لتجديد شامل في عام 1998.",
+    "summary_en": "The Al-Ajbal Mosque, also known as the Al-Aqrab Mosque or the Al-Saghir Mosque of Manawi Lajim, is a historic mosque located in the Al Amitahiyah district of Manawi Lajim neighbourhood near Abu al-Khaseeb in Basra, in the Basra Governorate of Iraq. It can accommodate at least 150 worshippers. The mosque dates from the late 14th century; and was extensively remodelled in 1998."
+   },
+   {
+    "id": "Q65082165",
+    "lat": 30.398522,
+    "lon": 47.689878,
+    "kind": "shrine",
+    "name_ar": "مسجد الزبير بن العوام",
+    "name_en": "Mosque of Zubayr Ibn Al-Awam",
+    "wiki_ar": "مرقد وجامع الزبير بن العوام",
+    "wiki_en": "Mosque of Zubayr ibn al-Awwam",
+    "summary_ar": "جامع سيدنا الزبير بن العوام هو جامع بمدينة الزبير العراقية بمحافظة البصرة بجنوب العراق، عند مرقد الزبير بن العوام، بُني الجامع سنة 368 هـ/ 996 م. ذكر ابن بطوطة حين زار البصرة سنة 726 هـ/ 1325 م مراقد لمشاهير البصرة، فقال \"ومنها مشهد الزبير بن العوام حواري رسول الله صلى الله عليه وسلم وابن عمته رضي الله عنهما وهو بخارج البصرة ولا قبة عليه وله مسجد وزاوية فيها الطعام لأبناء السبيل\"، وذكر أحمد باش أعيان أنه في سنة 953 الهجرية الموافقة لسنة 1547 الميلادية في أول ولاية أمير الأمراء بكلر بكي محمد بلال باشا على البصرة، بنى العثمانيون مسجدين حول مرقد الصحابي الزبير وحول مرقد الصحابي طلحة، وكان مسجد الزبير هذا أول مسجد يُبنى بالبصرة القديمة بعد انقراضها التي موقعها الحالي مدينة الزبير،",
+    "summary_en": "The Mosque of Zubayr ibn al-Awwam is a mosque, mausoleum and shrine complex, located in the city of Az-Zubayr, south of Basra, in the Basra Governorate of Iraq. The mosque is believed to contain the tombs of Zubayr ibn al-Awwam and Utba ibn Ghazwan and was founded in 386 AH."
+   },
+   {
+    "id": "Q22686749",
+    "lat": 30.391277,
+    "lon": 47.705768,
+    "kind": "mosque",
+    "name_ar": "جامع النجادة",
+    "wiki_ar": "جامع النجادة",
+    "summary_ar": "جامع النجادة جامع في مدينة الزبير بالبصرة جنوب العراق يُعدّ من المساجد الأثرية القديمة بالبصرة، شُيدَ عام 1003 هـ/ 1594م، قبل أربعة قرون تقريباً، وقد خطّه في نفس العام وحدد قبلته كل من ، و(محمد الغنام)، و(عبد الله حوقل).",
+    "summary_en": null
+   },
+   {
+    "id": "Q99066558",
+    "lat": 30.500008,
+    "lon": 47.814308,
+    "kind": "church",
+    "name_ar": "كنيسة مريم العذراء الكلدانية",
+    "summary_ar": null,
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "mosul",
+  "name_ar": "الموصل",
+  "name_en": "Mosul",
+  "center": [
+   36.34167,
+   43.12917
+  ],
+  "places": [
+   {
+    "id": "Q5680",
+    "lat": 36.366667,
+    "lon": 43.15,
+    "kind": "archaeological",
+    "name_ar": "نينوى",
+    "name_en": "Nineveh",
+    "wiki_ar": "نينوى",
+    "wiki_en": "Nineveh",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Nineveh%20mashki%20gate%20from%20west.JPG?width=800",
+    "summary_ar": "نَيْنَوَىٰ مدينة أثرية قديمة، تعـتبر من أقدم وأعظم المدن في العصر القديم، تـقع في بلاد الرافدين في شمال العراق على الضفة اليمنى لنهر دجلة وكانت عاصمة الإمبراطورية الآشورية. كانت نينوى أكبر مدن العالم في فترة الإمبراطورية الآشورية الحديثة وتنتشر بقاياها في الجانب الأيسر من مدينة الموصل في محافظة نينوى شمال العراق على الضفة الشرقية لنهر دجلة، وقد دمرت نينوى بعد معـركة نينوى 612 ق.م بعد أن غزاها نبوبولاسر ملك بابل بالتحالف مع الميديين والكلديون وأرمن وكيميريون أدت إلى دمار المدينة ونهبها وسقوط الإمبراطورية الآشورية الحديثة.",
+    "summary_en": "Nineveh was an ancient Near Eastern city of Upper Mesopotamia, located in the modern-day city of Mosul in northern Iraq. It is located on the eastern bank of the Tigris River and was the capital and largest city of the Neo-Assyrian Empire, and potentially the wealthiest city in the ancient world. Today, it is a common name for the half of Mosul that lies on the eastern bank of the Tigris, and the country's Nineveh Governorate takes its name from it."
+   },
+   {
+    "id": "Q5599605",
+    "lat": 36.343193,
+    "lon": 43.126872,
+    "kind": "mosque",
+    "name_ar": "الجامع الكبير النوري",
+    "name_en": "Great Mosque of al-Nuri",
+    "wiki_ar": "الجامع الكبير النوري",
+    "wiki_en": "Great Mosque of al-Nuri, Mosul",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Mosque%20of%20al-Nuri%20%28Mosul%29%2C%202020.jpg?width=800",
+    "summary_ar": "الجامع الكبير النوري أو الجامع الكبير أو جامع النوري الكبير هو من مساجد العراق التاريخية ويقع في الساحل الأيمن (الغربي) للموصل. وتسمى المنطقة المحيطة بالجامع محلة الجامع الكبير.",
+    "summary_en": "The Great Mosque of al-Nuri, also known as the Nouri Mosque, is a Sunni mosque in Mosul, in the Nineveh Governorate of Iraq, famous for its leaning minaret, which gave the city its nickname \"the hunchback\". Tradition holds that the mosque was built in the late 12th century, although it underwent many renovations over the years. The mosque withstood various hostile invading forces over its 850-year history until it was destroyed, along with its distinctive minaret, in the 2017 Battle of Mosul."
+   },
+   {
+    "id": "Q4120608",
+    "lat": 36.2924,
+    "lon": 43.131,
+    "kind": "church",
+    "name_ar": "دير مار إيليا",
+    "name_en": "Dair Mar Elia",
+    "wiki_ar": "دير مار إيليا",
+    "wiki_en": "Monastery of Saint Elijah",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Saint%20Elijah%27s%20Monastery%201.JPG?width=800",
+    "summary_ar": "دير مار إيليا هو دير يقع في الجانب الأيمن من نهر دجلة جنوب الموصل داخل معسكر الغزلاني (سابقا) وهو دير خالي من الرهبان حاليا ، أسسه الراهب إيليا الحيري في نهاية القرن السادس الميلادي والذي جاء من مدينة الحيرة، وترك كل ما يملكه ورحل من مدينته للتنسك حيث قصد نصيبين ثم بنى ديره هذا بعد ذلك.",
+    "summary_en": "The Monastery of Saint Elijah, or Dair Mar Elia, was located in Mosul, Nineveh Governorate, Iraq. Established in the late 6th century, it was one of Iraq's oldest monasteries. It belonged to the Church of the East and then to the Chaldean Catholic Church. The monastery was shut down in 1743, when the Afsharids massacred its monks after they refused to convert to Islam, and went on to become a Christian pilgrimage site. Its ruins were damaged during the 2003 invasion of Iraq, and were destroyed entirely by the Islamic State in 2014."
+   },
+   {
+    "id": "Q607583",
+    "lat": 36.483,
+    "lon": 43.25,
+    "kind": "archaeological",
+    "name_ar": "تيبي غاورا",
+    "name_en": "Tepe Gawra",
+    "wiki_ar": "تيبي غاورا",
+    "wiki_en": "Tepe Gawra",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Uruk%20period%20north.JPG?width=800",
+    "summary_ar": "تيبي غاورا وتعني التل الكبير، هي موقع أثري يقع بالقرب من مدينة الموصل شمال العراق، يعود تاريخه لحوالي 5000 سنة قبل الميلاد وقد سكن في أثناء عصر حلف وفترة العبيد وعصر جمدة نصر، أكتشف الموقع عن طريق أوستن هنري لايارد في سنة 1850 وقد أكتشفت عدة أواني وأدوات فخارية في هذا الموقع.",
+    "summary_en": "Tepe Gawra is an ancient Mesopotamian settlement 24 km (15 mi) NNE of Mosul in northwest Iraq that was occupied between 5000 and 1500 BC. It is roughly a mile from the site of Nineveh and 2 miles E of the site of Khorsabad. It contains remains from the Halaf period, the Ubaid period, and the Uruk period. Tepe Gawra contains material relating to the Halaf-Ubaid Transitional period c. 5,500–5,000 BC."
+   },
+   {
+    "id": "Q387292",
+    "lat": 36.337859,
+    "lon": 43.139405,
+    "kind": "museum",
+    "name_ar": "متحف الموصل",
+    "name_en": "Mosul Museum",
+    "wiki_ar": "متحف الموصل",
+    "wiki_en": "Mosul Museum",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Views%20around%20the%20Mosul%20Museum%20in%20the%20old%20city%20of%20Mosul%20in%202019%20during%20the%20summer%2C%20following%20war%20with%20the%20Islamic%20State%2001.jpg?width=800",
+    "summary_ar": "متحف الموصل هو أحد أهم المتاحف في العراق ويعد في المرتبة الثانية من حيث الأهمية بعد المتحف العراقي في بغداد تأسس غالباً في العام 1952 وكان مقتصراً على قاعة صغيرة إلا أنه تم إنشاء المبنى الجديد لمتحف الموصل والموجود في يومنا في العام 1972 حيث ضمت بنايته الجديدة 4 قاعات أحدها للآثار القديمة وأخرى للآثار الآشورية وثالثة للآثار الحضرية والأخيرة للآثار الإسلامية.",
+    "summary_en": "The Mosul Museum is the second largest museum in Iraq after the National Museum of Iraq in Baghdad. It was heavily looted during the 2003 Iraq War. Founded in 1952, the museum consisted of a small hall until a new building was opened in 1972, containing ancient Assyrian artifacts. The museums net worth and content value are around 50 to 80 to 250 million according to museum specialists during 2013 at least. Hikmat Al-Aswad was the director from 2004 to 2011. The current director is Zaid Ghazi Saadallah."
+   },
+   {
+    "id": "Q19968534",
+    "lat": 36.3554,
+    "lon": 43.1216,
+    "kind": "castle",
+    "name_ar": "قلعة الموصل",
+    "name_en": "Bash Tapia Castle",
+    "wiki_ar": "قلعة الموصل",
+    "wiki_en": "Bash Tapia Castle",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Bashtabia.jpg?width=800",
+    "summary_ar": "قلعة باشطابيا أو قلعة الموصل هي قلعة قديمة تقع في الجانب الأيمن في مدينة الموصل القديمة في محافظة نينوى في شمال العراق على الضفة اليسرى لنهر دجلة، ويعود تاريخ تأسيسها للقرن الثاني للهجرة.",
+    "summary_en": "Bash Tapia Castle, also known as Bashtabiya Castle or Pashtabia Castle, is a ruined 12th-century castle located on the western bank of the Tigris river, forming part of the city wall of Mosul, Iraq. It was partially destroyed by the Islamic State of Iraq and the Levant (ISIL) in April 2015."
+   },
+   {
+    "id": "Q1744863",
+    "lat": 36.4833,
+    "lon": 42.95,
+    "kind": "archaeological",
+    "name_ar": "تل عربجية",
+    "name_en": "Tell Arpachiyah",
+    "wiki_ar": "تل عربجية",
+    "wiki_en": "Tell Arpachiyah",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Spalony%20dom.png?width=800",
+    "summary_ar": "تل عربجية هو موقع أثري يعود لعصر ما قبل التاريخ يقع في منطقة سهل نينوى على بعد حوالي 7 كلم من مدينة الموصل شمال غرب العراق، الموقع عبارة عن قرية قديمة تعود إلى فترة حلف وفترة العبيد وقد تم اكتشافه في سنة 1928 من قبل الباحثين ريجينالد كامبل تومبسون وماكس مالوان وجون كروكشانك روز من معهد الآثار البريطاني في العراق.",
+    "summary_en": "Tell Arpachiyah is a prehistoric ancient Near East archaeological site just outside modern Mosul in Nineveh Governorate (Iraq). It takes its name from a more recent village located about 4 miles (6.4 km) from Nineveh. The local name of the mound on which the site is located is Tepe Reshwa."
+   },
+   {
+    "id": "Q12204304",
+    "lat": 36.347953,
+    "lon": 43.159535,
+    "kind": "mosque",
+    "name_ar": "جامع النبي يونس",
+    "name_en": "Mosque of the Prophet Yunus",
+    "wiki_ar": "جامع النبي يونس",
+    "wiki_en": "Al-Nabi Yunus Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D8%AC%D8%A7%D9%85%D8%B9%20%D8%A7%D9%84%D9%86%D8%A8%D9%8A%20%D9%8A%D9%88%D9%86%D8%B3%20%D8%B9%D9%84%D9%8A%D9%87%20%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85.jpg?width=800",
+    "summary_ar": "جامع النبي يونس هو من مساجد العراق التاريخية الأثرية، يقع على السفح الغربي من تل التوبة، أو تل النبي يونس في الموصل، وقد قام تنظيم داعش بهدم وتفجير الجامع في تاريخ 24 تموز/يوليو 2014 الموافق لـ26 رمضان 1435 هجرية. وذلك ضمن الحملة التي شنها داعش لتهديم كل المساجد التي تتضمن أضرحة، ومن الجدير بالذكر إن المسجد كان يحضى بمنزلة خاصة عند أهالي الموصل.",
+    "summary_en": "Al-Nabi Yunus Mosque, also known as the Mosque of the Prophet Jonah, and the Shrine of Nabi Yunis, was a historic Sunni congregational mosque and shrine, partially destroyed in 2014, that was located in Mosul, in the Nineveh Governorate of Iraq. It contained a tomb believed to be that of the Abrahamic prophet Jonah, known as Yunus by Muslims. After the liberation of Mosul, additional excavations revealed the ruins of a Neo-Assyrian palace beneath the mosque."
+   },
+   {
+    "id": "Q3818869",
+    "lat": 36.3833,
+    "lon": 43.1167,
+    "kind": "archaeological",
+    "name_ar": "تاربيسو",
+    "name_en": "Tarbisu",
+    "wiki_ar": "تاربيسو (العراق)",
+    "wiki_en": "Tarbiṣu",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Villes%20assyriennes.PNG?width=800",
+    "summary_ar": "كانت تاربيسو بلدة صغيرة حتى نُقلت سيطرة الإمبراطورية الآشورية إلى نينوى المجاورة بواسطة سنحاريب. تم بناء قصرين هناك، أحدهما من قبل أسرحدون لابنه وولي العهد، آشور بانيبال. تم العثور على معبدين في الموقع، أحدهما هو معبد نيرغال، الذي بناه سنحاريب، وأضيف إليه آشور بانيبال. سميت إحدى البوابات في الجدار الشمالي الغربي لنينوى على اسم نيرغال والطريق المؤدي من تلك البوابة إلى طربيو تم رصفه بالكامل بالحجارة من قبل سنحاريب.",
+    "summary_en": "Tarbiṣu was an ancient city about 3 miles north of Nineveh."
+   },
+   {
+    "id": "Q12204298",
+    "lat": 36.344531,
+    "lon": 43.130503,
+    "kind": "mosque",
+    "name_ar": "جامع النبي جرجيس",
+    "name_en": "Saint George Mosque",
+    "wiki_ar": "جامع النبي جرجيس",
+    "wiki_en": "Al-Nabi Jirjis Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D8%AC%D8%A7%D9%85%D8%B9%20%D8%A7%D9%84%D9%86%D8%A8%D9%8A%20%D8%AC%D8%B1%D8%AC%D9%8A%D8%B3%2001.jpg?width=800",
+    "summary_ar": "جامع النبي جرجيس هو جامع تاريخي من مساجد الموصل الأثرية التراثية، ويقع في منطقة سوق الشعارين قرب أسواق السرج خانه، وقد أقدم مسلحوا داعش على تفخيخ وتفجير جامع النبي جرجيس في يوم الجمعة 27 رمضان 1435هـ/25 تموز 2014 م.",
+    "summary_en": "The Al-Nabi Jirjis Mosque is a mosque located in Mosul, Iraq. It is named after Saint George, known in Islamic tradition as Jirjis, who is believed by locals to be buried in the mausoleum attached to the mosque. While the date of construction of the mausoleum is unknown, the mosque was built by Tamerlane in the 14th century."
+   },
+   {
+    "id": "Q12204296",
+    "lat": 36.3575,
+    "lon": 43.141667,
+    "kind": "mosque",
+    "name_ar": "جامع الموصل الكبير",
+    "name_en": "Mosul Grand Mosque",
+    "wiki_ar": "جامع الموصل الكبير",
+    "wiki_en": "Mosul Grand Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Grand%20mosque%20of%20Mosul%20.jpg?width=800",
+    "summary_ar": "جامع الموصل الكبير هو جامع قيد الإنشاء على الساحل الأيسر (الشرقي) من نهر دجلة في الموصل.",
+    "summary_en": "The Mosul Grand Mosque is an incomplete Sunni mosque located in Mosul, in the Nineveh Governorate of Iraq. It is situated in the Taqafah district, bordering the Tigris river near the Nineveh archeological site. When completed, it will be the largest mosque in Mosul."
+   },
+   {
+    "id": "Q24247948",
+    "lat": 36.340556,
+    "lon": 43.127222,
+    "kind": "church",
+    "name_ar": "كنيسة اللاتين",
+    "name_en": "Our Lady of the Hour Church",
+    "wiki_ar": "كنيسة اللاتين (الموصل)",
+    "wiki_en": "Our Lady of the Hour Church",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Latin%20Church%2C%20Mosul%201980s-1.jpg?width=800",
+    "summary_ar": "كنيسة اللاتين أو كنيسة الآباء الدومنيكان وتعرف كذلك شعبيا بـ كنيسة الساعة، هي كنيسة كاثوليكية تقع في حي الساعة بمدينة الموصل. تعتبر إحدى أشهر كنائس الموصل وإحدى المعالم المميزة للمدينة. قام تنظيم داعش بتفخيخها وتدميرها بالكامل في 25 أبريل سنة 2016، وتم إعادة إعمارها سنة 2024.",
+    "summary_en": "The Our Lady of the Hour Church also known as the name of the Latin Church, is a Catholic church in the centre of Mosul, in northern Iraq. Built in the 1870s by the Dominican Fathers, it was especially famous for its bell donated by the Empress Eugenia de Montijo, for which it was sometimes called the Clock Church. It was damaged in a 2006 bombing and completely restored in 2023."
+   }
+  ]
+ },
+ {
+  "id": "erbil",
+  "name_ar": "أربيل",
+  "name_en": "Erbil",
+  "center": [
+   36.19111,
+   44.00944
+  ],
+  "places": [
+   {
+    "id": "Q19960324",
+    "lat": 36.201065,
+    "lon": 44.018547,
+    "kind": "mosque",
+    "name_ar": "جامع جليل الخياط",
+    "name_en": "Jalil Khayat Mosque",
+    "wiki_ar": "جامع جليل الخياط",
+    "wiki_en": "Jalil Khayat Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Jalil%20Al%20Khayat%20Mosque%281%29.jpg?width=800",
+    "summary_ar": "جامع جليل خليل الخياط وهو مسجد يقع في محافظة أربيل عاصمة إقليم كردستان في العراق، ويعتبر أحد أهم مساجد أربيل الكبيرة والمشهورة، ويتميز بالعمران الهندسي المعماري الحديث.",
+    "summary_en": "The Jalil Khayat Mosque is a Sunni mosque in Erbil, in the Kurdistan Region of Iraq. It is the largest mosque in Erbil. The mosque was begun by Jalil Khayat, who later died in 2005, and it was completed in 2007 by his sons in memory of their father. The mosque is located on 60m street, in front of the Van Royal Hotel."
+   },
+   {
+    "id": "Q2302612",
+    "lat": 36.190123,
+    "lon": 44.009739,
+    "kind": "museum",
+    "name_ar": "متحف النسيج و التراث الكردي",
+    "name_en": "Kurdish Textile and Cultural Museum",
+    "wiki_ar": "متحف المنسوجات الكردية (أربيل)",
+    "wiki_en": "Kurdish Textile and Cultural Museum",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Kurdish%20Textile%20Museum%20Hewler%20Citadel.jpg?width=800",
+    "summary_ar": "متحف النسيج الكردي أو متحف النسيج الكوردي أو متحف المنسوجات الكردية أو متحف الغزل والنسيج الكردي، هو مَتحف يَقع في أربيل، العراق، تأسس في عام 2004، يحتوي على العديد من القطع الأثرية التي تعود إلى عدة قرون وتَدل على التقاليد القديمة الخاصة بالثقافة الكردية: كالغزل والنسيج. وتشمل المعروضات: الملابس والأقمشة، المواد الخام، الصوف المصبوغ بشكل طبيعي من خلال استخدام النباتات البرية والأزهار.",
+    "summary_en": "The Kurdish Textile and Cultural Museum is a museum devoted to textiles and other cultural works produced in Kurdistan, especially in Iraqi Kurdistan. It was established in 2004 and is located in a renovated mansion in the southeast quarter of the Citadel of Erbil in Iraq. The museum also works to preserve and pass down Kurdish culture and traditions, including traditional weaving methods."
+   },
+   {
+    "id": "Q28716288",
+    "lat": 36.177394,
+    "lon": 44.013247,
+    "kind": "museum",
+    "name_ar": "متحف أربيل الحضاري",
+    "name_en": "Erbil Civilization Museum",
+    "wiki_ar": "متحف أربيل الحضاري",
+    "wiki_en": "Erbil Civilization Museum",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Erbil%20Civilization%20Museum%2C%20Iraqi%20Kurdistan.jpg?width=800",
+    "summary_ar": "متحف أربيل الحضاري هو متحف أثري في مدينة هولير عاصمة كردستان العراق، يضم قطع أثرية تعود إلى عصر ما قبل التاريخ إلى أواخر العصر العباسي ويعتبر ثاني أكبر متحف في كردستان العراق من حيث المحتويات والمجموعات بعد متحف السليمانية.",
+    "summary_en": "The Erbil Civilization Museum is an archeological museum which is located within the city of Hawler, the capital of Iraqi Kurdistan. It is the second largest museum in Iraqi Kurdistan, after the Sulaymaniyah Museum in Sulaymaniyah Governorate in terms of contents and collections. It houses artifacts which date back to the pre-historic period to the late Abbasid period."
+   },
+   {
+    "id": "Q7409346",
+    "lat": 36.191628,
+    "lon": 43.985063,
+    "kind": "park",
+    "name_ar": "منتزه سامي عبد الرحمن",
+    "name_en": "Sami Abdulrahman Park",
+    "wiki_ar": "منتزه سامي عبد الرحمن",
+    "wiki_en": "Sami Abdul Rahman Park",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Sami%20Abdulrahman%20Park%20Gate.jpg?width=800",
+    "summary_ar": "منتزه سامي عبد الرحمن هو منطقة خضراء تقع في أربيل، كردستان العراق. ويعرف بكونه أكبر حديقة في العراق، ممتدة على عدة هكتارات من الأرض الخضراء.\nوالدخول للمتنزه للعامة من الناس والزائرين مجاني، فقط على الزائر والمصطاف ان يراعي قواعد المحافظة على نظافة المتنزهات، ويحوي متنزه سامي عبد الرحمن على العديد من ألعاب الأطفال والمطاعم ومعرض أربيل الدولي ومكتبة الزيتون العامة والمسارح وعددا من النصب والتماثيل وسينما صيفية وبحيرتين اصطناعيتين.",
+    "summary_en": "Sami Abdul Rahman Park is a park in Erbil, Kurdistan Region in Iraq."
+   },
+   {
+    "id": "Q28715077",
+    "lat": 36.188888,
+    "lon": 44.011014,
+    "kind": "mosque",
+    "name_ar": "جامع وتكية خانقاه الخالدية",
+    "name_en": "Khalidiya Khanqah Mosque and Tekke",
+    "wiki_ar": "جامع وتكية خانقاه الخالدية",
+    "wiki_en": "Khalidiya Khanqah Mosque and Tekke",
+    "summary_ar": "جامع وتكية خانقاه الخالدية هو من مساجد العراق الأثرية ويعتبر من الجوامع القديمة في محافظة أربيل، ويقع في قلب المدينة ومقابلهُ ساحة ومركز تجاري، وتبلغ مساحة الجامع 1218م2، ولقد أسسه وبناه الشيخ ملا هداية الله الأربيلي بتوجيه وإرشاد من الشيخ خالد النقشبندي في عام 1220هـ/ 1805م، والمقصود من كلمة خانقاه هو المباني التي أقيمت لإيواء الصوفية الذين يخلون للعبادة، وفي عهد الدولة العثمانية سميت هذه المباني بالتكية (التكايا) ولذلك سمي الجامع بالتكية الخالدية، لأنهُ بني عندما قدم الشيخ خالد النقشبندي إلى مركز السليمانية، والمشهور عنهُ إنه من ذرية الخليفة الراشد عثمان بن عفان، أما الشيخ فقد كان شيخا معروفا من الصوفية وتوفي في بغداد ودفن في الحضرة القادرية.",
+    "summary_en": "The Khalidiya Khanqah Mosque and Tekke, also known as the Mzgawti Xanaqa, is a religious complex comprising a Sufi mosque, tekke, library, and marketplace, located near the UNESCO World Heritage citadel in the city of Erbil, in the Erbil Governorate of the Kurdistan Region of Iraq. Completed in 1805 CE, the site was renovated in 1961."
+   },
+   {
+    "id": "Q106638932",
+    "lat": 36.234222,
+    "lon": 43.988722,
+    "kind": "museum",
+    "name_ar": "متحف التراث السریاني في أربيل",
+    "name_en": "Syriac Heritage Museum",
+    "wiki_ar": "متحف التراث السریاني في أربيل",
+    "wiki_en": "Syriac Heritage Museum",
+    "summary_ar": "يقع متحف التراث السرياني في أربيل ناحية عنكاوا في إقليم كردستان العراق ، يضم عشرات القطع والمجموعات التراثية.",
+    "summary_en": "The Syriac Heritage Museum is a museum in Erbil, in the Kurdistan Region of Iraq."
+   },
+   {
+    "id": "Q116207309",
+    "lat": 36.19018,
+    "lon": 44.00932,
+    "kind": "museum",
+    "name_ar": "متحف الأحجار الكریمة في قلعة أربيل",
+    "name_en": "Erbil Stones and Gems Museum",
+    "wiki_ar": "متحف الأحجار الكریمة في قلعة أربيل",
+    "wiki_en": "Erbil Stones and Gems Museum",
+    "summary_ar": "متحف الأحجار الكريمة في قلعة أربيل أفتتح المتحف في يوم التَّاسع من آذار سنة 2016، وكان تأسيس المتحف على يد العالم الجيولوجى الأستاذ سربست مجيد، خريج قسم الجيولوجيا من كلية العلوم في الموصل عام 1985، جمع على مدى 40 عاماً مجموعته من الأحجار الكريمة من عدة مناطق حول العالم، وعرضها أولاً في منزلهِ في مدينة شقلاوة الصغيرة شمال شرق هولير عام 2014.الذي كان هاوياً لجمع الأحجار الكريمة ثم صار صاحب متحف يعتبر الوحيد من نوعهِ على مستوى إقليم كردستان العراق.في عام 2016، تم نقل المتحف إلى قلعة أربيل ويشغل الآن أحد المباني التقليدية المرممة المكونة من طابقين.",
+    "summary_en": "Erbil Stones and Gems Museum is a small museum located within the Citadel of Erbil, at the heart of the city of Erbil (Hawler), the capital of Iraqi Kurdistan."
+   },
+   {
+    "id": "Q30314751",
+    "lat": 36.189261,
+    "lon": 44.008522,
+    "kind": "mosque",
+    "name_ar": "مسجد الحاج عبد القادر سعيد الدباغ",
+    "wiki_ar": "مسجد الحاج عبد القادر سعيد الدباغ",
+    "summary_ar": "مسجد الحاج عبد القادر سعيد الدباغ هو من مساجد أربيل في العراق، ويعتبر من المساجد الأثرية التراثية القديمة، ولقد أسسه وبناه الحاج عبد القادر سعيد الدباغ في عهد الدولة العثمانية في عام 1302هـ/1884م، ويقع المسجد في مركز مدينة أربيل مقابل قلعة أربيل، وبني المسجد من الطابوق والجص والطين ويحتوي الجامع على مدرسة دينية انشأت منذ تأسيسهِ وما زالت تدرس العلوم الدينية حالياً، وكان ملا محمد امين البتواني أول إمام ومدرس فيها.",
+    "summary_en": null
+   },
+   {
+    "id": "Q30314646",
+    "lat": 36.188775,
+    "lon": 44.009807,
+    "kind": "mosque",
+    "name_ar": "مسجد وتكية آلتي برماق",
+    "wiki_ar": "مسجد وتكية آلتي برماق",
+    "summary_ar": "مسجد آلتي برماق من مساجد أربيل التاريخية الأثرية التي بنيت في عهد الدولة العثمانية، ولقد بناه الشيخ عبد الكريم بن عبد الكريم الحارث في عام 1271هـ/1850م، ويحتوي الجامع على تكية وتقام فيهِ صلاة الجمعة والجماعة، ثم توفي الشيخ عبد الكريم عن عمر ناهز 65 عاماً، وأشرف ولده الكبير الشيخ محي الدين على إدارة تكية والدهِ، ولقد بني المسجد في البداية من اللبن والطين، وكان موقع بابه الرئيسي يواجه القبلة، ويحتوي على غرفة كبيرة لأجل التعليم والتدريس يجلس فيها إمام المسجد، وفيهِ حوض ماء يصب فيهِ ماء كان أهل السوق يتوضؤون بهِ،",
+    "summary_en": null
+   },
+   {
+    "id": "Q97645722",
+    "lat": 36.232072,
+    "lon": 43.993503,
+    "kind": "church",
+    "name_en": "Saint John the Baptist Cathedral, Ankawa",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Cathedral%20of%20Saint%20John%20the%20Baptist%20for%20the%20Assyrian%20Church%20of%20the%20East%20in%20Ankawa%2008.jpg?width=800",
+    "summary_ar": null,
+    "summary_en": null
+   },
+   {
+    "id": "Q98917963",
+    "lat": 36.234961,
+    "lon": 43.988194,
+    "kind": "church",
+    "name_en": "Mart Shmoni Church (Ankawa)",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Syriac%20Catholic%20Church%20of%20Saint%20Shmony%20in%20Ankawa%2001.jpg?width=800",
+    "summary_ar": null,
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "sulaymaniyah",
+  "name_ar": "السليمانية",
+  "name_en": "Sulaymaniyah",
+  "center": [
+   35.55,
+   45.43333
+  ],
+  "places": [
+   {
+    "id": "Q19414891",
+    "lat": 35.557569,
+    "lon": 45.425819,
+    "kind": "museum",
+    "name_ar": "متحف السليمانية",
+    "name_en": "Sulaymaniyah Museum",
+    "wiki_ar": "متحف السليمانية",
+    "wiki_en": "Sulaymaniyah Museum",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Sulaymaniyah%20Museum.JPG?width=800",
+    "summary_ar": "متحف السليمانية هو متحف أثري يَقع في قلب مدينة السليمانية، محافظة السليمانية، إقليم كردستان، العراق، ويعتبر ثاني أكبر متحف في العراق، بعد المتحف الوطني العراقي في بغداد من حيث المحتويات. ويَضم العديد من القطع الأثرية التي تعود إلى فترة ما قبل التاريخ والعصور الإسلامية والعثمانية المتأخرة.",
+    "summary_en": "The Sulaymaniyah Museum, or Slemani Museum, is an archeological museum located in Sulaymaniyah in the Kurdistan Region of Iraq. It is the second largest museum in Iraq, after the National Museum of Iraq in Baghdad. It houses artifacts dating from the prehistoric period to the late Islamic and Ottoman periods. Several halls of the museum have undergone renovation work and the museum was closed to the public for refurbishment from October 1, 2018, to October 2019."
+   },
+   {
+    "id": "Q106864613",
+    "lat": 35.562222,
+    "lon": 45.425556,
+    "kind": "museum",
+    "name_ar": "متحف الأمن الأحمر",
+    "name_en": "Amna Suraka",
+    "wiki_ar": "متحف الأمن الأحمر",
+    "wiki_en": "Amna Suraka",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%27Amna%20Suraka%27%20%28Red%20Security%20Building%29%20in%20Sulaymaniyah%2002.jpg?width=800",
+    "summary_ar": "متحف الأمن الأحمر هو أحد المتاحف الوطنية في مدينة السليمانية كان قبل أن يكون مَتحفاً، كان مَبنى لكلية الزراعة، ومن ثم أصبح مركز إدارة محلية، ثم أصبح سجناً للمُعتقلين من قبل نظام الرئيس السابق صدام حسين، وفي عام 1991 حُرر المَبنى وحول إلى متحف يتضمن العديد من الأقسام التي تَشرح كيف عاش الشعب الكردي هذه الحقبة وآثار التعذيب والقَتل ووسائله، يَفتح المَتحف أبوابه للزوار يومياً من الثامنة صباحاً وحتى الرابعة بعد الظهر.، وفي عام 2014 تم إضافة أقسام جديدة إلى المَتحف.",
+    "summary_en": "Amna Suraka is a museum in Sulaymaniyah, Kurdistan Region of Iraq."
+   },
+   {
+    "id": "Q5989794",
+    "lat": 35.558,
+    "lon": 45.4405,
+    "kind": "mosque",
+    "name_ar": "جامع السليمانية الكبير",
+    "name_en": "Ibrahim Pasha Baban",
+    "wiki_ar": "جامع السليمانية الكبير",
+    "wiki_en": "Great Mosque of Sulaymaniyah",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Grand%20Mosque%2C%20Sulaymaniyah.jpg?width=800",
+    "summary_ar": "جامع السليمانية الكبير أو مسجد الشيخ أحمد من مساجد السليمانية القديمة ويقع في مركز مدينة السليمانية، ويعتبر من مساجد العراق الأثرية، شيدهُ الأمير إبراهيم باشا بابان في عام 1199هـ/1784م، كما يعتبر أول مسجد أسس في مدينة السليمانية، وفيهِ مرقد الشيخ أحمد، كما يضم مرقد شيخ محمود الحفيد. وكان في السابق مبنيا من اللبن والطين ثم أعيد بناؤه في الأعوام 1940م، 1950م، 1968م، وبني من الطابوق مع احتفاظه بنفس هندسة وشكل بنائه القديم.",
+    "summary_en": "The Great Mosque of Sulaymaniyah, also known as the Grand Mosque and as the Sheikh Ahmad Mosque, is a Sunni mosque located in Sulaymaniyah, in the Sulaymaniyah Governorate, in the Kurdistan Region of Iraq. The mosque contains the tomb of Haji Kaka Ahmad, a Kurdish cleric who was known for his donations of food to the needy."
+   },
+   {
+    "id": "Q65151623",
+    "lat": 35.519444,
+    "lon": 45.359444,
+    "kind": "archaeological",
+    "name_ar": "تل كوناره",
+    "name_en": "Tell Kunara",
+    "wiki_ar": "تل كوناره",
+    "wiki_en": "Tell Kunara",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Excavations%20at%20Tell%20Kunara.%20October%203%2C%202019%2C%20Akkadian-Lullubian%2C%202300-2000%20BCE.%20Sulaymaniyah%2C%20Republic%20of%20Iraq.jpg?width=800",
+    "summary_ar": "تل كوناره هو موقع أثري قديم، يبعد حوالي 5 كيلومتر (3.1 ميل) جنوب غرب السليمانية في إقليم كردستان العراق، يقع على نهر تنجيرو، احتل الموقع من العصر الحجري النحاسي إلى أوائل الألفية الثانية قبل الميلاد.",
+    "summary_en": "Tell Kunara is an ancient Near East archaeological site about 10 kilometers southwest of Sulaymaniyah in the Kurdistan region of Iraq. It lies on the Tanjaro River. The site was occupied from the Chalcolithic period to the early second millennium BC."
+   },
+   {
+    "id": "Q107423789",
+    "lat": 35.556332,
+    "lon": 45.44016,
+    "kind": "museum",
+    "name_ar": "متحف التراث الكردي",
+    "name_en": "Kurd's Heritage Museum (Sulaymaniyah)",
+    "wiki_en": "Kurd's Heritage Museum",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Kurd%27s%20Heritage%20Museum%20occupies%20the%201st%20floor%20of%20Farah%20Hotel%2C%20Mawlawi%20Street%2C%20Sulaymaniyah%2C%20Iraqi%20Kurdistan.jpg?width=800",
+    "summary_ar": null,
+    "summary_en": "The Kurd's Heritage Museum, is a history museum located within the heart of Mawlawi Street of the downtown of Sulaymaniyah in the Kurdistan Region of Iraq. The museum is owned by the Revival of Kurd's Heritage Organisation but administratively, the museum is affiliated with the Sulaymaniyah Directorate of Antiquities and the Sulaymaniyah Museum."
+   },
+   {
+    "id": "Q5687554",
+    "lat": 35.482222,
+    "lon": 45.277222,
+    "kind": "archaeological",
+    "name_ar": "كهف هزار مرد",
+    "name_en": "Hazar Merd Cave",
+    "wiki_ar": "كهف هزار مرد",
+    "wiki_en": "Hazar Merd Cave",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Hazar%20Merd%20Caves.JPG?width=800",
+    "summary_ar": "كهف هزار مرد ويعرف أيضاً بالكهف المظلم هو كهف قديم يقع في محافظة السليمانية ويبعد 13 كيلومتراً شرق مدينة السليمانية، عثر فيه على عدة آثار تعود للإنسان القديم منها آلات وأدوات قديمة تعود لخمسين ألف سنة، وقد أكتشفت دراسة بريطانية من قبل الباحثة دوروثي غارود في سنة 1928 أن تاريخه يعود ل30 سنة ألف إلى العصر الحجري. معنى هو.",
+    "summary_en": "Hazar Merd is a group of Paleolithic cave sites excavated by Dorothy Garrod in 1928. The caves are located southwest of Sulaymaniyah, in the Kurdistan Region, Iraq. Garrod's soundings in two caves in the Hazar Merd group provided evidence of Middle and Epi-Paleolithic occupation. It is referred to as Ashkawty Tarik in Kurdish, which means Dark Cave. It also has a commanding view over the valley and it's close to a small spring and a village with the same name."
+   },
+   {
+    "id": "Q31794260",
+    "lat": 35.6833,
+    "lon": 45.3,
+    "kind": "castle",
+    "name_ar": "قلعة سروجك",
+    "name_en": "Sarvjak Castle",
+    "wiki_ar": "قلعة سروجك",
+    "wiki_en": "Srochik Castle",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D9%82%DB%95%DA%B5%D8%A7%DB%8C%20%D8%B3%D8%B1%DB%86%DA%86%DA%A9.jpg?width=800",
+    "summary_ar": "قلعة سروجك هي قلعة أثرية تقع في محافظة السليمانية في ناحية برزنجة، يعتقد أنها بنيت من قبل مأمون بك أمير أردلان في القرن الخامس عشر الميلادي.",
+    "summary_en": "Srochik Castle is a ruined castle located in Barzinjah, Kurdistan Region. It is situated on a hill. The castle was used as a prison by the Baban dynasty."
+   }
+  ]
+ },
+ {
+  "id": "kirkuk",
+  "name_ar": "كركوك",
+  "name_en": "Kirkuk",
+  "center": [
+   35.46667,
+   44.4
+  ],
+  "places": [
+   {
+    "id": "Q672905",
+    "lat": 35.45,
+    "lon": 44.383333,
+    "kind": "archaeological",
+    "name_ar": "عرفة، العراق",
+    "name_en": "Arrapha",
+    "wiki_ar": "عرفة (العراق)",
+    "wiki_en": "Arrapha",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Villes%20assyriennes.PNG?width=800",
+    "summary_ar": "أررابخا أو ما يعرف بـعرفة، هو اسم أطلق قديماً على مدينة كركوك في العراق. يرجع تاريخ المدينة إلى سنة 2000 قبل الميلاد. اشتقت كلمة عرفة من الكلمة الآشورية أررابخا. في عام 1948 أطلقت تسمية عرفة على منطقة سكنية تقع شمال مدينة كركوك شيدتها شركة نفط الشمال العراقية لعمال وموظفي الشركة. يسكنها اليوم خليط من التركمان والأكراد و العربمع تواجد مسيحي ملموس.",
+    "summary_en": "Arrapha or Arrapkha was an ancient Near Eastern city or kingdom in what today is northeastern Iraq, speculated to be located at city of Kirkuk."
+   },
+   {
+    "id": "Q1144137",
+    "lat": 35.469722,
+    "lon": 44.395833,
+    "kind": "monument",
+    "name_ar": "قلعة كركوك",
+    "name_en": "Kirkuk Citadel",
+    "wiki_ar": "قلعة كركوك",
+    "wiki_en": "Kirkuk Citadel",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Kirkuk%20citadel.jpg?width=800",
+    "summary_ar": "تقع قلعة كركوك في وسط مدينة كركوك في العراق، وتعتبر أقدم جزء من المدينة. تقف القلعة على تل اصطناعي بارتفاع 130 قدمًا تقع على هضبة عبر نهر الخاصة.",
+    "summary_en": "The Kirkuk Citadel is a citadel and associated structures located in the center of Kirkuk, Iraq, and is considered to be the oldest part of the city. The citadel stands on a 40-metre-high (130 ft) tell, located on a plateau across the Khasa River. Although most of the citadel was demolished, parts of it, including mosques, tombs, and houses, still remain intact."
+   },
+   {
+    "id": "Q42839071",
+    "lat": 35.468756,
+    "lon": 44.395529,
+    "kind": "mosque",
+    "name_ar": "جامع النبي دانيال",
+    "name_en": "The mosque of the prophet Daniel",
+    "wiki_ar": "جامع النبي دانيال (كركوك)",
+    "wiki_en": "Mosque of the Prophet Daniel, Kirkuk",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Kirkukcastle02.JPG?width=800",
+    "summary_ar": "جامع النبي دانيال عبارة عن مسجد شيد على قبر يعتقد البعض أنه يضم جسد النبي دانيال، ويقع المسجد ضمن قلعة كركوك في العراق، وكان مبنى الجامع هو أحد المعابد اليهودية ثم تحول إلى كنيسة مسيحية ليبنى عليها فيما بعد المسجد في العهد الإسلامي. ويحتوي الجامع على منارة مئذنة أثرية قديمة يعود تاريخها إلى عهد الدولة العثمانية، بالإضافة إلى أقواس وأعمدة يرجع طراز بناءها إلى أواخر العصر المغولي أو بداية العصر التيموري ، ومئذنة هذا الجامع بنيت من الطابوق، وهي نقطة استدلال تشاهد من جميع أجزاء القلعة، وفي الجامع أقواس وعقود لا تزال قائمة وجالسة على قاعدة مثمنة بجانبها المنارة، وبني الجامع على أنقاض أقواس مبنى قديم. ويحتوي المسجد على قبتين، ويبلغ مساحة المسجد 400 متر مربع، ويسع المصلى أكثر من 150 مصل.",
+    "summary_en": "The Mosque of the Prophet Daniel is a mosque located in the Kirkuk Citadel of Kirkuk, Iraq. It is named after the biblical Daniel, whom locals believe is buried in the mosque along with Shadrach, Meshach, and Abednego. Much like the Great Mosque in the same place, this mosque is a heritage site of the Kirkuk Governorate due to being located within the central citadel of the city."
+   },
+   {
+    "id": "Q22685009",
+    "lat": 35.468855,
+    "lon": 44.394581,
+    "kind": "mosque",
+    "name_ar": "الجامع الكبير في القلعة",
+    "name_en": "Great Mosque of Kirkuk Citadel",
+    "wiki_ar": "الجامع الكبير في القلعة",
+    "wiki_en": "Great Mosque of the Citadel",
+    "summary_ar": "الجامع الكبير في القلعة ويقع في مدينة كركوك في العراق، وهو من جوامع ومساجد العراق القديمة، وشيد المبنى في عام 634هـ/1237م، وتبلغ مساحته حوالي 200م2.",
+    "summary_en": "The Great Mosque of the Citadel is a mosque located within the premises of the Kirkuk Citadel in Kirkuk, Iraq. Formerly a church converted into a mosque in the early 13th century, the present day structure is a 1237 reconstruction from the Seljuk period."
+   }
+  ]
+ },
+ {
+  "id": "najaf",
+  "name_ar": "النجف",
+  "name_en": "Najaf",
+  "center": [
+   32.02895,
+   44.33962
+  ],
+  "places": [
+   {
+    "id": "Q838359",
+    "lat": 31.996111,
+    "lon": 44.314167,
+    "kind": "shrine",
+    "name_ar": "العتبة العلوية المقدسة",
+    "name_en": "Imam Ali Mosque",
+    "wiki_ar": "العتبة العلوية",
+    "wiki_en": "Imam Ali Shrine",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Meshed%20ali%20usnavy%20%28PD%29.jpg?width=800",
+    "summary_ar": "العتبة العلوية المقدسة أو الروضة الحيدرية أو ضريح الإمام علي أو حضرة علي هو مرقد ديني ومسجد يقع في مدينة النجف في العراق، وهو من الأماكن المقدسة عند المسلمين الشيعة، إذ تذكر العديد من المصادر وغالبيتها تعود للمؤرخين الشيعة أنه تم تشيّيده على قبر الإمام علي بن أبي طالب ابن عم الرسول محمد وصهره، من آل بيته، وأحد أصحابه، هو رابع الخلفاء الراشدين عند السنة وأحد العشرة المبشرين بالجنة وأوّل الأئمّة عند الشيعة. جُدد المرقد عدة مرات وفي مراحل مختلفة، ولاحقاً أُعيد تذهيب القبة التي تعلوه وأضيف صحن جديد بإسم صحن فاطمة الزهراء. أُلحق بالمرقد مكتبة الروضة الحيدرية التي تضم العديد من النفائس والمخطوطات الأثرية.",
+    "summary_en": "The Imam Ali Shrine, also known as the Mosque of Ali, is a Shi'ite mosque and shrine, located in Najaf, in the Najaf Governorate of Iraq. The site is a mausoleum which Shia and Sunni Muslims believe contains the tomb of Ali ibn Abi Talib, a cousin, son-in-law and companion of the Islamic prophet Muhammad."
+   },
+   {
+    "id": "Q310799",
+    "lat": 31.98,
+    "lon": 44.39,
+    "kind": "archaeological",
+    "name_ar": "الحيرة",
+    "name_en": "Al-Hirah",
+    "wiki_ar": "الحيرة",
+    "wiki_en": "Al-Hira",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Kamal-ud-din%20Bihzad%20-%20Construction%20of%20the%20fort%20of%20Kharnaq.jpg?width=800",
+    "summary_ar": "الحِيرَةُ هي مدينة عربية عراقية، ومملكة عربية بائدة، وموقع أثري تقع في الجزء الجنوبي من وسط العراق على مقربة من مدينة الكوفة ببادية العراق. فهي أحد أركان المثلث الحضاري ما تُسمي بالنجف-الكوفة-الحيرة بالفرات الأوسط من الهلال الخصيب. والحيرة الحالية هي مركز ناحية إدارية عراقية تحمل نفس الاسم في قضاء المناذرة بمحافظة النجف، كانت الحيرة قبل الإسلام بمثابة إمارة حاجزة تحمي الدولة الساسانية الفارسية من غارات العرب القادمين من شبه جزيرة العرب أو غارات الروم في بلاد الشام",
+    "summary_en": "Al-Hira was an ancient city and a major metropolis located in Mesopotamia, in what is now south-central Iraq. It was the capital city of the Lakhmid kingdom, the major Arab client kingdom of the Sasanian Empire in pre-Islamic times, between the fourth and the seventh centuries. In Islamic times, it remained inhabited until the tenth century."
+   },
+   {
+    "id": "Q1193666",
+    "lat": 32.15,
+    "lon": 44.5,
+    "kind": "archaeological",
+    "name_ar": "دلبات",
+    "name_en": "Dilbat",
+    "wiki_ar": "دلبات",
+    "wiki_en": "Dilbat",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Hammurabi%27s%20Babylonia%201.svg?width=800",
+    "summary_ar": "دلبات هي مدينة سومرية قديمة تقع جنوب بابل على الضفة الشرقية لنهر الفرات في محافظة بابل (محافظة) في العراق، وكانت مدينة دلبات تحتوي على زقورة أي-ابي-انو لعبادة الالهة اوراش.",
+    "summary_en": "Dilbat was an ancient Near Eastern city located 25 kilometers south of Babylon on the eastern bank of the Western Euphrates in modern-day Babil Governorate, Iraq. It lies 15 kilometers southeast of the ancient city of Borsippa. The site of Tell Muhattat, 5 kilometers away, was earlier thought to be Dilbat. The ziggurat E-ibe-Anu, dedicated to Urash, a minor local deity distinct from the earth goddess Urash, was located in the center of the city and was mentioned in the Epic of Gilgamesh."
+   },
+   {
+    "id": "Q3906396",
+    "lat": 32.028611,
+    "lon": 44.400833,
+    "kind": "mosque",
+    "name_ar": "مسجد الكوفة",
+    "name_en": "Great Mosque of Kufa",
+    "wiki_ar": "مسجد الكوفة",
+    "wiki_en": "Great Mosque of Kufa",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Kufa%20Mosque%20%284%29.jpg?width=800",
+    "summary_ar": "مسجد الكوفة المعظم أو المسجد الأعظم في العراق يعدّ من مساجد العراق الأثرية والتاريخية وهو من أقدم المساجد في العالم الإسلامي، ولقد بنى المسجد الصحابي سعد بن أبي وقاص في عام 19هـ/639م ليكون أول مبنى في مدينة الكوفة التي تحولت فيما بعد إلى كبرى الحواضر الإسلامية ومقر خلافة الإمام علي بن أبي طالب. وينال المسجد قدسية كبيرة عند المسلمين من طائفة الشيعة خاصة، ويضم المسجد مراقد العديد من الشخصيات الدينية ومن أشهرهم مرقد مسلم بن عقيل.",
+    "summary_en": "The Great Mosque of Kufa, or Masjid al-Kufa, is a Shi'ite mosque and shrine, located in Kufa, in the Najaf Governorate of Iraq. Completed in 670 CE, it is one of the earliest surviving mosques in the world. The mosque was home to Ali ibn Abi Talib, the 4th Rashidun caliph; and contains the shrine of Muslim ibn Aqeel, his companion Hani ibn Urwa, and the revolutionary, Al-Mukhtar. The mosque has been significantly rebuilt and restored multiple times in its history."
+   },
+   {
+    "id": "Q3462642",
+    "lat": 32.039,
+    "lon": 44.3797,
+    "kind": "mosque",
+    "name_ar": "مسجد السهلة",
+    "name_en": "Al-Sahlah Mosque",
+    "wiki_ar": "مسجد السهلة",
+    "wiki_en": "Al-Sahlah Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Masjid%20al-Sahlah%20%281%29.jpg?width=800",
+    "summary_ar": "مسجد السهلة المعظم أحد أكبر المساجد التي شُيّدت في الكوفة خلال القرن الهجري الأوّل، وما زال أثرها وذِكْرها خالداً إلى الآن. ويبدو أنّ بني ظفر هم بُناة المسجد الحقيقيّون، وهؤلاء بطنٌ من الأنصار نزلوا الكوفة؛ ولهذا عُرِف المسجد أوّلَ الأمر بمسجد بني ظفر، ثمّ إنّ المسجد عُرِف بـ «مسجد السَّهْلة»، وهي التسمية المتداولة حاليّاً.",
+    "summary_en": "The Al-Sahlah Mosque is a Twelver Shia mosque and shrine, located in the city of Kufa, in the Najaf Governorate of Iraq. The mosque is a holy site in Shia Islam, and it is believed that the mosque was initially established in Kufa as a neighborhood mosque for the followers of Ali, the early members of the Shia. The mosque is said to be the future home of the Twelfth Imam, Muhammad al-Mahdi."
+   },
+   {
+    "id": "Q12242723",
+    "lat": 32.005,
+    "lon": 44.334444,
+    "kind": "mosque",
+    "name_ar": "مسجد الحنانة",
+    "name_en": "Al-Hannanah Mosque",
+    "wiki_ar": "مسجد الحنانة",
+    "wiki_en": "Al-Hannanah Mosque",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Hananeh%20masque%20%282015%29.png?width=800",
+    "summary_ar": "مسجد الحنانة وهو من مساجد مدينة النجف التي يقصدها المجاورون والزائرون، فهو أحد الأماكن الثلاثة التي صلى فيها جعفر الصادق. وهو موضع رأس الحسين بن علي ويعرف قديما بالعلم كما في مصباح الزائر لابن طاووس.",
+    "summary_en": "The Al-Hannanah Mosque, also known as the Mosque of the Head, is a Shi'ite mosque, located in Najaf, in the Najaf Governorate of Iraq. The term \"Mosque of the Head\" is because the head of Husayn ibn Ali was kept in its middle, while being taken to his opponent Ubayd Allah ibn Ziyad, according to a hadith (narration) attributed to his descendant, Ja'far al-Sadiq."
+   },
+   {
+    "id": "Q31077481",
+    "lat": 32.04,
+    "lon": 44.4052,
+    "kind": "mosque",
+    "name_ar": "مسجد الحمراء",
+    "name_en": "al-Hamra Mosque",
+    "wiki_ar": "مسجد الحمراء (النجف)",
+    "wiki_en": "Al-Hamra Mosque (Kufa)",
+    "summary_ar": "مسجد الحمراء أو مسجد النبي يونس هو أحد مساجد العراق التاريخية والأثارية واحد اقدم المساجد التي شيدت في مدينة الكوفة، يقع هذا المسجد على ضفاف نهر الكوفة من جهته اليمنى، شيّد في زمن علي تخليدا لمقام النبي يونس حيث ترجح أكثر الروايات أحتمالية ان تكون الحوت قد القتة في هذا المكان وبقي لحين ان بعث إلى مدينة الموصل حتى وفاته وبني له مرقدا كبيرا هناك فأصبح هذا المقام ومسجد الحمراء مزارا يصلي فيه العلماء ويزار من قبل كافة المسلمين.",
+    "summary_en": "Al-Hamra Mosque, also known as the Yunus Ibn Matta Mosque, is a Twelver Shi'ite mosque and mausoleum, located in Kufa, in the Najaf Governorate of Iraq. Established in the 7th century CE, it is one of the oldest places of worship in Kufa. The complex also contains a shrine believed to be dedicated to the biblical Jonah."
+   },
+   {
+    "id": "Q54900458",
+    "lat": 32.006814,
+    "lon": 44.338825,
+    "kind": "shrine",
+    "name_ar": "ضريح كميل بن زياد",
+    "name_en": "Shrine of Kumayl ibn Ziyad",
+    "wiki_ar": "مرقد كميل بن زياد",
+    "wiki_en": "Mausoleum of Kumayl ibn Ziyad",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Hannanah%2C%20Najaf%2C%20Iraq%20-%20panoramio.jpg?width=800",
+    "summary_ar": "مرقد كميل بن زياد هو مرقد ومزار إسلامي يقع في منطقة الحنانة في مدينة النجف وسط العراق، وهو المكان الذي دفن فيه الصحابي كميل بن زياد النخعي الكوفي بعد أن قتله الحجاج الثقفي.",
+    "summary_en": "The Mausoleum of Kumayl ibn Ziyad is a shrine dedicated to Kumayl ibn Ziyad al-Nakha'i, a companion of the fourth Rashidun Caliph, Ali ibn Abi Talib. It is located on the metropolis of Najaf and Kufa, Iraq, adjacent to the Al-Hannanah Mosque."
+   }
+  ]
+ },
+ {
+  "id": "karbala",
+  "name_ar": "كربلاء",
+  "name_en": "Karbala",
+  "center": [
+   32.61667,
+   44.03333
+  ],
+  "places": [
+   {
+    "id": "Q773704",
+    "lat": 32.616389,
+    "lon": 44.0325,
+    "kind": "shrine",
+    "name_ar": "العتبة الحسينية المقدسة",
+    "name_en": "Imam Husayn Mausoleum",
+    "wiki_ar": "العتبة الحسينية",
+    "wiki_en": "Imam Husayn Shrine",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Kerbela.JPG?width=800",
+    "summary_ar": "العتبة الحسينية هو المكان الذي دفن فيه الحسين بن علي في كربلاء في العراق بعد معركة كربلاء عام 61 هـ، ويقصده المسلمين من طائفة الشيعة لأجل زيارته والتبرك بمرقدهِ.",
+    "summary_en": "The Imam al Husayn Shrine is the mausoleum of Husayn ibn Ali and Shi'ite mosque, located in the holy city of Karbala, in the Karbala Governorate of Iraq. Husayn was a grandson of Muhammad, and the site is near the place where he was killed during the Battle of Karbala in 680 CE. The tomb of Husayn is one of the holiest sites in Shia Islam, outside of Mecca and Medina, and many make pilgrimages to the site. Every year, millions of pilgrims visit the city to observe Ashura, which marks the commemoration of Husayn's death for all Muslims."
+   },
+   {
+    "id": "Q3250647",
+    "lat": 32.617189,
+    "lon": 44.036217,
+    "kind": "shrine",
+    "name_ar": "العتبة العباسية",
+    "name_en": "Al Abbas Mosque",
+    "wiki_ar": "العتبة العباسية",
+    "wiki_en": "Al-Abbas Shrine",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D8%A7%D9%84%D8%B9%D8%AA%D8%A8%D8%A9%20%D8%A7%D9%84%D8%B9%D8%A8%D8%A7%D8%B3%D9%8A%D8%A91.jpg?width=800",
+    "summary_ar": "العتبة العباسية هي المكان الذي دفن فيه العباس بن علي في كربلاء في العراق بعد معركة كربلاء عام 61 هـ يقصده الشيعة من كل مكان لزيارته والتبرك بمرقده.",
+    "summary_en": "The Al-Abbas Shrine is the mausoleum of Abbas ibn Ali and a Shi'ite mosque, situated near the Imam Husayn shrine, located in Karbala, in the Karbala Governorate of Iraq. Abbas was son of Ali ibn Abi Talib and the half-brother of both Imam Hasan and Imam Husayn. Abbas ibn Ali was Husayn's flag-bearer in the Battle of Karbala and chief of his caravans. One of the holiest sites in Shia Islam, the shrine is revered by Shia Muslims who visit it every year, especially in the month of Muharram."
+   },
+   {
+    "id": "Q54887627",
+    "lat": 32.6513,
+    "lon": 43.985,
+    "kind": "shrine",
+    "name_ar": "مسجد الحر الرياحي",
+    "name_en": "Al-Hurr ibn Yazid Al-Tamimi Mosque",
+    "wiki_ar": "مسجد الحر الرياحي",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Al-Hurr%20ibn%20Yazid%282%29.jpg?width=800",
+    "summary_ar": "مسجد الحر الرياحي أو مرقد الحر الرياحي هو المكان الذي دفن فيه الحر بن يزيد بن ناجية بن قعنب بن عتاب بن هرمي بن رياح، ويقع هذا المرقد في غربي مدينة كربلاء على بعد 5 كم منها في ناحية الحر.",
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "nasiriyah",
+  "name_ar": "الناصرية",
+  "name_en": "Nasiriyah",
+  "center": [
+   31.04389,
+   46.2575
+  ],
+  "places": []
+ },
+ {
+  "id": "hillah",
+  "name_ar": "الحلة",
+  "name_en": "Hillah",
+  "center": [
+   32.48333,
+   44.43333
+  ],
+  "places": [
+   {
+    "id": "Q5684",
+    "lat": 32.522907,
+    "lon": 44.42415,
+    "kind": "archaeological",
+    "name_ar": "بابل",
+    "name_en": "Babylon",
+    "wiki_ar": "بابل",
+    "wiki_en": "Babylon",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/DSC%200658-Recovered.jpg?width=800",
+    "summary_ar": "بَابِل ، إحدى مُدن العالم القديم، وأكبر عواصم حضارة بِلادُ الرافِدين. عاصمة الإِمبراطورية البَابِلية، وأول مدينة يصلُ عددُ سُكانها إِلى 200,000 نَسمة. تقع بَابِل على ذراع نهر الفُرات، على بعد حوالي 85 كيلومتر جنوبي العاصِمة بَغْدَاد، بالقُرب من مدينة الحِلة، تُغطي مساحة قوامُها 9 كم2. في سنة 2019 أدرجتها مُنظمة اليونسكو على لائحة التُّراث العالمي.",
+    "summary_en": "Babylon was an ancient city located on the lower Euphrates river in southern Mesopotamia, within modern-day Hillah, Iraq, about 85 kilometres south of modern-day Baghdad. Babylon functioned as the main cultural and political centre of the Akkadian-speaking region of Babylonia. Its rulers established two important empires in antiquity, the 19th–16th century BC Old Babylonian Empire, and the 7th–6th century BC Neo-Babylonian Empire. Babylon also served as a regional capital of other empires, such as the Achaemenid Empire. Babylon was one of the most important urban centres of the ancient Near East until its decline during the Hellenistic period."
+   },
+   {
+    "id": "Q625134",
+    "lat": 32.391997,
+    "lon": 44.341689,
+    "kind": "archaeological",
+    "name_ar": "بورسيبا",
+    "name_en": "Borsippa",
+    "wiki_ar": "بورسيبا",
+    "wiki_en": "Borsippa",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Ruins%20of%20the%20ziggurat%20and%20temple%20of%20the%20god%20Nabu%20at%20Borsippa%2C%20Babel%20Governorate%2C%20Iraq.%206th%20century%20BC.jpg?width=800",
+    "summary_ar": "بورسيبا وتسمى حاليا ببرس نمرود ، هي مدينة سومرية مهمة قديمة، تم بنائها على جانبي بحيرة تبعد حوالي 17 كلم جنوب مدينة بابل، موقع بورسيبا هو في محافظة بابل في العراق، وكانت تحتوي مدينة بورسيبا على زقورة وهي موجودة لحد اليوم وحسب التلمود يعتقد بأن هذه الزقورة هي برج بابل الموجود في التوراة.\nويعتقد بأن هذه الزقورة كانت من اجل عبادة الالهة نبو اله الكتابة والحكمة عند البابليون الذي ابن الاله مردوخ.",
+    "summary_en": "Borsippa is an archeological site in Babylon Governorate, Iraq, built on both sides of a lake about 17.7 km (11.0 mi) southwest of Babylon on the east bank of the Euphrates. It lies 15 kilometers from the ancient site of Dilbat."
+   },
+   {
+    "id": "Q285788",
+    "lat": 32.536389,
+    "lon": 44.420833,
+    "kind": "archaeological",
+    "name_ar": "إيتيمينانكي",
+    "name_en": "Etemenanki",
+    "wiki_ar": "إيتيمينانكي",
+    "wiki_en": "Etemenanki",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Etemenanki%20Berlin.jpg?width=800",
+    "summary_ar": "زقورة بابل أو إيتيمينانكي وهو اسم الزقورة التي كان يستقر فيها مردوخ في مدينة بابل، والتي بنيت في حوالي 600 ق م، في عصر الإمبراطورية البابلية الثانية، واعتبرت في ذلك الوقت سابع أطول بناء، وحسب بعض الآلواح الاثرية التي اكتشفت في مدينة أوروك كان يبلغ طول هذا المعبد حوالي 91 م، ويقول عالم البابليات أندرو جورج أن هذا المعبد كان موجودا منذ القدم إلا أن الملك الآشوري سنحاريب دمره، فبدأ الملك الكلداني نبوبولاسر بإعادة بنائه وأكمل بنائه ابنه نبوخذ نصر الثاني فيما سماه في الألواح الآثرية بمعبد إيساكيلا المخصص للاله مردوخ كبير الالهة البابلية، أشير هذا المعبد خطأً بأنه هو برج بابل الذي ذكر في التوراة.",
+    "summary_en": "Etemenanki was a Babylonian ziggurat dedicated to the Mesopotamian god Marduk. Now in ruins, it is located about 90 kilometres (56 mi) south of Baghdad. Some scholars have proposed Etemenanki as the ziggurat that may have influenced the biblical account of the Tower of Babel."
+   },
+   {
+    "id": "Q1079803",
+    "lat": 32.5,
+    "lon": 44.5,
+    "kind": "archaeological",
+    "name_en": "Cunaxa",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Bunbury%20Vol%201%20Map%2007%20Cunaxa%20p%20372.jpg?width=800",
+    "summary_ar": null,
+    "summary_en": null
+   },
+   {
+    "id": "Q22686646",
+    "lat": 32.478509,
+    "lon": 44.423075,
+    "kind": "mosque",
+    "name_ar": "جامع الحلة الكبير",
+    "name_en": "Great Mosque of Hillah",
+    "wiki_ar": "جامع الحلة الكبير",
+    "summary_ar": "جامع الحلة الكبير، هو من مساجد العراق التاريخية الأثرية ويقع في بابل بقضاء الحلة، في محلة الجبران بالسوق الكبير، ولقد تم بناؤهُ عام 1125هـ/1713م، في زمن الوالي يوسف بك في عهد الدولة العثمانية، وبني من مادة الطابوق ويعد أقدم جامع في المنطقة، ولقد تم صيانته وترميمه عدة مرات وكان آخرها عام 1429هـ/ 2008م، من قبل ديوان الوقف السني في العراق وتمت عملية الصيانة والترميم مع مراعاة الطابع القديم التراثي لهُ، ويحتوي الجامع على حرم واسع يتسع لأكثر من ألف مصل، وتعلوهُ قبة خضراء اللون وفي باحة مبنى الجامع منارة مئذنة أثرية ذات حوض واحد وتستند على قاعدة مثمنة الأضلاع مبنية من الطابوق، وتقام في الجامع حالياً صلاة الجمعة وصلاة العيدين والصلوات الخمس المكتوبة.",
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "ramadi",
+  "name_ar": "الرمادي",
+  "name_en": "Ramadi",
+  "center": [
+   33.42583,
+   43.29917
+  ],
+  "places": [
+   {
+    "id": "Q20410573",
+    "lat": 33.426695,
+    "lon": 43.29142,
+    "kind": "mosque",
+    "name_ar": "جامع اولي العزم",
+    "wiki_ar": "جامع اولي العزم (الأنبار)",
+    "summary_ar": "جامع أولي العزم من مساجد العراق الحديثة، ويقع في قضاء الرمادي في محافظة الأنبار، في شارع جميل قرب زيوت الرمادي، وتم بناءهُ في عام 1408هـ/1988م، على نفقة المتبرعة ، وتبلغ مساحة الجامع 1200م2، ويحتوي الحرم على مصلى واسع يتسع لأكثر من 800 مصل. وتقام فيه صلاة الجمعة والعيدين والصلوات الخمس.",
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "fallujah",
+  "name_ar": "الفلوجة",
+  "name_en": "Fallujah",
+  "center": [
+   33.35,
+   43.78333
+  ],
+  "places": [
+   {
+    "id": "Q2829204",
+    "lat": 33.375,
+    "lon": 43.716667,
+    "kind": "archaeological",
+    "name_ar": "الأنبار",
+    "name_en": "Anbar",
+    "wiki_ar": "الأنبار (مدينة)",
+    "wiki_en": "Anbar (town)",
+    "summary_ar": "الأنبار مدينة عراقية قديمة تقع ضمن أراضي مدينة الصقلاوية على الضفة الشرقية لنهر الفرات جنوب نهر الصقلاوية، أقصى شمال شبكة القنوات التي تمتد من نهر الفرات إلى نهر دجلة.",
+    "summary_en": "Anbar was an ancient and medieval town in central Iraq. It played a role in the Roman–Persian Wars of the 3rd–4th centuries, and briefly became the capital of the Abbasid Caliphate before the founding of Baghdad in 762. It remained a moderately prosperous town through the 10th century, but quickly declined thereafter. As a local administrative centre, it survived until the 14th century, but was later abandoned."
+   },
+   {
+    "id": "Q4665225",
+    "lat": 33.345,
+    "lon": 43.7865,
+    "kind": "mosque",
+    "name_ar": "مسجد عبد العزيز السامرائي",
+    "name_en": "Abdul-Aziz al-Samarrai Mosque",
+    "wiki_ar": "مسجد عبد العزيز السامرائي",
+    "wiki_en": "Abdul-Aziz al-Samarrai Mosque",
+    "summary_ar": "مسجد الشيخ عبد العزيز السامرائي هو مسجد إسلامي يقع في الفلوجة، بمحافظة الأنبار العراقية. تاريخيًا، كانت الفلوجة مدينة ذات أغلبية سنية، وقد وُصفت المدينة قبل حرب العراق بأنها \"مدينة الـ 120 مسجدًا\".",
+    "summary_en": "The Abdul-Aziz al-Samarrai Mosque is an Islamic mosque located in Fallujah, in the Al Anbar Governorate of Iraq. Historically, a predominantly Sunni city, prior to the Iraq War, Fallujah was described as \"the city of 120 mosques\"."
+   }
+  ]
+ },
+ {
+  "id": "duhok",
+  "name_ar": "دهوك",
+  "name_en": "Duhok",
+  "center": [
+   36.85,
+   42.98333
+  ],
+  "places": [
+   {
+    "id": "Q98967701",
+    "lat": 36.861944,
+    "lon": 42.985,
+    "kind": "church",
+    "name_ar": "كنيسة مار ايث الاها",
+    "summary_ar": null,
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "amarah",
+  "name_ar": "العمارة",
+  "name_en": "Amarah",
+  "center": [
+   31.83333,
+   47.15
+  ],
+  "places": []
+ },
+ {
+  "id": "diwaniyah",
+  "name_ar": "الديوانية",
+  "name_en": "Diwaniyah",
+  "center": [
+   31.98917,
+   44.92472
+  ],
+  "places": []
+ },
+ {
+  "id": "kut",
+  "name_ar": "الكوت",
+  "name_en": "Kut",
+  "center": [
+   32.51472,
+   45.81889
+  ],
+  "places": []
+ },
+ {
+  "id": "samawah",
+  "name_ar": "السماوة",
+  "name_en": "Samawah",
+  "center": [
+   31.33198,
+   45.2944
+  ],
+  "places": []
+ },
+ {
+  "id": "baqubah",
+  "name_ar": "بعقوبة",
+  "name_en": "Baqubah",
+  "center": [
+   33.75,
+   44.6333
+  ],
+  "places": []
+ },
+ {
+  "id": "tikrit",
+  "name_ar": "تكريت",
+  "name_en": "Tikrit",
+  "center": [
+   34.6,
+   43.68333
+  ],
+  "places": [
+   {
+    "id": "Q112666371",
+    "lat": 34.598889,
+    "lon": 43.676111,
+    "kind": "mosque",
+    "name_ar": "جامع الأربعين شهيدا",
+    "name_en": "Al-Arba'een Mosque",
+    "wiki_ar": "مسجد الأربعين",
+    "wiki_en": "Al-Arba'een Mosque",
+    "summary_ar": "يُعد جامع الأربعين مسجداً سابقاً يتبع أهل السنة والجماعة، كان يقع في مدينة تكريت، في محافظة صلاح الدين بـ العراق. كان يضم ضريحاً مقدساً لعمرو بن جندب الغفاري، وضريحاً آخر لـ نفيسة بنت الحسن. دمر المسجد على يد تنظيم الدولة الإسلامية (داعش) في 24 سبتمبر 2014.",
+    "summary_en": "The Al-Arba'een Mosque is a former Sunni mosque, that was located in the city of Tikrit, in the Saladin Governorate of Iraq. It contained a shrine for Amr ibn Jundab Al-Ghafari, and another shrine for Sitt Nafisa. The mosque was destroyed by ISIL on 24 September 2014."
+   },
+   {
+    "id": "Q109260815",
+    "lat": 34.601684,
+    "lon": 43.693905,
+    "kind": "castle",
+    "name_ar": "قلعة تكريت",
+    "name_en": "Tikrit Castle",
+    "wiki_ar": "قلعة تكريت",
+    "summary_ar": "قلعة تكريت قلعة أثرية في مدينة تكريت وسط شمال جمهورية العراق، أُنشئت قبل الميلاد، اُشتهرت القلعة بأنها مولد القائد الإسلامي صلاح الدين الأيوبي، وكان حينئذٍ أبو صلاح الدين نقيباً على تلك القلعة، قال أستاذ الآثار في جامعة تكريت إبراهيم حسين يوم 4 أيار سنة 2012 «تاريخ القلعة زاخر كتاريخ تكريت، التي تعود إلى سنوات قبل الميلاد، وعاشت فيها الكثير من الأقوام، واختلفت فيها القصص، ومن بينها مولد القائد صلاح الدين الأيوبي، الذي عاش فيها يوما واحدا، هو يوم ولادته، قبل أن ينتقل إلى الموصل».",
+    "summary_en": null
+   },
+   {
+    "id": "Q117814609",
+    "lat": 34.60278,
+    "lon": 43.68577,
+    "kind": "archaeological",
+    "name_ar": "سور تكريت",
+    "wiki_ar": "سور تكريت",
+    "summary_ar": "سور تكريت هو أحد أهم المعالم التاريخية في مدينة تكريت مركز محافظة صلاح الدين شمالي العراق، ويرجع تاريخ إنشائه إلى العصر الآشوري، يحيط السور بمدينة تكريت القديمة، وهو مدعم بأبراج كبيرة وصغيرة، يبدأ من شمال المدينة بالقرب من منطقة القائم الكبير فوق منطقة مرتفعة على كتف نهر دجلة من جهة الغرب، ثم يستمر بإتجاه الجنوب حتى يطوف بالمدينة، ويتجه بعد ذلك الى الشرق حتى ينتهي في كتف النهر، يحتوي السور على ثلاثة مداخل باتجاهات ثلاثة عدا الجهة الشرقية المطلة على النهر، ويعتبر المدخل الغربي هو البوابة الرئيسية للسور. ويبلغ طوله أربعة أميال وقطره لا يزيد على كيلومتر واحد.",
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "samarra",
+  "name_ar": "سامراء",
+  "name_en": "Samarra",
+  "center": [
+   34.1959,
+   43.88568
+  ],
+  "places": [
+   {
+    "id": "Q170047",
+    "lat": 34.1959,
+    "lon": 43.88568,
+    "kind": "archaeological",
+    "name_ar": "سامراء",
+    "name_en": "Samarra",
+    "wiki_ar": "سامراء",
+    "wiki_en": "Samarra",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20spiral%20minaret%20in%20Samarra.jpg?width=800",
+    "summary_ar": "سامُرّاءُ  مدينة عراقية حاضرة وتاريخية تقع على الضفة الشرقية لنهر دجلة. وهي مركز قضاء سامراء في محافظة صلاح الدين. تقع شمال العاصمة بغداد وتبعد عنها 125 كيلومترا، تحدها من الشمال مدينة تكريت، ومن الغرب الرمادي، ومن الشرق بعقوبة. كانت سامراء عاصمة الدولة العباسية بعد بغداد، وكان اسمها آنذاك «سر من رأى» وقد بناها الخليفة المعتصم بالله عام 221هـ/835م لتكون عاصمة دولته وما تزال آثارها موجودة ومن أهم معالمها الباقية الجامع الكبير ومئذنته الملوية. تضم ضريح الإمامين علي الهادي والحسن العسكري المقدسين لدى الشيعة الأثنا عشرية. يبلغ عدد سكان مركز المدينة أكثر من 190.000 حسب إحصائيات وزارة التخطيط لعام 2013 م.\nضمت منظمة اليونسكو مدينة سامراء عام 2007 إلى قائمة التراث العالمي.",
+    "summary_en": "Samarra is a city in Iraq. It stands on the east bank of the Tigris in the Saladin Governorate, 125 kilometers (78 mi) north of Baghdad. Due to the presence of Al-Askari Shrine, the city is considered a holy site in Shia Islam. The modern city of Samarra was founded in 836 CE by the Abbasid caliph al-Mu'tasim as a new administrative capital and military base."
+   },
+   {
+    "id": "Q593115",
+    "lat": 34.206195,
+    "lon": 43.87985,
+    "kind": "archaeological",
+    "name_ar": "المسجد الجامع في سامراء",
+    "name_en": "Great Mosque of Samarra",
+    "wiki_ar": "جامع الملوية (سامراء)",
+    "wiki_en": "Great Mosque of Samarra",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Samara%20spiralovity%20minaret%20rijen1973.jpg?width=800",
+    "summary_ar": "جامع الملوية في سامراء من مساجد العراق الأثرية القديمة، وهو المسجد الجامع الذي بناه الخليفة العباسي المتوكل على الله بن الخليفة المعتصم بالله، بين عامي 234 - 237هـ/ 848 - 851م، على أرض مستطيلة مساحتها 27920 متراً مربعاً وبطول 240 متراً وبعرض 158 متراً، ويسع المصلى الواسع لأكثر من ثمانون ألف مصلِّ، وشيد الجامع بمادة الطابوق والجص، وفرشت أرضيته كلها بطابوق مربع صف بدقة وإتقان، وجدران الجامع ضخمة ومتميزة بارتفاعها البالغ 11 متراً، وسمكها البالغ 2.7 متراً، بإستثناء الأبراج، وهذه الجدران مدعمة بأبراج نصف إسطوانية تجلس على قواعد مستطيلة عدا أبراج الأركان فهي شبه مستديرة، حيث يبلغ قطرها خمسة أمتار، ومجموع أبراج الجامع 44 برجاً، وللجامع 15 باباً للدخول إليه،",
+    "summary_en": "The Great Mosque of Samarra or Al-Malwiya Mosque is a former congregational mosque, now in partial ruins, in Samarra, in the Saladin Governorate of Iraq. The mosque was commissioned in 848 CE and completed in 851 by the Abbasid caliph Al-Mutawakkil. At the time of construction it was the world's largest mosque. It is known for its 52-metre-high (171 ft) minaret encircled by a spiral ramp. The former mosque is within the 15,058-hectare (37,210-acre) Samarra Archaeological City UNESCO World Heritage Site, listed in 2007."
+   },
+   {
+    "id": "Q309484",
+    "lat": 34.198889,
+    "lon": 43.873611,
+    "kind": "mosque",
+    "name_ar": "العتبة العسكرية المقدسة",
+    "name_en": "Al-Askari Shrine",
+    "wiki_ar": "العتبة العسكرية",
+    "wiki_en": "Al-Askari Shrine",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Samarra%20-%20Oct%202018%2001.jpg?width=800",
+    "summary_ar": "العَتبَةُ العَسكَريَّة تعرف رسميًا بـالعَتْبَةُ العَسْكَريَّةُ المُقَدَّسَة أو الرَّوْضَةُ العسكريّة الشَّريفة وتعرف أيضًا باسماء بديلة عديدة كـمَقام وضَريح ومَشهَد ومَرقَد وحَرَم الإمامين العسكريين وأحيانًا الجامع العسكري هي مجموعة من المباني التاريخية الدينية المترابطة بالإمامين العاشر والحادي عشر من الأئمة الاثنا عشر علي الهادي وابنه الحسن العسكري، تقع في مدينة سامراء على الضفة الشرقية لنهر دجلة في محافظة صلاح الدين. تضم المجموعة ضريحهما تحت القبة الذهبية، والجامع الكبير ومسجد المهدي المشهور بسرداب الغيبة وعدة أبواب تاريخية. تحيطها منطقة سكنية وتجارية وفنادق عديدة، حيث تعتبر قلب المدينة ومركزًا سياحيًا دينيًا في العراق يزورها المسلمين عمومًا وهي مقدسة لدى الاثني عشريين خاصةً.",
+    "summary_en": "The Al-Askari Shrine, also known as the 'Askariyya Shrine and the Al-Askari Mosque, is the mausoleums of the tenth and eleventh Shia Imams, Ali al-Hadi and Ḥasan al- Askari, located in Samarra, in the Saladin Governorate of Iraq. It is a holy site in Shia Islam."
+   },
+   {
+    "id": "Q7697547",
+    "lat": 34.1167,
+    "lon": 43.9,
+    "kind": "archaeological",
+    "name_ar": "تل الصوان",
+    "name_en": "Tell es-Sawwan",
+    "wiki_ar": "تل الصوان",
+    "wiki_en": "Tell es-Sawwan",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Female%20figurine%20Tell%20es%20Sawwan%20DAO33%20b.jpg?width=800",
+    "summary_ar": "تل الصوان هو موقع أثري على الضفة الشرقية لنهر دجلة، جنوب سامراء في محافظة صلاح الدين وسط العراق،",
+    "summary_en": "Tell es-Sawwan is an important Samarran period archaeological site in Saladin Province, Iraq. It is located 110 kilometres (68 mi) north of Baghdad, and south of Samarra. It lies on a 12 meter high cliff overlooking the Tigris River."
+   },
+   {
+    "id": "Q617535",
+    "lat": 34.216667,
+    "lon": 43.866667,
+    "kind": "archaeological",
+    "name_ar": "أفاميا (بابل)",
+    "name_en": "Apamea",
+    "wiki_ar": "أفاميا (بابل)",
+    "wiki_en": "Apamea (Babylonia)",
+    "summary_ar": "أفاميا أو أفاميا كانت مدينة قديمة – وربما مدينتان قديمتان تقعان بالقرب من بعضهما البعض – في بلاد ما بين النهرين ذكرها ستيفانوس البيزنطي وبلينيوس على أنها تقع بالقرب من نهر دجلة بالقرب من ملتقى نهر الفرات، وموقعها الدقيق لا يزال غير مؤكد، لكنها تقع في العراق الحديث.",
+    "summary_en": "Apamea or Apameia was an ancient city – and possibly two ancient cities lying close together – of Mesopotamia mentioned by Stephanus of Byzantium and Pliny as situated near the Tigris near the confluence of the Euphrates, the precise location of which is still uncertain, but it lies in what later is Iraq."
+   },
+   {
+    "id": "Q5940359",
+    "lat": 34.241389,
+    "lon": 43.808889,
+    "kind": "palace",
+    "name_ar": "قصر العاشق",
+    "name_en": "Qasr al-'Ashiq",
+    "wiki_ar": "قصر العاشق",
+    "wiki_en": "Qasr al-'Ashiq",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D9%82%D8%B5%D8%B1%20%D8%A7%D9%84%D8%B9%D8%A7%D8%B4%D9%82%20%D9%85%D8%AF%D9%8A%D9%86%D9%87%20%D8%B3%D8%A7%D9%85%D8%B1%D8%A7%D8%A1.jpg?width=800",
+    "summary_ar": "قصر العاشق قصر تاريخي أثري عباسي يرجع تاريخه إلى القرن التاسع، يقع في الجانب الغربي من مدينة سامراء في العراق وعلى بعد 9 كيلومترات من مشروع الثرثار وعلى الضفة اليمنى من نهر الإسحاقي المندثر تقع أطلال قصر العاشق.",
+    "summary_en": "Qasr al-'Ashiq is a historical palace that dates back to the Abbasid era, located near the city of Samarra, Iraq."
+   },
+   {
+    "id": "Q12185832",
+    "lat": 34.231372,
+    "lon": 43.873254,
+    "kind": "palace",
+    "name_ar": "قصر الجوسق",
+    "name_en": "Qasr Al-Jawsaq",
+    "wiki_ar": "قصر الجوسق",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D9%82%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AC%D9%88%D8%B3%D9%82.jpg?width=800",
+    "summary_ar": "قصر الجوسق أو الجوسق الخاقاني هو قصر بناه الخليفة العباسي الثامن المُعتصم بالله، ويقع في مدينة سامراء، وقد بني على الطراز الحيريّ، واكتُشف فيه عدد من التصاوير.",
+    "summary_en": null
+   },
+   {
+    "id": "Q108538254",
+    "lat": 34.231574,
+    "lon": 43.873325,
+    "kind": "palace",
+    "name_ar": "قصر البركة",
+    "name_en": "Jawsaq Palace",
+    "wiki_ar": "قصر البركة",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/%D9%82%D8%B5%D8%B1%20%D8%A7%D9%84%D8%A8%D8%B1%D9%83%D8%A9%20%D9%81%D9%8A%20%D8%B3%D8%A7%D9%85%D8%B1%D8%A7%D8%A1.jpg?width=800",
+    "summary_ar": "قصر البركة أو الجوسق الخاقاني أحد القصور التاريخية يقع في سامراء مركز محافظة صلاح الدين وسط العراق. شيده الخليفة أبو الفضل جعفر المتوكل على الله ليكون قصرًا للنقاهة والراحة والاستجمام آنذاك.",
+    "summary_en": null
+   }
+  ]
+ },
+ {
+  "id": "zakho",
+  "name_ar": "زاخو",
+  "name_en": "Zakho",
+  "center": [
+   37.14361,
+   42.68191
+  ],
+  "places": [
+   {
+    "id": "Q2571655",
+    "lat": 37.136111,
+    "lon": 42.695,
+    "kind": "archaeological",
+    "name_ar": "جسر دلال",
+    "name_en": "Delal Bridge",
+    "wiki_ar": "جسر دلال",
+    "wiki_en": "Delal Bridge",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Delal%20Bridge.jpg?width=800",
+    "summary_ar": "جسر دلال أو الجسر العباسي هو جسر حجري قديم مبني فوق نهر الخابور في قضاء زاخو، في محافظة دهوك شمال العراق. يبلغ طول الجسر حوالي 115 متراً، وارتفاعه 16 متراً.",
+    "summary_en": "Delal, Zakho Bridge, Pira Delal or Pirdí Delal, informally known also as Pira Berî, is an ancient stone bridge over the Khabur river in the town of Zakho, in the Kurdistan Region of Iraq. The bridge is about 115 metres long and 16 metres high."
+   },
+   {
+    "id": "Q98967700",
+    "lat": 37.141,
+    "lon": 42.677667,
+    "kind": "church",
+    "name_ar": "كاتدرائية مار كوركيس",
+    "name_en": "Mar Gorgis Cathedral",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Zakho%202011%20%282%29.jpg?width=800",
+    "summary_ar": null,
+    "summary_en": null
+   }
+  ]
+ }
+]

@@ -13,7 +13,15 @@ final class PlaceCardButtonsUITests: XCTestCase {
     private func launchWithCard() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += ["-uitest-heritage", "Imam Husayn Mausoleum", "-AppleLanguages", "(en)"]
+        // Accept the location prompt if it appears, so it can't cover the buttons.
+        addUIInterruptionMonitor(withDescription: "Location") { alert in
+            let allow = alert.buttons["Allow While Using App"]
+            if allow.exists { allow.tap(); return true }
+            return false
+        }
         app.launch()
+        // A harmless tap on the status-bar strip lets the interruption monitor run.
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.015)).tap()
         XCTAssertTrue(app.buttons["place.directions"].waitForExistence(timeout: 30), "the place card didn't open")
         shot("card")
         return app
@@ -48,6 +56,20 @@ final class PlaceCardButtonsUITests: XCTestCase {
         let opened = app.staticTexts[noAR].waitForExistence(timeout: 15)
         shot("after-walk")
         XCTAssertTrue(opened, "tapping Walk with AR didn't open the walking AR screen")
+    }
+
+    func testDiscoverListsPlacesAndListenWorks() {
+        let app = launchWithCard()
+        app.buttons["map.discover"].tap()
+        let header = app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Places to visit in'")).firstMatch
+        XCTAssertTrue(header.waitForExistence(timeout: 15), "Discover didn't open")
+        shot("discover")
+        // Open the first place and check its card offers a spoken description.
+        app.cells.firstMatch.tap()
+        let listen = app.buttons["place.listen"]
+        XCTAssertTrue(listen.waitForExistence(timeout: 15), "the guide place card has no Listen button")
+        shot("guide-card")
+        listen.tap()
     }
 
     func testDriveScanOpensWithCardShowing() {

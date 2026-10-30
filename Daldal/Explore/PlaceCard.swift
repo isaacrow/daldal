@@ -11,16 +11,23 @@ struct PlaceCard: View {
     @Environment(LocationService.self) private var location
     @Environment(SavedPlacesStore.self) private var saved
     @Environment(HeritageStore.self) private var heritage
+    @Environment(CityGuideStore.self) private var guide
+    @Environment(NavigationModel.self) private var nav
     @State private var copied = false
 
     private var site: HeritageSite? { place.heritageID.flatMap(heritage.site(id:)) }
+    private var guidePlace: GuidePlace? { place.guideID.flatMap(guide.place(id:)) }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
                 header
                 actions
-                if let site { HeritageDetails(site: site) }
+                if let guidePlace {
+                    GuideDetails(place: guidePlace, voice: nav.voice)
+                } else if let site {
+                    HeritageDetails(site: site)
+                }
             }
             .padding(Theme.Spacing.l)
         }
@@ -52,42 +59,32 @@ struct PlaceCard: View {
         }
     }
 
+    /// A fixed grid, not a sideways-scrolling row: nested scroll views inside a draggable sheet could
+    /// claim a real finger's tap (it always moves a little) and cancel the button, so taps did nothing on phones.
     private var actions: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: Theme.Spacing.s) {
-                Button { onDirections(place) } label: {
-                    Label { Text("Directions") } icon: { Icon(.navigate, size: 18) }
-                }
-                .buttonStyle(.glassProminent)
-                .accessibilityIdentifier("place.directions")
+        VStack(spacing: Theme.Spacing.s) {
+            Button { onDirections(place) } label: {
+                Label { Text("Directions") } icon: { Icon(.navigate, size: 18) }
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, minHeight: 34)
+            }
+            .buttonStyle(.glassProminent)
+            .accessibilityIdentifier("place.directions")
 
-                Button { onWalk(place) } label: {
-                    Label { Text("Walk with AR") } icon: { Icon(.walk, size: 18) }
-                }
-                .buttonStyle(.glass)
-                .accessibilityIdentifier("place.walk")
-
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: Theme.Spacing.s), GridItem(.flexible())], spacing: Theme.Spacing.s) {
+                actionButton("Walk with AR", icon: .walk, id: "place.walk") { onWalk(place) }
                 if site != nil {
-                    Button { onOpenAR(place) } label: {
-                        Label { Text("View in AR") } icon: { Icon(.arView, size: 18) }
-                    }
-                    .buttonStyle(.glass)
-                    .accessibilityIdentifier("place.ar")
+                    actionButton("View in AR", icon: .arView, id: "place.ar") { onOpenAR(place) }
                 }
-
                 ShareLink(item: shareURL, subject: Text(place.name)) {
                     Label { Text("Share") } icon: { Icon(.share, size: 18) }
+                        .frame(maxWidth: .infinity, minHeight: 30)
                 }
                 .buttonStyle(.glass)
-
-                Button {
+                actionButton("Copy coordinates", icon: .copy, id: "place.copy") {
                     UIPasteboard.general.string = place.coordinate.formattedDegrees
                     copied.toggle()
-                } label: {
-                    Label { Text("Copy coordinates") } icon: { Icon(.copy, size: 18) }
                 }
-                .buttonStyle(.glass)
-
                 Menu {
                     Button { saved.set(place, for: .home) } label: {
                         Label { Text("Set as home") } icon: { Icon(.home) }
@@ -97,18 +94,72 @@ struct PlaceCard: View {
                     }
                 } label: {
                     Label { Text("Save") } icon: { Icon(.star, size: 18) }
+                        .frame(maxWidth: .infinity, minHeight: 30)
                 }
                 .buttonStyle(.glass)
             }
-            .font(.subheadline.weight(.semibold))
         }
-        .scrollIndicators(.hidden)
+        .font(.subheadline.weight(.semibold))
+    }
+
+    private func actionButton(_ title: LocalizedStringKey, icon: DaldalIcon, id: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label { Text(title).lineLimit(1).minimumScaleFactor(0.8) } icon: { Icon(icon, size: 18) }
+                .frame(maxWidth: .infinity, minHeight: 30)
+        }
+        .buttonStyle(.glass)
+        .accessibilityIdentifier(id)
     }
 
     /// An OpenStreetMap link opens anywhere, with or without Daldal installed.
     private var shareURL: URL {
         let lat = place.latitude, lon = place.longitude
         return URL(string: "https://www.openstreetmap.org/?mlat=\(lat)&mlon=\(lon)#map=17/\(lat)/\(lon)")!
+    }
+}
+
+/// A place to visit: photo, a short description, a Listen button, and the Wikipedia credit.
+private struct GuideDetails: View {
+    let place: GuidePlace
+    let voice: VoiceGuide
+    @State private var expanded = false
+
+    private var languageCode: String { AppLanguage.code }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            if let url = place.imageURL {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image): image.resizable().scaledToFill()
+                    case .failure: Color.secondary.opacity(0.1)
+                    default: Color.secondary.opacity(0.1).overlay(ProgressView())
+                    }
+                }
+                .frame(height: 190)
+                .frame(maxWidth: .infinity)
+                .clipShape(.rect(cornerRadius: 16))
+                .accessibilityHidden(true)
+            }
+            if let summary = place.summary(languageCode: languageCode) {
+                Text(summary)
+                    .font(.body)
+                    .lineLimit(expanded ? nil : 4)
+                    .onTapGesture { withAnimation(.smooth) { expanded.toggle() } }
+                Button { voice.announce(summary, interrupt: true) } label: {
+                    Label { Text("Listen") } icon: { Icon(.volume, size: 18) }
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.glass)
+                .accessibilityIdentifier("place.listen")
+            }
+            if let wiki = place.wikipediaURL(languageCode: languageCode) {
+                Link(destination: wiki) {
+                    Text("Description from Wikipedia (CC BY-SA 4.0)")
+                }
+                .font(.caption)
+            }
+        }
     }
 }
 

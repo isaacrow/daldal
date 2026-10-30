@@ -113,6 +113,70 @@ final class MapController {
     }
 
     static let heritageLayer = "heritage"
+    static let guideLayer = "guide-landmarks"
+    static let guideLabelLayer = "guide-labels"
+
+    /// Places to visit as 3D landmarks: a gold three-step ziggurat rising from each, named above.
+    func installGuideLayer(places: [GuidePlace], isDark: Bool, languageCode: String) {
+        guard let style = mapView?.style, !places.isEmpty,
+              style.layer(withIdentifier: Self.guideLayer) == nil else { return }
+
+        // Tiers: (half-width in metres, base height, top height).
+        let tiers: [(Double, Double, Double)] = [(28, 0, 12), (20, 12, 22), (12, 22, 30)]
+        var blocks: [MLNPolygonFeature] = []
+        var labels: [MLNPointFeature] = []
+        for place in places {
+            let c = place.coordinate
+            let metresPerDegreeLon = 111_320 * cos(c.latitude * .pi / 180)
+            for (half, base, top) in tiers {
+                let dLat = half / 111_320, dLon = half / metresPerDegreeLon
+                var ring = [
+                    CLLocationCoordinate2D(latitude: c.latitude - dLat, longitude: c.longitude - dLon),
+                    CLLocationCoordinate2D(latitude: c.latitude - dLat, longitude: c.longitude + dLon),
+                    CLLocationCoordinate2D(latitude: c.latitude + dLat, longitude: c.longitude + dLon),
+                    CLLocationCoordinate2D(latitude: c.latitude + dLat, longitude: c.longitude - dLon),
+                    CLLocationCoordinate2D(latitude: c.latitude - dLat, longitude: c.longitude - dLon),
+                ]
+                let block = MLNPolygonFeature(coordinates: &ring, count: UInt(ring.count))
+                block.attributes = ["gid": place.id, "base": base, "top": top]
+                blocks.append(block)
+            }
+            let label = MLNPointFeature()
+            label.coordinate = c
+            label.attributes = ["gid": place.id, "name": place.name(languageCode: languageCode)]
+            labels.append(label)
+        }
+
+        let blockSource = MLNShapeSource(identifier: Self.guideLayer, shape: MLNShapeCollectionFeature(shapes: blocks), options: nil)
+        let labelSource = MLNShapeSource(identifier: Self.guideLabelLayer, shape: MLNShapeCollectionFeature(shapes: labels), options: nil)
+        style.addSource(blockSource)
+        style.addSource(labelSource)
+
+        let landmark = MLNFillExtrusionStyleLayer(identifier: Self.guideLayer, source: blockSource)
+        landmark.fillExtrusionColor = NSExpression(forConstantValue: UIColor(red: 0.89, green: 0.69, blue: 0.29, alpha: 1))
+        landmark.fillExtrusionBase = NSExpression(forKeyPath: "base")
+        landmark.fillExtrusionHeight = NSExpression(forKeyPath: "top")
+        landmark.fillExtrusionOpacity = NSExpression(forConstantValue: 0.95)
+        landmark.minimumZoomLevel = 11
+        if let labelsAnchor = style.layer(withIdentifier: MapStyleBuilder.labelsAnchor) {
+            style.insertLayer(landmark, below: labelsAnchor)
+        } else {
+            style.addLayer(landmark)
+        }
+
+        let names = MLNSymbolStyleLayer(identifier: Self.guideLabelLayer, source: labelSource)
+        names.text = NSExpression(forKeyPath: "name")
+        names.textFontNames = NSExpression(forConstantValue: ["NotoSansBold"])
+        names.textFontSize = NSExpression(forConstantValue: 13)
+        names.textAnchor = NSExpression(forConstantValue: "bottom")
+        names.textOffset = NSExpression(forConstantValue: NSValue(cgVector: CGVector(dx: 0, dy: -2.2)))
+        names.textColor = NSExpression(forConstantValue: UIColor(red: 0.97, green: 0.82, blue: 0.45, alpha: 1))
+        names.textHaloColor = NSExpression(forConstantValue: isDark ? UIColor.black : UIColor(white: 0.15, alpha: 1))
+        names.textHaloWidth = NSExpression(forConstantValue: 1.6)
+        names.textOptional = NSExpression(forConstantValue: true)
+        names.minimumZoomLevel = 12
+        style.addLayer(names)
+    }
     static let routeLayer = "route-preview"
 
     @ObservationIgnored private var previewRoutes: (routes: [[CLLocationCoordinate2D]], selected: Int)?

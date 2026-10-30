@@ -1,0 +1,2 @@
+city-guides.json: places from Wikidata (CC0); descriptions are summaries of Wikipedia articles
+(CC BY-SA 4.0), credited and linked per place in the app. Rebuild with scripts/guide/build_guides.py.

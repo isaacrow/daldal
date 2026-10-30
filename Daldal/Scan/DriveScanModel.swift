@@ -155,6 +155,14 @@ nonisolated final class ScanDetector: @unchecked Sendable {
         request.imageCropAndScaleOption = .scaleFill
     }
 
+    /// Runs only the model on a still picture: what it sees and how sure it is. Used by tests with real photos.
+    func labels(in image: CGImage) -> [(label: String, confidence: Float)] {
+        let handler = VNImageRequestHandler(cgImage: image, orientation: .up)
+        guard (try? handler.perform([request])) != nil,
+              let observations = request.results as? [VNRecognizedObjectObservation] else { return [] }
+        return observations.compactMap { o in o.labels.first.map { ($0.identifier, $0.confidence) } }
+    }
+
     /// About 8 detections a second; 3 when the phone is hot.
     func shouldProcess(_ timestamp: TimeInterval) -> Bool {
         let hot = ProcessInfo.processInfo.thermalState.rawValue >= ProcessInfo.ThermalState.serious.rawValue

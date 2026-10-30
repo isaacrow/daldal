@@ -6,9 +6,11 @@ import SwiftUI
 struct MapCanvas: UIViewRepresentable {
     let controller: MapController
     var heritageSites: [HeritageSite] = []
+    var guidePlaces: [GuidePlace] = []
     var tiles: MapTileSource = .online
     var onLongPress: (CLLocationCoordinate2D) -> Void = { _ in }
     var onSelectHeritage: (String) -> Void = { _ in }
+    var onSelectGuide: (String) -> Void = { _ in }
     var onSelectRoute: (Int) -> Void = { _ in }
     var onCameraIdle: (CLLocationCoordinate2D, Double) -> Void = { _, _ in }
 
@@ -102,6 +104,12 @@ struct MapCanvas: UIViewRepresentable {
                 parent.onSelectHeritage(id)
                 return
             }
+            // Places to visit: the 3D landmark or its name.
+            let landmarks = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.guideLayer, MapController.guideLabelLayer])
+            if let id = landmarks.first?.attribute(forKey: "gid") as? String {
+                parent.onSelectGuide(id)
+                return
+            }
             // Tapping an alternative route selects it, as in every navigation app.
             let routes = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.routeLayer])
             if let index = (routes.first?.attribute(forKey: "index") as? NSNumber)?.intValue {
@@ -114,6 +122,7 @@ struct MapCanvas: UIViewRepresentable {
         func mapView(_ mapView: MLNMapView, didFinishLoading style: MLNStyle) {
             parent.controller.applyBuildingMode()
             parent.controller.installHeritageLayer(sites: parent.heritageSites, isDark: isDark, languageCode: parent.languageCode)
+            parent.controller.installGuideLayer(places: parent.guidePlaces, isDark: isDark, languageCode: parent.languageCode)
             parent.controller.reinstallRoutes()
             parent.controller.reinstallLive()
             if parent.controller.is3D, mapView.camera.pitch < 1 {

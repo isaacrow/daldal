@@ -10,6 +10,8 @@ struct Place: Identifiable, Hashable, Codable, Sendable {
     var category: PlaceCategory
     /// Set when this place is a site from the heritage catalogue.
     var heritageID: String? = nil
+    /// Set when this place comes from the city guides (places to visit).
+    var guideID: String? = nil
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)

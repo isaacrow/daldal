@@ -12,6 +12,7 @@ struct ExploreView: View {
     @Environment(Connectivity.self) private var connectivity
     @Environment(LocationService.self) private var location
     @Environment(LiveStore.self) private var live
+    @Environment(CityGuideStore.self) private var guide
 
     /// What the bottom panel shows. One sheet whose content changes, like Apple Maps: switching content
     /// never closes and reopens a sheet, which iOS ignores when it happens mid-animation.
@@ -20,6 +21,7 @@ struct ExploreView: View {
         case place(Place)
         case routes
         case maps
+        case discover
     }
 
     @State private var panel: Panel?
@@ -60,11 +62,16 @@ struct ExploreView: View {
         MapCanvas(
             controller: map,
             heritageSites: heritage.sites,
+            guidePlaces: guide.places,
             tiles: tileSource,
             onLongPress: dropPin,
             onSelectHeritage: { id in
                 guard panel != .routes, let site = heritage.site(id: id) else { return }
                 select(site.place(languageCode: languageCode), record: false)
+            },
+            onSelectGuide: { id in
+                guard panel != .routes, let place = guide.place(id: id) else { return }
+                select(place.place(languageCode: languageCode), record: false)
             },
             onSelectRoute: { index in nav.selectedRouteIndex = index },
             onCameraIdle: { center, zoom in
@@ -125,6 +132,10 @@ struct ExploreView: View {
             )
         case .maps:
             OfflineMapsView()
+        case .discover:
+            DiscoverView(near: location.location?.coordinate ?? map.visibleCenter) { place in
+                select(place.place(languageCode: languageCode), record: true)
+            }
         case nil:
             EmptyView()
         }
@@ -197,6 +208,10 @@ struct ExploreView: View {
                 }
                 .glassEffectID("offline", in: glass)
 
+                GlassIconButton(icon: .heritage, label: "Discover") { show(.discover, at: .large) }
+                    .glassEffectID("discover", in: glass)
+                    .accessibilityIdentifier("map.discover")
+
                 GlassIconButton(icon: .scan, label: "Drive Scan") { scanning = true }
                     .glassEffectID("scan", in: glass)
                     .accessibilityIdentifier("map.scan")
@@ -265,7 +280,7 @@ struct ExploreView: View {
 
     private func select(_ place: Place, record: Bool) {
         if record { saved.recordVisit(place) }
-        show(.place(place), at: .height(270))
+        show(.place(place), at: .medium) // Tall enough that the action buttons are never at the edge.
         map.show(place)
     }
 

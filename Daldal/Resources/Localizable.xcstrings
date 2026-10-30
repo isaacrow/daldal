@@ -142,6 +142,16 @@
         }
       }
     },
+    "Description from Wikipedia (CC BY-SA 4.0)": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوصف من ويكيبيديا (CC BY-SA 4.0)"
+          }
+        }
+      }
+    },
     "Directions": {
       "localizations": {
         "ar": {
@@ -158,6 +168,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "الاتجاهات إلى"
+          }
+        }
+      }
+    },
+    "Discover": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اكتشف"
           }
         }
       }
@@ -462,6 +482,16 @@
         }
       }
     },
+    "Listen": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استمع"
+          }
+        }
+      }
+    },
     "Live traffic": {
       "localizations": {
         "ar": {
@@ -638,6 +668,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "الصورة: ويكيميديا كومنز"
+          }
+        }
+      }
+    },
+    "Place to visit": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مكان يستحق الزيارة"
+          }
+        }
+      }
+    },
+    "Places from Wikidata; descriptions from Wikipedia (CC BY-SA 4.0).": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأماكن من ويكي بيانات؛ والأوصاف من ويكيبيديا (CC BY-SA 4.0)."
+          }
+        }
+      }
+    },
+    "Places to visit in %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أماكن تستحق الزيارة في %@"
           }
         }
       }

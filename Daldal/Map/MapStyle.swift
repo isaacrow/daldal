@@ -84,7 +84,23 @@ enum MapStyleBuilder {
             + "{fontstack}/{range}.pbf"
     }
 
-    static let satelliteTiles = "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg"
+    /// Esri World Imagery (sub-metre over Iraqi cities) when an ArcGIS key was built in; otherwise the free
+    /// 10 m Sentinel-2 mosaic, which is fine for farmland and rivers but soft at street level.
+    static var satelliteSource: [String: Any] {
+        let key = (Bundle.main.object(forInfoDictionaryKey: "EsriAPIKey") as? String)?.trimmingCharacters(in: .whitespaces) ?? ""
+        if !key.isEmpty, !key.hasPrefix("$(") {
+            return [
+                "type": "raster", "tileSize": 256, "maxzoom": 19,
+                "tiles": ["https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=\(key)"],
+                "attribution": "Powered by Esri. Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+            ]
+        }
+        return [
+            "type": "raster", "tileSize": 256, "maxzoom": 14,
+            "tiles": ["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg"],
+            "attribution": "Sentinel-2 cloudless 2016 by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), CC BY 4.0",
+        ]
+    }
     static let terrainTiles = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
 
     static func style(palette p: MapPalette, languageCode: String, tiles: MapTileSource = .online,
@@ -106,10 +122,7 @@ enum MapStyleBuilder {
         // Satellite and terrain need the internet; offline, the drawn map is used.
         let satellite = base == .satellite && tiles == .online
         if satellite {
-            sources["satellite"] = [
-                "type": "raster", "tiles": [satelliteTiles], "tileSize": 256, "maxzoom": 14,
-                "attribution": "Sentinel-2 cloudless 2016 by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), CC BY 4.0",
-            ]
+            sources["satellite"] = satelliteSource
         }
         if tiles == .online {
             sources["terrain"] = [

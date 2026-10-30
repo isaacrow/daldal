@@ -8,6 +8,7 @@ struct DaldalApp: App {
     @State private var search = SearchStore(service: PhotonSearchService())
     @State private var saved = SavedPlacesStore()
     @State private var heritage = HeritageStore()
+    @State private var guide = CityGuideStore()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -18,6 +19,7 @@ struct DaldalApp: App {
                 .environment(search)
                 .environment(saved)
                 .environment(heritage)
+                .environment(guide)
                 .environment(services.cities)
                 .environment(services.connectivity)
                 .environment(services.navigation)

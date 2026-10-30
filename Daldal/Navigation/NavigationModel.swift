@@ -108,7 +108,17 @@ final class NavigationModel {
         phase = .planning
 
         planningTask = Task {
-            guard let location = location ?? locationProvider.lastLocation?.clLocation else {
+            // Just after launch the GPS may not have reported yet: give it up to 10 seconds.
+            var location = location ?? locationProvider.lastLocation?.clLocation
+            if location == nil {
+                locationProvider.startUpdating()
+                for _ in 0..<50 where location == nil && !Task.isCancelled {
+                    try? await Task.sleep(for: .milliseconds(200))
+                    location = locationProvider.lastLocation?.clLocation
+                }
+                if phase != .navigating { locationProvider.stopUpdating() }
+            }
+            guard let location else {
                 errorMessage = String(localized: "Waiting for your location. Make sure Location is on for Daldal.")
                 phase = .preview
                 return
