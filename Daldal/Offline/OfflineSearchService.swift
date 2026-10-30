@@ -4,7 +4,9 @@ import SQLite3
 
 /// Searches the pack's SQLite FTS5 index (`scripts/pack/build_search_index.py`). Works with no connection.
 final class OfflineSearchService: PlaceSearchService {
-    private var db: OpaquePointer?
+    // Only the main actor uses the handle while the service lives; deinit closes it after the last use,
+    // when no other access is possible.
+    nonisolated(unsafe) private var db: OpaquePointer?
     private let languageCode: String
 
     init(index: URL, languageCode: String) throws {
