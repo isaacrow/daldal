@@ -12,29 +12,48 @@ struct ExploreView: View {
     @Environment(LocationService.self) private var location
     @Environment(LiveStore.self) private var live
 
-    @State private var selected: Place?
-    @State private var isSearching = false
-    /// A search result waiting for the search sheet to finish closing before its card opens.
-    @State private var pendingSelection: Place?
+    /// What the bottom panel shows. One sheet whose content changes, like Apple Maps: switching content
+    /// never closes and reopens a sheet, which iOS ignores when it happens mid-animation.
+    enum Panel: Equatable {
+        case search
+        case place(Place)
+        case routes
+        case maps
+    }
+
+    @State private var panel: Panel?
+    @State private var detent: PresentationDetent = .height(270)
+    /// Heritage AR opened from a place card (presented on top of the panel).
     @State private var arSite: HeritageSite?
-    /// Set by "Directions"; route planning starts once the place card has closed.
-    @State private var pendingDirections: Place?
-    @State private var showingRoutes = false
-    /// Set by "Start"; Drive Mode opens once the route sheet has closed.
-    @State private var startAfterRoutes = false
-    @State private var showingOfflineMaps = false
+    /// Heritage AR opened from the "You're at" banner (no panel showing).
+    @State private var bannerARSite: HeritageSite?
     @Namespace private var glass
 
     private var languageCode: String { AppLanguage.code }
 
+    private var selected: Place? {
+        if case .place(let place) = panel { place } else { nil }
+    }
+
     var body: some View {
+        // Drive Mode replaces the map screen instead of being presented over it, so starting a trip
+        // can never collide with the closing route panel.
+        if nav.phase == .navigating || nav.phase == .arrived {
+            DriveModeView()
+                .transition(.opacity)
+        } else {
+            explore
+        }
+    }
+
+    private var explore: some View {
         MapCanvas(
             controller: map,
             heritageSites: heritage.sites,
             tiles: packs.installed.map(MapTileSource.offline) ?? .online,
             onLongPress: dropPin,
             onSelectHeritage: { id in
-                guard !showingRoutes, let site = heritage.site(id: id) else { return }
+                guard panel != .routes, let site = heritage.site(id: id) else { return }
                 select(site.place(languageCode: languageCode), record: false)
             },
             onSelectRoute: { index in nav.selectedRouteIndex = index },
@@ -45,64 +64,20 @@ struct ExploreView: View {
             }
         )
         .ignoresSafeArea()
-        .overlay(alignment: .top) { SearchBarButton { isSearching = true } }
+        .overlay(alignment: .top) { SearchBarButton { show(.search, at: .large) } }
         .overlay(alignment: .topTrailing) { controls.padding(.top, 72) }
         .overlay(alignment: .bottom) { arrivalBanner }
-        .sheet(isPresented: $isSearching, onDismiss: {
-            if let place = pendingSelection { select(place, record: true) }
-            pendingSelection = nil
-        }) {
-            SearchSheet { place in
-                pendingSelection = place
-                isSearching = false
-            }
-        }
-        .sheet(item: $selected, onDismiss: {
-            if let place = pendingDirections {
-                pendingDirections = nil
-                planRoute(to: place)
-            } else if selected == nil {
-                // Switching straight to another place also dismisses this sheet; keep the new place's pin.
-                map.clearPin()
-            }
-        }) { place in
-            PlaceCard(place: place, onOpenAR: openAR, onDirections: { place in
-                pendingDirections = place
-                selected = nil
-            })
-                .presentationDetents([.height(250), .medium])
+        .sheet(isPresented: panelPresented) {
+            panelContent
+                .presentationDetents([.height(270), .height(340), .medium, .large], selection: $detent)
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                 .presentationDragIndicator(.visible)
+                .fullScreenCover(item: $arSite) { site in
+                    GeoARView(site: site, languageCode: languageCode)
+                }
         }
-        .sheet(isPresented: $showingRoutes, onDismiss: {
-            if startAfterRoutes {
-                startAfterRoutes = false
-                nav.start()
-            } else {
-                nav.cancelPlanning()
-                map.clearPin()
-            }
-            map.clearRoutes()
-        }) {
-            RoutePreviewCard(
-                onStart: {
-                    startAfterRoutes = true
-                    showingRoutes = false
-                },
-                onRetry: { if let place = nav.destination { nav.planRoute(to: place, from: location.location) } }
-            )
-            .presentationDetents([.height(320), .medium])
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $showingOfflineMaps) {
-            OfflineMapsView()
-        }
-        .fullScreenCover(item: $arSite) { site in
+        .fullScreenCover(item: $bannerARSite) { site in
             GeoARView(site: site, languageCode: languageCode)
-        }
-        .fullScreenCover(isPresented: isDriving) {
-            DriveModeView()
         }
         .onChange(of: nav.routes) { showRoutePreview(fit: true) }
         .onChange(of: live.reports) { map.showLive(traffic: live.traffic, reports: live.reports) }
@@ -110,16 +85,60 @@ struct ExploreView: View {
         .onChange(of: nav.selectedRouteIndex) { showRoutePreview(fit: false) }
     }
 
-    private var isDriving: Binding<Bool> {
+    @ViewBuilder private var panelContent: some View {
+        switch panel {
+        case .search:
+            SearchSheet { place in select(place, record: true) }
+        case .place(let place):
+            PlaceCard(
+                place: place,
+                onOpenAR: openAR,
+                onDirections: { place in planRoute(to: place) }
+            )
+        case .routes:
+            RoutePreviewCard(
+                onStart: start,
+                onRetry: { if let place = nav.destination { nav.planRoute(to: place, from: location.location) } }
+            )
+        case .maps:
+            OfflineMapsView()
+        case nil:
+            EmptyView()
+        }
+    }
+
+    private var panelPresented: Binding<Bool> {
         Binding(
-            get: { nav.phase == .navigating || nav.phase == .arrived },
-            set: { if !$0, nav.phase != .idle { nav.stop() } }
+            get: { panel != nil },
+            set: { presented in if !presented { panelClosed() } }
         )
+    }
+
+    /// The user swiped the panel away.
+    private func panelClosed() {
+        if panel == .routes {
+            nav.cancelPlanning()
+            map.clearRoutes()
+        }
+        if case .place = panel { map.clearPin() }
+        if panel == .routes { map.clearPin() }
+        panel = nil
+    }
+
+    private func show(_ newPanel: Panel, at newDetent: PresentationDetent) {
+        detent = newDetent
+        panel = newPanel
+    }
+
+    private func start() {
+        panel = nil
+        map.clearRoutes()
+        withAnimation(.smooth) { nav.start() }
     }
 
     private func planRoute(to place: Place) {
         nav.planRoute(to: place, from: location.location)
-        showingRoutes = true
+        show(.routes, at: .height(340))
     }
 
     private func showRoutePreview(fit: Bool) {
@@ -136,7 +155,7 @@ struct ExploreView: View {
             VStack(spacing: Theme.Spacing.s) {
                 GlassIconButton(icon: .download, label: "Offline maps",
                                 isActive: packs.installed != nil) {
-                    showingOfflineMaps = true
+                    show(.maps, at: .large)
                 }
                 .glassEffectID("offline", in: glass)
 
@@ -182,10 +201,10 @@ struct ExploreView: View {
     // MARK: Arrival at a heritage site
 
     @ViewBuilder private var arrivalBanner: some View {
-        if let site = heritage.nearby, selected == nil, !isSearching, !showingRoutes {
+        if let site = heritage.nearby, panel == nil {
             ArrivalBanner(
                 siteName: site.name(languageCode: languageCode),
-                onOpenAR: { arSite = site },
+                onOpenAR: { bannerARSite = site },
                 onDismiss: { withAnimation(.smooth) { heritage.dismissNearby() } }
             )
             .padding(.horizontal, Theme.Spacing.l)
@@ -198,7 +217,7 @@ struct ExploreView: View {
 
     private func select(_ place: Place, record: Bool) {
         if record { saved.recordVisit(place) }
-        selected = place
+        show(.place(place), at: .height(270))
         map.show(place)
     }
 
@@ -211,13 +230,13 @@ struct ExploreView: View {
             var named = pin
             named.name = found.name
             named.subtitle = found.subtitle.isEmpty ? pin.subtitle : found.subtitle
-            selected = named
+            panel = .place(named)
         }
     }
 
     private func openAR(_ place: Place) {
+        // Presented over the panel, which stays open underneath: nothing has to close first.
         guard let id = place.heritageID, let site = heritage.site(id: id) else { return }
-        selected = nil
         arSite = site
     }
 }

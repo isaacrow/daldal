@@ -4,29 +4,44 @@ import Foundation
 import Valhalla
 import ValhallaConfigModels
 
+/// How the trip is made. Walking uses footpaths, ignores one-way streets, and moves at walking pace.
+nonisolated enum TravelMode: Sendable {
+    case driving, pedestrian
+
+    var valhallaProfile: String { self == .driving ? "auto" : "pedestrian" }
+}
+
 nonisolated enum RoutingConfig {
     /// FOSSGIS's public Valhalla server: fair use, development only. Self-host before launch
     /// (same Docker image as `scripts/pack/build-iraq-pack.sh`).
     static let onlineEndpoint = "https://valhalla1.openstreetmap.de/route"
-    static let profile = "auto"
+    static let userAgent = "Daldal/0.1 (iOS)"
 
     /// Valhalla request options shared by online and offline routing.
-    static func options(closures: [[[Double]]] = []) -> [String: Any] {
+    static func options(closures: [[[Double]]] = [], mode: TravelMode = .driving) -> [String: Any] {
         var options: [String: Any] = [
             "units": "kilometers",
             // Always English: Valhalla's ar-SA narration is broken (English departures, numbers dropped:
             // "اكمل لغاية كيلومترات"). Daldal writes its own Arabic from maneuver data (ManeuverPhraser).
             "language": "en-US",
-            "alternates": 2,
-            "costing_options": [
+        ]
+        switch mode {
+        case .driving:
+            options["alternates"] = 2
+            options["costing_options"] = [
                 "auto": [
                     // Iraqi drivers favour main roads; side streets are often unpaved or blocked.
                     "use_highways": 1.0,
                     "use_tracks": 0.0,
                     "use_living_streets": 0.1,
                 ],
-            ],
-        ]
+            ]
+        case .pedestrian:
+            options["costing_options"] = [
+                // Iraqi summers: a realistic pace, and prefer proper footways where they exist.
+                "pedestrian": ["walking_speed": 4.6, "walkway_factor": 0.9, "use_ferry": 0.0],
+            ]
+        }
         // Road closures confirmed by two drivers: routes go around them, online and offline alike.
         if !closures.isEmpty { options["exclude_polygons"] = closures }
         return options
@@ -61,10 +76,14 @@ actor DaldalRouteProvider: CustomRouteProvider {
     }
 
     func getRoutes(userLocation: UserLocation, waypoints: [Waypoint]) async throws -> [Route] {
-        let options = RoutingConfig.options(closures: await closures())
+        try await getRoutes(userLocation: userLocation, waypoints: waypoints, profile: .driving)
+    }
+
+    func getRoutes(userLocation: UserLocation, waypoints: [Waypoint], profile mode: TravelMode) async throws -> [Route] {
+        let options = RoutingConfig.options(closures: mode == .driving ? await closures() : [], mode: mode)
         let generator = try createValhallaRequestGenerator(
             endpointUrl: RoutingConfig.onlineEndpoint,
-            profile: RoutingConfig.profile,
+            profile: mode.valhallaProfile,
             optionsJson: String(data: JSONSerialization.data(withJSONObject: options), encoding: .utf8)
         )
         guard case let .httpPost(url, headers, body) = try generator.generateRequest(userLocation: userLocation, waypoints: waypoints)
@@ -87,6 +106,8 @@ actor DaldalRouteProvider: CustomRouteProvider {
         request.httpBody = body
         request.timeoutInterval = 15
         for (field, value) in headers { request.setValue(value, forHTTPHeaderField: field) }
+        // Public OSM services ask clients to identify themselves; anonymous apps get blocked first.
+        request.setValue(RoutingConfig.userAgent, forHTTPHeaderField: "User-Agent")
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             throw RoutingError.server
