@@ -22,6 +22,16 @@
         }
       }
     },
+    "A downloaded city's map, search and directions work without internet. Trips between cities use the internet when there is signal.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعمل خريطة المدينة المنزّلة والبحث والاتجاهات فيها دون إنترنت. أما الرحلات بين المدن فتستخدم الإنترنت عند توفّر الإشارة."
+          }
+        }
+      }
+    },
     "AR is for walking. It pauses while you're in a vehicle.": {
       "localizations": {
         "ar": {
@@ -62,6 +72,16 @@
         }
       }
     },
+    "Car ahead": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السيارة أمامك"
+          }
+        }
+      }
+    },
     "Check your connection and try again. Offline search arrives with downloadable maps.": {
       "localizations": {
         "ar": {
@@ -78,6 +98,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "جارٍ التحقق من الملفات…"
+          }
+        }
+      }
+    },
+    "City maps": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خرائط المدن"
           }
         }
       }
@@ -172,6 +202,16 @@
         }
       }
     },
+    "Downloaded · %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منزّلة · %@"
+          }
+        }
+      }
+    },
     "Downloaded · version %@": {
       "localizations": {
         "ar": {
@@ -192,12 +232,32 @@
         }
       }
     },
+    "Drag sideways to line the arrows up with the street.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسحب جانبياً لمحاذاة الأسهم مع الشارع."
+          }
+        }
+      }
+    },
     "Drag sideways to line the marker up with the site.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "اسحب جانبياً لمحاذاة العلامة مع الموقع."
+          }
+        }
+      }
+    },
+    "Drive Scan": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مسح الطريق"
           }
         }
       }
@@ -272,6 +332,16 @@
         }
       }
     },
+    "Finding a walking route…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ إيجاد طريق للمشي…"
+          }
+        }
+      }
+    },
     "Finding the best route…": {
       "localizations": {
         "ar": {
@@ -318,6 +388,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "زال"
+          }
+        }
+      }
+    },
+    "Green light": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشارة خضراء"
           }
         }
       }
@@ -442,6 +522,16 @@
         }
       }
     },
+    "Mount your phone facing the road. Keep your eyes on the road; Daldal will speak if a car gets close.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبّت هاتفك باتجاه الطريق، وأبقِ عينيك على الطريق؛ سينبّهك دلدل بالصوت إذا اقتربت سيارة."
+          }
+        }
+      }
+    },
     "Mute voice": {
       "localizations": {
         "ar": {
@@ -458,6 +548,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "لا"
+          }
+        }
+      }
+    },
+    "No internet connection. Connect to see the cities you can download.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يوجد اتصال بالإنترنت. اتصل لترى المدن التي يمكنك تنزيلها."
           }
         }
       }
@@ -488,6 +588,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "لا توجد مساحة كافية. تحتاج خريطة العراق إلى نحو %@."
+          }
+        }
+      }
+    },
+    "Not enough free space. This city needs about %@.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد مساحة كافية. تحتاج هذه المدينة إلى نحو %@."
           }
         }
       }
@@ -582,12 +692,32 @@
         }
       }
     },
+    "Red light": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشارة حمراء"
+          }
+        }
+      }
+    },
     "Remove": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "إزالة"
+          }
+        }
+      }
+    },
+    "Remove %@ from this iPhone?": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إزالة %@ من هذا الآيفون؟"
           }
         }
       }
@@ -692,6 +822,26 @@
         }
       }
     },
+    "Seeing %lld objects": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يرى %lld جسماً"
+          }
+        }
+      }
+    },
+    "Seeing %lld objects · LiDAR depth up close": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يرى %lld جسماً · عمق ليدار عن قرب"
+          }
+        }
+      }
+    },
     "Set as home": {
       "localizations": {
         "ar": {
@@ -742,12 +892,32 @@
         }
       }
     },
+    "Show map": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عرض الخريطة"
+          }
+        }
+      }
+    },
     "Show my location": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "اعرض موقعي"
+          }
+        }
+      }
+    },
+    "Show satellite": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عرض القمر الصناعي"
           }
         }
       }
@@ -778,6 +948,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ابدأ"
+          }
+        }
+      }
+    },
+    "Starting the camera…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ تشغيل الكاميرا…"
           }
         }
       }
@@ -842,12 +1022,32 @@
         }
       }
     },
+    "The detection model couldn't be loaded.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعذّر تحميل نموذج التعرّف."
+          }
+        }
+      }
+    },
     "The download didn't finish. Tap Retry.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
             "value": "لم يكتمل التنزيل. اضغط إعادة المحاولة."
+          }
+        }
+      }
+    },
+    "The list of city maps isn't available right now. Try again in a moment.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قائمة خرائط المدن غير متاحة الآن. حاول بعد قليل."
           }
         }
       }
@@ -962,6 +1162,16 @@
         }
       }
     },
+    "Update available · %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يتوفر تحديث · %@"
+          }
+        }
+      }
+    },
     "Using a high-quality voice": {
       "localizations": {
         "ar": {
@@ -1022,6 +1232,26 @@
         }
       }
     },
+    "Walk with AR": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امشِ بالواقع المعزز"
+          }
+        }
+      }
+    },
+    "Watch out: car close ahead": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتبه: سيارة قريبة أمامك"
+          }
+        }
+      }
+    },
     "While you drive, Daldal anonymously shares your speed so everyone sees live traffic. The start and end of every trip are never sent.": {
       "localizations": {
         "ar": {
@@ -1072,6 +1302,16 @@
         }
       }
     },
+    "Yellow light": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشارة صفراء"
+          }
+        }
+      }
+    },
     "Yes": {
       "localizations": {
         "ar": {
@@ -1088,6 +1328,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "أنت الآن في"
+          }
+        }
+      }
+    },
+    "You're here · %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت هنا · %@"
+          }
+        }
+      }
+    },
+    "You've arrived.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصلت."
           }
         }
       }

@@ -28,6 +28,8 @@ struct ExploreView: View {
     @State private var arSite: HeritageSite?
     /// Walking AR navigation opened from a place card (presented on top of the panel).
     @State private var walkDestination: Place?
+    /// Drive Scan. Presented from the panel when one is open, else from the map, so it never collides with it.
+    @State private var scanning = false
     /// Heritage AR opened from the "You're at" banner (no panel showing).
     @State private var bannerARSite: HeritageSite?
     @Namespace private var glass
@@ -83,6 +85,9 @@ struct ExploreView: View {
                 .fullScreenCover(item: $arSite) { site in
                     GeoARView(site: site, languageCode: languageCode)
                 }
+                .fullScreenCover(isPresented: scanBinding(whenPanelOpen: true)) {
+                    DriveScanView(voice: nav.voice)
+                }
                 .fullScreenCover(item: $walkDestination) { place in
                     WalkARView(destination: place,
                                provider: DaldalRouteProvider(cities: { [cities] in cities.installedCities }),
@@ -91,6 +96,9 @@ struct ExploreView: View {
         }
         .fullScreenCover(item: $bannerARSite) { site in
             GeoARView(site: site, languageCode: languageCode)
+        }
+        .fullScreenCover(isPresented: scanBinding(whenPanelOpen: false)) {
+            DriveScanView(voice: nav.voice)
         }
         .onChange(of: nav.routes) { showRoutePreview(fit: true) }
         .onChange(of: live.reports) { map.showLive(traffic: live.traffic, reports: live.reports) }
@@ -119,6 +127,13 @@ struct ExploreView: View {
         case nil:
             EmptyView()
         }
+    }
+
+    private func scanBinding(whenPanelOpen: Bool) -> Binding<Bool> {
+        Binding(
+            get: { scanning && (panel != nil) == whenPanelOpen },
+            set: { if !$0 { scanning = false } }
+        )
     }
 
     private var panelPresented: Binding<Bool> {
@@ -172,6 +187,9 @@ struct ExploreView: View {
                     show(.maps, at: .large)
                 }
                 .glassEffectID("offline", in: glass)
+
+                GlassIconButton(icon: .scan, label: "Drive Scan") { scanning = true }
+                    .glassEffectID("scan", in: glass)
 
                 GlassIconButton(icon: .layers, label: map.base == .satellite ? "Show map" : "Show satellite",
                                 isActive: map.base == .satellite) {

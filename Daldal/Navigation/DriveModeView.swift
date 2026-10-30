@@ -14,6 +14,7 @@ struct DriveModeView: View {
     @State private var camera: MapViewCamera = .automotiveNavigation(zoom: 17, pitch: 55)
     @State private var confirmingEnd = false
     @State private var reporting = false
+    @State private var scanning = false
     @State private var overlay = DriveMapOverlay()
     @State private var reportSent = false
     @AppStorage("traffic.share") private var shareTraffic = true
@@ -104,6 +105,9 @@ struct DriveModeView: View {
         .sheet(isPresented: $reporting) {
             ReportSheet { type in send(type) }
         }
+        .fullScreenCover(isPresented: $scanning) {
+            DriveScanView(voice: nav.voice)
+        }
         .onChange(of: live.reports) { overlay.apply(live) }
         .onChange(of: live.traffic) { overlay.apply(live) }
         .sensoryFeedback(.success, trigger: reportSent) { _, sent in sent }
@@ -127,6 +131,8 @@ struct DriveModeView: View {
                     GlassIconButton(icon: .report, label: "Report") { reporting = true }
                         .glassEffectID("report", in: glass)
                 }
+                GlassIconButton(icon: .scan, label: "Drive Scan") { scanning = true }
+                    .glassEffectID("scan", in: glass)
                 GlassIconButton(icon: nav.voice.isMuted ? .volumeOff : .volume,
                                 label: nav.voice.isMuted ? "Unmute voice" : "Mute voice") {
                     nav.voice.isMuted.toggle()
