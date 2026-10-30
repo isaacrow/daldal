@@ -18,8 +18,13 @@ struct EndToEndTests {
         }
     }
 
+    /// The app keeps these for its whole life (AppDelegate). Freeing them mid-speech crashes inside
+    /// AVSpeechSynthesizer, so tests keep them alive the same way.
+    private static var keepAlive: [AnyObject] = []
+
     @Test func directionsFromTahrirToKadhimiya() async throws {
-        let nav = NavigationModel(packs: OfflinePackManager(), voice: VoiceGuide(languageCode: "ar"), live: LiveStore())
+        let nav = NavigationModel(cities: CityMapsStore(), voice: VoiceGuide(languageCode: "ar"), live: LiveStore())
+        Self.keepAlive.append(nav)
         nav.planRoute(to: kadhimiya, from: tahrir)
         #expect(nav.phase == .planning)
 
@@ -41,7 +46,7 @@ struct EndToEndTests {
     }
 
     @Test func walkingDirections() async throws {
-        let provider = DaldalRouteProvider(pack: { nil })
+        let provider = DaldalRouteProvider(cities: { [] })
         let routes = try await provider.getRoutes(
             userLocation: .init(clLocation: tahrir),
             waypoints: [.init(coordinate: .init(cl: kadhimiya.coordinate), kind: .break)],

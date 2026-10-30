@@ -7,7 +7,7 @@ enum DaldalIcon: String, CaseIterable, Sendable {
     case pin, home, work, clock, star, share, copy, chevron, navigate
     case sun, moon, auto
     case fuel, food, cafe, parking, health, shop, road, mosque, city, heritage, arView = "ar"
-    case volume, volumeOff = "volume-off", download, trash, route, report, traffic
+    case volume, volumeOff = "volume-off", download, trash, route, report, traffic, walk, scan
     case reportJam = "report-jam", reportAccident = "report-accident", reportPolice = "report-police"
     case reportHazard = "report-hazard", reportFlood = "report-flood", reportClosure = "report-closure"
     // Maneuvers. Drawn for right turns; ManeuverIcon mirrors them for left turns.

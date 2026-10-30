@@ -1,5 +1,6 @@
 @preconcurrency import FerrostarCore
 @preconcurrency import FerrostarCoreFFI
+import CoreLocation
 import Foundation
 import Valhalla
 import ValhallaConfigModels
@@ -58,20 +59,20 @@ nonisolated enum RoutingConfig {
 actor DaldalRouteProvider: CustomRouteProvider {
     enum Source: Equatable { case device, server }
 
-    private let pack: @MainActor @Sendable () -> InstalledPack?
+    private let cities: @MainActor @Sendable () -> [InstalledCity]
     private let closures: @MainActor @Sendable () async -> [[[Double]]]
     private let session: URLSession
     private let parser = createOsrmResponseParser(polylinePrecision: 6)
 
-    private var offlineRouter: Valhalla?
-    private var offlineRouterVersion: String?
+    /// One on-device router per downloaded city, opened on first use ("cityID/version" -> router).
+    private var routers: [String: Valhalla] = [:]
     private(set) var lastSource: Source?
 
-    init(pack: @escaping @MainActor @Sendable () -> InstalledPack?,
+    init(cities: @escaping @MainActor @Sendable () -> [InstalledCity],
          closures: @escaping @MainActor @Sendable () async -> [[[Double]]] = { [] },
          session: URLSession = .shared) {
         self.closures = closures
-        self.pack = pack
+        self.cities = cities
         self.session = session
     }
 
@@ -89,9 +90,12 @@ actor DaldalRouteProvider: CustomRouteProvider {
         guard case let .httpPost(url, headers, body) = try generator.generateRequest(userLocation: userLocation, waypoints: waypoints)
         else { throw RoutingError.unexpectedRequest }
 
-        if let pack = await pack() {
+        // On the phone when one downloaded city covers the whole trip; between cities, the server.
+        let points = [userLocation.coordinates] + waypoints.map(\.coordinate)
+        let coordinates = points.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lng) }
+        if let city = await cities().first(where: { city in coordinates.allSatisfy(city.contains) }) {
             do {
-                let routes = try routeOnDevice(body: body, pack: pack)
+                let routes = try routeOnDevice(body: body, city: city)
                 if !routes.isEmpty {
                     lastSource = .device
                     return routes
@@ -116,13 +120,17 @@ actor DaldalRouteProvider: CustomRouteProvider {
         return try parser.parseResponse(response: data)
     }
 
-    private func routeOnDevice(body: Data, pack: InstalledPack) throws -> [Route] {
-        if offlineRouter == nil || offlineRouterVersion != pack.version {
-            offlineRouter?.close()
-            offlineRouter = try Valhalla(ValhallaConfig(tileExtractTar: pack.routingTiles))
-            offlineRouterVersion = pack.version
+    private func routeOnDevice(body: Data, city: InstalledCity) throws -> [Route] {
+        let key = "\(city.id)/\(city.version)"
+        if routers[key] == nil {
+            // Close this city's older build, if one was open.
+            for (other, router) in routers where other.hasPrefix("\(city.id)/") {
+                router.close()
+                routers[other] = nil
+            }
+            routers[key] = try Valhalla(ValhallaConfig(tileExtractTar: city.routingTiles))
         }
-        guard let router = offlineRouter, let request = String(data: body, encoding: .utf8) else { return [] }
+        guard let router = routers[key], let request = String(data: body, encoding: .utf8) else { return [] }
         let reply = try router.route(rawRequest: request)
         return try parser.parseResponse(response: Data(reply.utf8))
     }

@@ -74,12 +74,13 @@ struct MapCanvas: UIViewRepresentable {
 
         /// Reloads the style only when the theme, language or tile source actually changes.
         func applyStyle(to mapView: MLNMapView, isDark: Bool) {
-            let key = "\(isDark)-\(parent.languageCode)-\(parent.tiles.cacheKey)"
+            let key = "\(isDark)-\(parent.languageCode)-\(parent.tiles.cacheKey)-\(parent.controller.base.rawValue)"
             guard key != loadedStyleKey else { return }
             loadedStyleKey = key
             self.isDark = isDark
             do {
-                mapView.styleURL = try MapStyleBuilder.styleURL(isDark: isDark, languageCode: parent.languageCode, tiles: parent.tiles)
+                mapView.styleURL = try MapStyleBuilder.styleURL(isDark: isDark, languageCode: parent.languageCode,
+                                                                tiles: parent.tiles, base: parent.controller.base)
             } catch {
                 assertionFailure("Could not write map style: \(error)")
             }

@@ -98,7 +98,7 @@ struct GeoARView: View {
 }
 
 /// An arrow at the screen edge pointing toward an off-screen site.
-private struct DirectionHint: View {
+struct DirectionHint: View {
     let bearing: Double
 
     var body: some View {

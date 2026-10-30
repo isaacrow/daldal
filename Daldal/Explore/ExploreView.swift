@@ -8,7 +8,8 @@ struct ExploreView: View {
     @Environment(SavedPlacesStore.self) private var saved
     @Environment(HeritageStore.self) private var heritage
     @Environment(NavigationModel.self) private var nav
-    @Environment(OfflinePackManager.self) private var packs
+    @Environment(CityMapsStore.self) private var cities
+    @Environment(Connectivity.self) private var connectivity
     @Environment(LocationService.self) private var location
     @Environment(LiveStore.self) private var live
 
@@ -25,11 +26,18 @@ struct ExploreView: View {
     @State private var detent: PresentationDetent = .height(270)
     /// Heritage AR opened from a place card (presented on top of the panel).
     @State private var arSite: HeritageSite?
+    /// Walking AR navigation opened from a place card (presented on top of the panel).
+    @State private var walkDestination: Place?
     /// Heritage AR opened from the "You're at" banner (no panel showing).
     @State private var bannerARSite: HeritageSite?
     @Namespace private var glass
 
     private var languageCode: String { AppLanguage.code }
+
+    /// Online tiles when there's signal; downloaded cities when there isn't, so they never go blank.
+    private var tileSource: MapTileSource {
+        connectivity.isOnline || cities.installedCities.isEmpty ? .online : .offline(cities.installedCities)
+    }
 
     private var selected: Place? {
         if case .place(let place) = panel { place } else { nil }
@@ -50,7 +58,7 @@ struct ExploreView: View {
         MapCanvas(
             controller: map,
             heritageSites: heritage.sites,
-            tiles: packs.installed.map(MapTileSource.offline) ?? .online,
+            tiles: tileSource,
             onLongPress: dropPin,
             onSelectHeritage: { id in
                 guard panel != .routes, let site = heritage.site(id: id) else { return }
@@ -75,6 +83,11 @@ struct ExploreView: View {
                 .fullScreenCover(item: $arSite) { site in
                     GeoARView(site: site, languageCode: languageCode)
                 }
+                .fullScreenCover(item: $walkDestination) { place in
+                    WalkARView(destination: place,
+                               provider: DaldalRouteProvider(cities: { [cities] in cities.installedCities }),
+                               voice: nav.voice)
+                }
         }
         .fullScreenCover(item: $bannerARSite) { site in
             GeoARView(site: site, languageCode: languageCode)
@@ -93,7 +106,8 @@ struct ExploreView: View {
             PlaceCard(
                 place: place,
                 onOpenAR: openAR,
-                onDirections: { place in planRoute(to: place) }
+                onDirections: { place in planRoute(to: place) },
+                onWalk: { place in walkDestination = place }
             )
         case .routes:
             RoutePreviewCard(
@@ -154,10 +168,16 @@ struct ExploreView: View {
         GlassEffectContainer(spacing: Theme.Spacing.s) {
             VStack(spacing: Theme.Spacing.s) {
                 GlassIconButton(icon: .download, label: "Offline maps",
-                                isActive: packs.installed != nil) {
+                                isActive: !cities.installedCities.isEmpty) {
                     show(.maps, at: .large)
                 }
                 .glassEffectID("offline", in: glass)
+
+                GlassIconButton(icon: .layers, label: map.base == .satellite ? "Show map" : "Show satellite",
+                                isActive: map.base == .satellite) {
+                    map.base = map.base == .satellite ? .standard : .satellite
+                }
+                .glassEffectID("satellite", in: glass)
 
                 GlassIconButton(icon: map.appearance.icon, label: appearanceLabel) {
                     map.appearance = map.appearance.next

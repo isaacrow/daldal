@@ -95,6 +95,11 @@ final class VoiceGuide: NSObject {
         say(phraser.rerouting, interrupt: true)
     }
 
+    /// Speaks any sentence with the guidance voice, chime and ducking (used by walking AR).
+    func announce(_ text: String, interrupt: Bool = false) {
+        say(text, interrupt: interrupt)
+    }
+
     func reportAhead(_ type: ReportType, distance: Double) {
         say(phraser.reportAhead(type, distance: distance))
     }

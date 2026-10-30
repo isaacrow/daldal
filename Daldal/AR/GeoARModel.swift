@@ -37,6 +37,17 @@ final class GeoARModel {
 
     /// GPS must be at least this good before we place anything.
     static let requiredAccuracy: CLLocationAccuracy = 25
+
+    /// How good GPS must be before placing the site. Close up, metres matter; from far away they don't:
+    /// 60 m of error seen from 2 km is under 2 degrees. Indoors and between buildings, GPS rarely beats 30 m.
+    static func accuracyNeeded(atDistance distance: CLLocationDistance) -> CLLocationAccuracy {
+        switch distance {
+        case ..<300: requiredAccuracy
+        case ..<1_000: 40
+        case ..<5_000: 65
+        default: 100
+        }
+    }
     /// Walking pace or slower. AR is never shown to a driver.
     static let maxSpeed: CLLocationSpeed = 4
     /// Approximate camera height above the ground when holding a phone.
@@ -108,7 +119,8 @@ final class GeoARModel {
             root?.isEnabled = false
             return
         }
-        guard location.horizontalAccuracy >= 0, location.horizontalAccuracy <= Self.requiredAccuracy else {
+        let needed = Self.accuracyNeeded(atDistance: site.location.distance(from: location))
+        guard location.horizontalAccuracy >= 0, location.horizontalAccuracy <= needed else {
             if root == nil { status = .poorAccuracy(meters: Int(location.horizontalAccuracy.rounded())) }
             return
         }

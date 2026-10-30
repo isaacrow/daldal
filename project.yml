@@ -40,6 +40,11 @@ targets:
     platform: iOS
     sources:
       - path: Daldal
+        excludes: ["Resources/Fonts/**"]
+      # Map label glyphs (Noto Sans, SIL OFL), kept as a folder: MapLibre reads Fonts/<font>/<range>.pbf.
+      - path: Daldal/Resources/Fonts
+        type: folder
+        buildPhase: resources
     dependencies:
       - package: MapLibre
       - package: Ferrostar

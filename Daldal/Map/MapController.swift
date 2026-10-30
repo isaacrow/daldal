@@ -12,6 +12,10 @@ final class MapController {
     /// 3D: pitched camera + extruded buildings. 2D: top-down with flat footprints.
     var is3D = true
     var appearance: MapAppearance = .auto
+    /// Drawn map or satellite photos; remembered between launches.
+    var base: MapBaseLayer = MapBaseLayer(rawValue: UserDefaults.standard.string(forKey: "map.base") ?? "") ?? .standard {
+        didSet { UserDefaults.standard.set(base.rawValue, forKey: "map.base") }
+    }
     /// Camera heading in degrees, used to rotate the compass button.
     private(set) var heading: CLLocationDirection = 0
     private(set) var isFollowingUser = true
@@ -71,8 +75,11 @@ final class MapController {
 
     func applyBuildingMode() {
         guard let style = mapView?.style else { return }
-        style.layer(withIdentifier: MapStyleBuilder.buildings3DLayer)?.isVisible = is3D
-        style.layer(withIdentifier: MapStyleBuilder.buildingsFlatLayer)?.isVisible = !is3D
+        // Offline, every downloaded city has its own copy ("building-3d-basra"), so match by prefix.
+        for layer in style.layers {
+            if layer.identifier.hasPrefix(MapStyleBuilder.buildings3DLayer) { layer.isVisible = is3D }
+            if layer.identifier.hasPrefix(MapStyleBuilder.buildingsFlatLayer) { layer.isVisible = !is3D }
+        }
     }
 
     /// Draws the heritage catalogue as a tappable symbol layer. Called after every style load.

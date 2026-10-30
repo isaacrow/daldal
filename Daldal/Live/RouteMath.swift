@@ -24,6 +24,30 @@ enum RouteMath {
         return best?.along
     }
 
+    /// The point `distance` metres along `path` from its start (clamped to the path's ends).
+    static func coordinate(along path: [CLLocationCoordinate2D], at distance: Double) -> CLLocationCoordinate2D? {
+        guard let first = path.first else { return nil }
+        guard distance > 0 else { return first }
+        var walked = 0.0
+        for (a, b) in zip(path, path.dropFirst()) {
+            let pa = local(a, origin: first), pb = local(b, origin: first)
+            let length = (pb - pa).length
+            if walked + length >= distance, length > 0 {
+                let t = (distance - walked) / length
+                return CLLocationCoordinate2D(latitude: a.latitude + (b.latitude - a.latitude) * t,
+                                              longitude: a.longitude + (b.longitude - a.longitude) * t)
+            }
+            walked += length
+        }
+        return path.last
+    }
+
+    /// Length of `path` in metres.
+    static func length(_ path: [CLLocationCoordinate2D]) -> Double {
+        guard let first = path.first else { return 0 }
+        return zip(path, path.dropFirst()).reduce(0) { $0 + (local($1.1, origin: first) - local($1.0, origin: first)).length }
+    }
+
     /// Share of `candidate`'s points that lie within `tolerance` metres of `reference`.
     /// Two routes that share almost every point are the same road, so "faster" would be noise.
     static func overlap(_ candidate: [CLLocationCoordinate2D], with reference: [CLLocationCoordinate2D], tolerance: Double = 30) -> Double {

@@ -6,6 +6,7 @@ struct PlaceCard: View {
     let place: Place
     let onOpenAR: (Place) -> Void
     let onDirections: (Place) -> Void
+    let onWalk: (Place) -> Void
 
     @Environment(LocationService.self) private var location
     @Environment(SavedPlacesStore.self) private var saved
@@ -58,6 +59,11 @@ struct PlaceCard: View {
                     Label { Text("Directions") } icon: { Icon(.navigate, size: 18) }
                 }
                 .buttonStyle(.glassProminent)
+
+                Button { onWalk(place) } label: {
+                    Label { Text("Walk with AR") } icon: { Icon(.walk, size: 18) }
+                }
+                .buttonStyle(.glass)
 
                 if site != nil {
                     Button { onOpenAR(place) } label: {

@@ -2,16 +2,17 @@ import UIKit
 
 /// Owns the services that must outlive any one screen, and receives background download events.
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    let packs = OfflinePackManager()
+    let cities = CityMapsStore()
+    let connectivity = Connectivity()
     let voice = VoiceGuide(languageCode: AppLanguage.code)
     let live = LiveStore()
-    lazy var navigation = NavigationModel(packs: packs, voice: voice, live: live)
+    lazy var navigation = NavigationModel(cities: cities, voice: voice, live: live)
 
-    /// iOS relaunches the app when a background pack download finishes; hand the session back to it.
+    /// iOS relaunches the app when a background city download finishes; hand the session back to it.
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String,
                      completionHandler: @escaping () -> Void) {
-        guard identifier == PackConfig.backgroundSessionID else { return completionHandler() }
-        packs.backgroundCompletionHandler = completionHandler
-        packs.reconnectBackgroundSession()
+        guard identifier == CityMapsConfig.backgroundSessionID else { return completionHandler() }
+        cities.backgroundCompletionHandler = completionHandler
+        cities.reconnectBackgroundSession()
     }
 }

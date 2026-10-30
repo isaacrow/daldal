@@ -79,17 +79,24 @@ final class OfflineSearchService: PlaceSearchService {
 /// Offline first when the Iraq pack is installed (instant, free, works in dead zones), online otherwise.
 final class HybridSearchService: PlaceSearchService {
     private let online: any PlaceSearchService
-    private let offline: () -> (any PlaceSearchService)?
+    /// Downloaded cities' indexes, the city the user is in first.
+    private let offline: () -> [any PlaceSearchService]
 
-    init(online: any PlaceSearchService, offline: @escaping () -> (any PlaceSearchService)?) {
+    init(online: any PlaceSearchService, offline: @escaping () -> [any PlaceSearchService]) {
         self.online = online
         self.offline = offline
     }
 
+    /// Offline first when cities are downloaded (instant, free, works in dead zones), online otherwise.
     func search(_ query: String, near: CLLocationCoordinate2D?) async throws -> [Place] {
-        if let offline = offline(), let found = try? await offline.search(query, near: near), !found.isEmpty {
-            return found
+        var found: [Place] = []
+        var seen = Set<String>()
+        for index in offline() {
+            for place in (try? await index.search(query, near: near)) ?? [] where seen.insert(place.id).inserted {
+                found.append(place)
+            }
         }
+        if !found.isEmpty { return Array(found.prefix(20)) }
         return try await online.search(query, near: near)
     }
 

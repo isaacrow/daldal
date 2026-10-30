@@ -66,12 +66,12 @@ final class NavigationModel {
         snappedLocationCourseFiltering: .snapToRoute
     )
 
-    init(packs: OfflinePackManager, voice: VoiceGuide, live: LiveStore) {
+    init(cities: CityMapsStore, voice: VoiceGuide, live: LiveStore) {
         self.voice = voice
         self.live = live
         locationProvider = CoreLocationProvider(activityType: .automotiveNavigation, allowBackgroundLocationUpdates: true)
         routeProvider = DaldalRouteProvider(
-            pack: { [weak packs] in packs?.installed },
+            cities: { [weak cities] in cities?.installedCities ?? [] },
             closures: { [weak live] in await live?.currentClosures() ?? [] }
         )
         core = FerrostarCore(

@@ -7,7 +7,8 @@ import SwiftUI
 /// Drive Mode: the whole screen is about the next maneuver. Everything else is hidden.
 struct DriveModeView: View {
     @Environment(NavigationModel.self) private var nav
-    @Environment(OfflinePackManager.self) private var packs
+    @Environment(CityMapsStore.self) private var cities
+    @Environment(Connectivity.self) private var connectivity
     @Environment(LiveStore.self) private var live
     @Environment(\.colorScheme) private var colorScheme
     @State private var camera: MapViewCamera = .automotiveNavigation(zoom: 17, pitch: 55)
@@ -26,7 +27,7 @@ struct DriveModeView: View {
         try? MapStyleBuilder.styleURL(
             isDark: colorScheme == .dark,
             languageCode: languageCode,
-            tiles: packs.installed.map(MapTileSource.offline) ?? .online
+            tiles: connectivity.isOnline || cities.installedCities.isEmpty ? .online : .offline(cities.installedCities)
         )
     }
 

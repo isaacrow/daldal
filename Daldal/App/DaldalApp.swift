@@ -18,13 +18,18 @@ struct DaldalApp: App {
                 .environment(search)
                 .environment(saved)
                 .environment(heritage)
-                .environment(services.packs)
+                .environment(services.cities)
+                .environment(services.connectivity)
                 .environment(services.navigation)
                 .environment(services.live)
                 .onAppear {
                     search.currentLocation = { [location] in location.location }
-                    search.service = HybridSearchService(online: PhotonSearchService()) { [packs = services.packs] in
-                        packs.installed.flatMap { try? OfflineSearchCache.service(for: $0) }
+                    search.service = HybridSearchService(online: PhotonSearchService()) { [cities = services.cities, location] in
+                        // The city you're in comes first, so its "Al-Mansour" wins over another city's.
+                        let all = cities.installedCities
+                        let here = location.location.map { coordinate in all.filter { $0.contains(coordinate.coordinate) } } ?? []
+                        let ordered = here + all.filter { city in !here.contains(city) }
+                        return ordered.compactMap { try? OfflineSearchCache.service(for: $0) }
                     }
                 }
                 .onChange(of: scenePhase, initial: true) { _, phase in
@@ -38,14 +43,16 @@ struct DaldalApp: App {
     }
 }
 
-/// Opens the search index once per installed pack version instead of on every keystroke.
+/// Opens each city's search index once per version instead of on every keystroke.
 enum OfflineSearchCache {
-    private static var cached: (version: String, service: OfflineSearchService)?
+    private static var cached: [String: OfflineSearchService] = [:]
 
-    static func service(for pack: InstalledPack) throws -> OfflineSearchService {
-        if let cached, cached.version == pack.version { return cached.service }
-        let service = try OfflineSearchService(index: pack.searchIndex, languageCode: AppLanguage.code)
-        cached = (pack.version, service)
+    static func service(for city: InstalledCity) throws -> OfflineSearchService {
+        let key = "\(city.id)/\(city.version)"
+        if let service = cached[key] { return service }
+        let service = try OfflineSearchService(index: city.searchIndex, languageCode: AppLanguage.code)
+        cached = cached.filter { !$0.key.hasPrefix("\(city.id)/") } // Drop the city's older build.
+        cached[key] = service
         return service
     }
 }
