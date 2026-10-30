@@ -65,7 +65,7 @@ final class PlaceCardButtonsUITests: XCTestCase {
         XCTAssertTrue(header.waitForExistence(timeout: 15), "Discover didn't open")
         shot("discover")
         // Open the first place and check its card offers a spoken description.
-        app.cells.firstMatch.tap()
+        app.buttons.matching(identifier: "discover.place").firstMatch.tap()
         let listen = app.buttons["place.listen"]
         XCTAssertTrue(listen.waitForExistence(timeout: 15), "the guide place card has no Listen button")
         shot("guide-card")

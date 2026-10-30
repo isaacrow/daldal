@@ -143,7 +143,7 @@ nonisolated final class ScanDetector: @unchecked Sendable {
     private var nextID = 1
 
     init?() {
-        guard let url = Bundle.main.url(forResource: "YOLOv3TinyInt8LUT", withExtension: "mlmodelc"),
+        guard let url = Bundle.main.url(forResource: "YOLOv3Int8LUT", withExtension: "mlmodelc"),
               let mlModel = try? MLModel(contentsOf: url, configuration: {
                   let config = MLModelConfiguration()
                   config.computeUnits = .all // Neural Engine when available

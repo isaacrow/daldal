@@ -20,6 +20,7 @@ struct DiscoverView: View {
                         ForEach(city.places) { place in
                             Button { onSelect(place) } label: { DiscoverRow(place: place, languageCode: languageCode) }
                                 .buttonStyle(.plain)
+                                .accessibilityIdentifier("discover.place")
                         }
                     } header: {
                         Text("Places to visit in \(city.name(languageCode: languageCode))")

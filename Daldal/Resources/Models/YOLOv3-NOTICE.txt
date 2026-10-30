@@ -1,4 +1,4 @@
-YOLOv3-Tiny (Int8 LUT), Core ML conversion published by Apple at
+YOLOv3 (Int8 LUT), Core ML conversion published by Apple at
 https://developer.apple.com/machine-learning/models/
 Original model: YOLOv3 by Joseph Redmon and Ali Farhadi, https://github.com/pjreddie/darknet
 Licence: darknet is public domain ("YOLO LICENSE", Version 2).

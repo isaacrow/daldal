@@ -47,7 +47,7 @@ The project file is generated from `project.yml`, so edit that file instead of t
 - **No emoji anywhere.** Icons are SVGs in `Assets.xcassets/Icons`, one per `DaldalIcon` case. `scripts/check-no-emoji.sh` runs on every build and fails it if an emoji appears.
 - **Only open data we're allowed to ship.** OpenStreetMap (ODbL, attribution stays visible on the map), Wikidata (CC0), and Wikimedia Commons images (credited per file). No scraping of Google Maps or Waze.
 - **AR is for walking.** The AR views pause above walking speed.
-- **Bundled third-party data:** Noto Sans glyphs (SIL OFL), YOLOv3-Tiny Core ML model (darknet, public domain;
+- **Bundled third-party data:** Noto Sans glyphs (SIL OFL), YOLOv3 (Int8) Core ML model (darknet, public domain;
   see `Daldal/Resources/Models/YOLOv3-NOTICE.txt`).
 
 ## Adding a 3D model to a heritage site
