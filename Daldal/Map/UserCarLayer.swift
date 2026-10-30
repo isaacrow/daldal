@@ -34,7 +34,7 @@ enum UserCarLayer {
         car.fillExtrusionBase = NSExpression(forKeyPath: "base")
         car.fillExtrusionHeight = NSExpression(forKeyPath: "top")
         car.fillExtrusionOpacity = NSExpression(forConstantValue: 1)
-        car.fillExtrusionVerticalGradient = NSExpression(forConstantValue: true)
+        car.fillExtrusionHasVerticalGradient = NSExpression(forConstantValue: true)
         style.addLayer(car) // Above everything: you should never lose your own car behind a building.
     }
 
