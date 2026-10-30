@@ -32,7 +32,10 @@ The project file is generated from `project.yml`, so edit that file instead of t
 | 41 Iraqi heritage sites from Wikidata, map layer, "you're at…" banner | `Daldal/Heritage/`, `Resources/Data/iraq-heritage.json` |
 | Geographic AR (GPS + compass anchoring, LiDAR occlusion, USDZ models) | `Daldal/AR/` |
 | Liquid Glass controls, SVG icon set, Arabic-first strings | `Daldal/DesignSystem/`, `Resources/` |
-| Offline Iraq pack: download, verify, install; offline map and Arabic-aware search | `Daldal/Offline/`, `scripts/pack/` |
+| City maps: download each city (map, routing, search), verified; works offline | `Daldal/Offline/`, [daldal-maps](https://github.com/isaacrow/daldal-maps) |
+| Satellite view (EOX Sentinel-2 2016, CC BY 4.0) and terrain shading (AWS Terrain Tiles) | `Daldal/Map/MapStyle.swift` |
+| Walking AR navigation: chevrons on the ground, turn arrows, voice | `Daldal/AR/WalkAR*.swift` |
+| Drive Scan: on-device detection of vehicles, people, lights, signs; 3D road view; collision warning | `Daldal/Scan/` |
 | Routing: on-device Valhalla with online fallback, through Ferrostar | `Daldal/Routing/` |
 | Drive Mode: maneuver banner, lanes, speed and limit, ETA, rerouting | `Daldal/Navigation/` |
 | Arabic/English voice written by Daldal, speed-based timing, chime, music ducking | `Daldal/Voice/` |
@@ -43,7 +46,9 @@ The project file is generated from `project.yml`, so edit that file instead of t
 
 - **No emoji anywhere.** Icons are SVGs in `Assets.xcassets/Icons`, one per `DaldalIcon` case. `scripts/check-no-emoji.sh` runs on every build and fails it if an emoji appears.
 - **Only open data we're allowed to ship.** OpenStreetMap (ODbL, attribution stays visible on the map), Wikidata (CC0), and Wikimedia Commons images (credited per file). No scraping of Google Maps or Waze.
-- **AR is for walking.** The AR view pauses above walking speed.
+- **AR is for walking.** The AR views pause above walking speed.
+- **Bundled third-party data:** Noto Sans glyphs (SIL OFL), YOLOv3-Tiny Core ML model (darknet, public domain;
+  see `Daldal/Resources/Models/YOLOv3-NOTICE.txt`).
 
 ## Adding a 3D model to a heritage site
 
@@ -57,9 +62,16 @@ The app downloads the model once, caches it, and shows it in place of the light-
 
 The catalogue comes from a Wikidata SPARQL query run by the scripts in `scripts/heritage/`. Re-run it to pick up new sites. Wikidata is CC0, so the result can be bundled freely.
 
-## Building the offline Iraq pack
+## City maps
 
-Run this on any Linux or Mac machine with Docker (it takes about an hour and needs ~6 GB of disk):
+Each city's offline files are built every Monday by GitHub Actions in the public
+[daldal-maps](https://github.com/isaacrow/daldal-maps) repo, and the app downloads them from its latest release
+(`CityMapsConfig.catalogURL`). To add a city, add it to `cities.json` there.
+
+## Building a single all-Iraq pack (older approach)
+
+The script below builds one pack for the whole country. The app now uses per-city maps instead; keep this for
+a self-hosted CDN. Run it on any Linux or Mac machine with Docker (about an hour, ~6 GB of disk):
 
 ```bash
 pip install osmium
