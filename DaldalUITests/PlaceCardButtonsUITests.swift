@@ -53,11 +53,12 @@ final class PlaceCardButtonsUITests: XCTestCase {
     func testPlaceCardShowsLandmarkModel() {
         let app = launchWithCard()
         // The shrine's generated model downloads from the landmarks release and appears on its card.
-        let viewer = app.otherElements["place.model3d"]
-        let shown = viewer.waitForExistence(timeout: 30)
-        if shown, !viewer.isHittable { app.swipeUp() }
+        // The viewer (or its "View the 3D model" button, which can take over its identifier).
+        let viewer = app.descendants(matching: .any).matching(identifier: "place.model3d").firstMatch
         let open = app.buttons["place.model3d.open"]
-        if open.waitForExistence(timeout: 10) { open.tap() }
+        app.swipeUp() // The viewer sits below the action buttons.
+        let shown = viewer.waitForExistence(timeout: 30) || open.waitForExistence(timeout: 5)
+        if open.exists { open.tap() } else if viewer.exists, viewer.elementType == .button { viewer.tap() }
         sleep(6)
         shot("landmark-model")
         XCTAssertTrue(shown, "the Imam Husayn shrine card should show its 3D model")

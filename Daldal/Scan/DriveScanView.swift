@@ -182,8 +182,8 @@ struct RoadScene: View {
 
             // Low behind our car, looking down the road.
             let camera = PerspectiveCamera()
-            camera.camera.fieldOfViewInDegrees = 52
-            camera.look(at: [0, 0, -20], from: [0, 5.2, 11.5], relativeTo: nil)
+            camera.camera.fieldOfViewInDegrees = 46
+            camera.look(at: [0, 0, -24], from: [0, 7.5, 17], relativeTo: nil)
             world.addChild(camera)
             content.add(world)
         } update: { content in
