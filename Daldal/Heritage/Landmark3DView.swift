@@ -7,6 +7,8 @@ struct Landmark3DView: View {
     @Environment(LandmarkModelStore.self) private var store
     @State private var entity: Entity?
     @State private var failed = false
+    /// The model loads when asked for: it's heavy, and nothing 3D should start while the card just opens.
+    @State private var requested = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
@@ -17,6 +19,16 @@ struct Landmark3DView: View {
                         content.add(Self.stage(for: entity))
                     }
                     .realityViewCameraControls(.orbit)
+                } else if !requested {
+                    Button {
+                        requested = true
+                    } label: {
+                        Label { Text("View the 3D model") } icon: { Icon(.cube, size: 20) }
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                    }
+                    .buttonStyle(.glass)
+                    .accessibilityIdentifier("place.model3d.open")
                 } else if failed {
                     Text("The 3D model needs an internet connection the first time.")
                         .font(.footnote)
@@ -35,15 +47,20 @@ struct Landmark3DView: View {
             .accessibilityIdentifier("place.model3d")
 
             HStack(spacing: Theme.Spacing.xs) {
-                Text("AI model from one photo; hidden sides are estimated.")
-                if let photo = model.photoURL {
+                if model.isHandBuilt {
+                    Text("Built from the monument's real proportions.")
+                } else {
+                    Text("AI model from one photo; hidden sides are estimated.")
+                }
+                if let photo = model.photoURL, !photo.absoluteString.isEmpty {
                     Link("Photo credit", destination: photo)
                 }
             }
             .font(.caption)
             .foregroundStyle(.secondary)
         }
-        .task(id: model.id) {
+        .task(id: requested ? model.id : nil) {
+            guard requested else { return }
             do {
                 let url = try await store.localModel(model)
                 entity = try await Entity(contentsOf: url)

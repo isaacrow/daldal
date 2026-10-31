@@ -16,6 +16,10 @@ nonisolated struct LandmarkModel: Codable, Hashable, Sendable {
     let icon: String?
     /// Real height in metres (Wikidata where recorded, otherwise an estimate). The model itself is 1 unit tall.
     let height: Double?
+    /// How it was made: "TripoSR (MIT), from one photo" or "Hand-built from the monument's documented proportions".
+    let generator: String?
+
+    var isHandBuilt: Bool { generator?.hasPrefix("Hand-built") ?? false }
 
     var photoURL: URL? { URL(string: photo) }
 }

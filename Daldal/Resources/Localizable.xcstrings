@@ -2599,6 +2599,26 @@
           }
         }
       }
+    },
+    "View the 3D model": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعرض النموذج ثلاثي الأبعاد"
+          }
+        }
+      }
+    },
+    "Built from the monument's real proportions.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مبني وفق أبعاد المعلم الحقيقية."
+          }
+        }
+      }
     }
   }
 }

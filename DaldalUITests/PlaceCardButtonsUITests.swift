@@ -56,7 +56,9 @@ final class PlaceCardButtonsUITests: XCTestCase {
         let viewer = app.otherElements["place.model3d"]
         let shown = viewer.waitForExistence(timeout: 30)
         if shown, !viewer.isHittable { app.swipeUp() }
-        sleep(4)
+        let open = app.buttons["place.model3d.open"]
+        if open.waitForExistence(timeout: 10) { open.tap() }
+        sleep(6)
         shot("landmark-model")
         XCTAssertTrue(shown, "the Imam Husayn shrine card should show its 3D model")
     }
