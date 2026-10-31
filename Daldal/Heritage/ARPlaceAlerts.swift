@@ -6,11 +6,12 @@ import UserNotifications
 /// Tells visitors when they reach a place that has something to explore in AR there (a monument's 3D model,
 /// the Battle of Karbala), with a notification that opens it. The AR content itself unlocks only on site.
 ///
-/// iOS lets an app watch 20 places at a time, so the 20 nearest are watched (CLMonitor) and swapped as the
-/// visitor travels. With "Always" location the alert also arrives when the app is closed; with "While Using"
+/// iOS lets an app watch 20 places at a time, so the 20 nearest are watched (CLLocationManager region
+/// monitoring) and swapped as the visitor travels. CLMonitor is not used: on iOS 26.6 its initialiser raised an
+/// exception that ended the app at launch once "Always" location was granted. With "Always" location the alert also arrives when the app is closed; with "While Using"
 /// it arrives while the app is open or navigating.
 @Observable
-final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
+final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate, CLLocationManagerDelegate {
     struct Spot: Sendable, Equatable {
         let id: String // a Wikidata QID, or "battle:karbala"
         let name: String
@@ -27,8 +28,6 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
     var opened: String?
 
     @ObservationIgnored private var spots: [Spot] = []
-    @ObservationIgnored private var monitorCreation: Task<CLMonitor, Never>?
-    @ObservationIgnored private var watched: Set<String> = []
     @ObservationIgnored private var watchedAround: CLLocation?
     @ObservationIgnored private var askedPermission = false
     @ObservationIgnored private let locationManager = CLLocationManager()
@@ -36,6 +35,7 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
     override init() {
         super.init()
         UNUserNotificationCenter.current().delegate = self
+        locationManager.delegate = self
     }
 
     func setSpots(_ spots: [Spot]) {
@@ -60,7 +60,7 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
         }
         if watchedAround.map({ $0.distance(from: location) > 5_000 }) ?? true {
             watchedAround = location
-            Task { await watchNearest(to: location) }
+            watchNearest(to: location)
         }
     }
 
@@ -68,7 +68,6 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
 
     private func askPermission() async {
         let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
-        // Arrival alerts with the app closed need "Always" location; iOS offers the upgrade on its own schedule.
         // Arrival alerts with the app closed need "Always"; iOS shows the upgrade prompt when it chooses.
         if granted, locationManager.authorizationStatus == .authorizedWhenInUse {
             locationManager.requestAlwaysAuthorization()
@@ -107,38 +106,35 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
 
     // MARK: Watching
 
-    private func watchNearest(to location: CLLocation) async {
+    private func watchNearest(to location: CLLocation) {
         // Watching only helps when iOS may wake the app ("Always"); otherwise the in-app check covers it.
-        guard locationManager.authorizationStatus == .authorizedAlways else { return }
-        // One monitor per name, ever: creating a second with the same name raises an exception that ends the app,
-        // and two location updates can arrive while the first creation is still awaiting.
-        if monitorCreation == nil {
-            monitorCreation = Task {
-                let monitor = await CLMonitor("daldal.ar-places")
-                Task { await self.listen(to: monitor) }
-                return monitor
-            }
-        }
-        guard let monitor = await monitorCreation?.value else { return }
+        guard locationManager.authorizationStatus == .authorizedAlways,
+              CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) else { return }
         let nearest = spots.sorted { location.distance(from: CLLocation($0.coordinate)) < location.distance(from: CLLocation($1.coordinate)) }
             .prefix(20)
         let wanted = Set(nearest.map(\.id))
-        for id in watched.subtracting(wanted) { await monitor.remove(id) }
-        for spot in nearest where !watched.contains(spot.id) {
-            let condition = CLMonitor.CircularGeographicCondition(center: spot.coordinate, radius: Self.arrivalRadius)
-            await monitor.add(condition, identifier: spot.id, assuming: .unsatisfied)
+        for region in locationManager.monitoredRegions where !wanted.contains(region.identifier) {
+            locationManager.stopMonitoring(for: region)
         }
-        watched = wanted
+        let watched = Set(locationManager.monitoredRegions.map(\.identifier))
+        for spot in nearest where !watched.contains(spot.id) {
+            let region = CLCircularRegion(center: spot.coordinate, radius: Self.arrivalRadius, identifier: spot.id)
+            region.notifyOnEntry = true
+            region.notifyOnExit = false
+            locationManager.startMonitoring(for: region)
+        }
     }
 
-    private func listen(to monitor: CLMonitor) async {
-        do {
-            for try await event in await monitor.events where event.state == .satisfied {
-                if let spot = spots.first(where: { $0.id == event.identifier }) { notify(spot) }
-            }
-        } catch {
-            // Monitoring stopped (e.g. permission withdrawn); in-app checks on location updates still work.
+    nonisolated func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        let id = region.identifier
+        Task { @MainActor in
+            if let spot = self.spots.first(where: { $0.id == id }) { self.notify(spot) }
         }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?,
+                                     withError error: any Error) {
+        // A region that can't be watched just goes without; the in-app check on location updates still works.
     }
 }
 
