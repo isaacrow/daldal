@@ -51,6 +51,26 @@
           }
         }
       }
+    },
+    "NSMotionUsageDescription": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم دلدل مستشعرات الحركة لمتابعة سيارتك بسلاسة بين تحديثات الموقع في المسح أثناء القيادة."
+          }
+        }
+      }
+    },
+    "NSLocationAlwaysAndWhenInUseUsageDescription": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مع خيار «دائماً» ينبهك دلدل عند وصولك إلى معلم يمكنك استكشافه بالواقع المعزز، حتى عندما يكون التطبيق مغلقاً."
+          }
+        }
+      }
     }
   }
 }

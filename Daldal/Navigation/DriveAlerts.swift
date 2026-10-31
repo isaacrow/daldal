@@ -15,6 +15,11 @@ final class DriveMapOverlay {
         UserCarLayer.update(in: style, at: location.coordinates.coordinate2D, heading: heading)
     }
 
+    func showRoadFeatures(_ features: [RoadFeature]) {
+        guard let style else { return }
+        RoadFeatureStore.draw(features, in: style)
+    }
+
     func apply(_ live: LiveStore) {
         guard let style else { return }
         LiveLayers.updateTraffic(live.traffic, in: style)

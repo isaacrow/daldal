@@ -2219,6 +2219,326 @@
           }
         }
       }
+    },
+    "Toilets": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دورات المياه"
+          }
+        }
+      }
+    },
+    "Restaurants": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مطاعم"
+          }
+        }
+      }
+    },
+    "Cafés": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقاهٍ"
+          }
+        }
+      }
+    },
+    "Fuel": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقود"
+          }
+        }
+      }
+    },
+    "Pharmacy": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صيدلية"
+          }
+        }
+      }
+    },
+    "Hospital": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مستشفى"
+          }
+        }
+      }
+    },
+    "ATM": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صراف آلي"
+          }
+        }
+      }
+    },
+    "Mosque": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جامع"
+          }
+        }
+      }
+    },
+    "Parking": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موقف سيارات"
+          }
+        }
+      }
+    },
+    "Hotel": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فندق"
+          }
+        }
+      }
+    },
+    "Supermarket": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سوبرماركت"
+          }
+        }
+      }
+    },
+    "%@ near you": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ قريبة منك"
+          }
+        }
+      }
+    },
+    "All categories": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كل الفئات"
+          }
+        }
+      }
+    },
+    "Find nearby": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ابحث بالقرب منك"
+          }
+        }
+      }
+    },
+    "Shared location": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موقع مُشارك"
+          }
+        }
+      }
+    },
+    "Open the copied location?": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فتح الموقع المنسوخ؟"
+          }
+        }
+      }
+    },
+    "Speed camera ahead": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاميرا سرعة أمامك"
+          }
+        }
+      }
+    },
+    "Speed camera ahead, limit %lld": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاميرا سرعة أمامك، الحد %lld"
+          }
+        }
+      }
+    },
+    "Stop sign ahead": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشارة قف أمامك"
+          }
+        }
+      }
+    },
+    "You're at Karbala": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت في كربلاء"
+          }
+        }
+      }
+    },
+    "The Battle of Karbala is ready to explore in AR, here where it happened.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معركة كربلاء جاهزة للاستكشاف بالواقع المعزز، هنا حيث وقعت."
+          }
+        }
+      }
+    },
+    "You're at %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت في %@"
+          }
+        }
+      }
+    },
+    "Its 3D model is unlocked here. Open it to explore in AR.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نموذجه ثلاثي الأبعاد مفتوح هنا. افتحه لتستكشفه بالواقع المعزز."
+          }
+        }
+      }
+    },
+    "3D model unlocks on site": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يُفتح النموذج ثلاثي الأبعاد في الموقع"
+          }
+        }
+      }
+    },
+    "Come within 500 m to explore it in 3D and AR.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اقترب لمسافة 500 م لتستكشفه ثلاثي الأبعاد وبالواقع المعزز."
+          }
+        }
+      }
+    },
+    "Come within 500 m to explore it in 3D and AR. You're %@ away.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اقترب لمسافة 500 م لتستكشفه ثلاثي الأبعاد وبالواقع المعزز. أنت على بعد %@."
+          }
+        }
+      }
+    },
+    "Battle of Karbala: unlocks in Karbala": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معركة كربلاء: تُفتح في كربلاء"
+          }
+        }
+      }
+    },
+    "Mount is good: the camera sees the road.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التثبيت جيد: الكاميرا ترى الطريق."
+          }
+        }
+      }
+    },
+    "Tilt the top of the phone back, towards you.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أمِل أعلى الهاتف إلى الخلف نحوك."
+          }
+        }
+      }
+    },
+    "Tilt the top of the phone forward, towards the road.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أمِل أعلى الهاتف إلى الأمام نحو الطريق."
+          }
+        }
+      }
+    },
+    "Turn the phone like a steering wheel until the bubble is centred.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أدِر الهاتف مثل المقود حتى تتوسط الفقاعة."
+          }
+        }
+      }
+    },
+    "Mount the phone upright in a holder, high in the middle of the windscreen.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبّت الهاتف عمودياً في حامل، عالياً في منتصف الزجاج الأمامي."
+          }
+        }
+      }
     }
   }
 }

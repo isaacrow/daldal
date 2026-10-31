@@ -42,6 +42,14 @@ final class LandmarkModelStore {
 
     func model(for id: String?) -> LandmarkModel? { id.flatMap { models[$0] } }
 
+    /// Models open only on site: within this distance of the place (GPS in old cities is often 30-80 m off).
+    static let unlockRadius: CLLocationDistance = 500
+
+    static func isUnlocked(_ place: CLLocationCoordinate2D, from here: CLLocation?) -> Bool {
+        guard let here else { return false }
+        return here.distance(from: CLLocation(latitude: place.latitude, longitude: place.longitude)) <= unlockRadius
+    }
+
     /// Loads the catalogue (fresh when online, else the saved copy) and the map icons.
     func load() async {
         guard !loading, models.isEmpty else { return }
@@ -66,7 +74,8 @@ final class LandmarkModelStore {
         await withTaskGroup(of: (String, Data?).self) { group in
             for model in list {
                 guard let icon = model.icon else { continue }
-                let file = folder.appending(path: icon)
+                // Named after the model's fingerprint, so a rebuilt model brings its new picture.
+                let file = folder.appending(path: "\(model.sha256.prefix(12))-\(icon)")
                 group.addTask {
                     if let data = try? Data(contentsOf: file) { return (model.id, data) }
                     guard let (data, response) = try? await URLSession.shared.data(from: base.appending(path: icon)),
@@ -84,7 +93,8 @@ final class LandmarkModelStore {
 
     /// The model on disk, downloading and checking it the first time.
     func localModel(_ model: LandmarkModel) async throws -> URL {
-        let file = folder.appending(path: model.file)
+        // Named after the fingerprint: a rebuilt model replaces the cached one.
+        let file = folder.appending(path: "\(model.sha256.prefix(12))-\(model.file)")
         if FileManager.default.fileExists(atPath: file.path()) { return file }
         let (temp, response) = try await URLSession.shared.download(from: Self.base.appending(path: model.file))
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }

@@ -8,7 +8,8 @@ import UIKit
 final class SceneModels {
     static let shared = SceneModels()
 
-    static let cars = ["sedan", "sedan-sports", "suv", "suv-luxury", "taxi", "hatchback-sports", "van", "police"]
+    /// Plain body shapes only (no taxi signs or light bars): Drive Scan draws every vehicle in one matte colour.
+    static let cars = ["sedan", "sedan-sports", "suv", "suv-luxury", "hatchback-sports", "van"]
     static let trucks = ["truck", "truck-flat", "delivery", "garbage-truck"]
     static let people = ["character-male-a", "character-male-b", "character-male-c", "character-male-d",
                          "character-male-e", "character-male-f", "character-female-a", "character-female-b",
@@ -88,6 +89,31 @@ final class SceneModels {
             }
         }
     }
+
+    /// Replaces every material with one matte "clay" colour: the calm, uniform look of a car's driving display,
+    /// where shape tells you what something is and colour is kept for warnings.
+    static func clay(_ entity: Entity, _ color: UIColor, roughness: Float = 0.55, clearcoat: Float = 0) {
+        var material = PhysicallyBasedMaterial()
+        material.baseColor = .init(tint: color)
+        material.roughness = .init(floatLiteral: roughness)
+        material.metallic = 0
+        if clearcoat > 0 {
+            material.clearcoat = .init(floatLiteral: clearcoat)
+            material.clearcoatRoughness = 0.1
+        }
+        func apply(_ e: Entity) {
+            if var model = e.components[ModelComponent.self] {
+                model.materials = Array(repeating: material, count: max(model.materials.count, 1))
+                e.components.set(model)
+            }
+            for child in e.children { apply(child) }
+        }
+        apply(entity)
+    }
+
+    static let clayVehicle = UIColor(white: 0.74, alpha: 1)
+    static let clayPerson = UIColor(white: 0.93, alpha: 1)
+    static let clayEgo = UIColor(white: 0.97, alpha: 1)
 
     /// Tints every material of a model (an army's colours), keeping its texture's shading.
     static func tint(_ entity: Entity, _ color: UIColor) {

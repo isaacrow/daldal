@@ -7,6 +7,8 @@ struct DriveScanView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(LocationService.self) private var location
     @State private var model: DriveScanModel
+    @State private var mount = MountGuide()
+    @State private var motion = MotionFusion()
 
     init(voice: VoiceGuide) {
         _model = State(initialValue: DriveScanModel(voice: voice))
@@ -16,8 +18,9 @@ struct DriveScanView: View {
         ZStack {
             TimelineView(.animation) { timeline in
                 RoadScene(objects: model.objects, warning: model.warning,
-                          speed: max(location.location?.speed ?? 0, 0),
-                          time: timeline.date.timeIntervalSinceReferenceDate)
+                          speed: motion.speed,
+                          time: timeline.date.timeIntervalSinceReferenceDate,
+                          travelled: motion.distance, turnRate: motion.turnRate)
             }
                 .ignoresSafeArea()
                 .background(Color.black)
@@ -30,18 +33,35 @@ struct DriveScanView: View {
                 .padding(.top, 76)
                 .padding(.trailing, Theme.Spacing.l)
         }
-        .overlay(alignment: .top) { header }
+        .overlay(alignment: .top) {
+            VStack(spacing: Theme.Spacing.s) {
+                header
+                // Until the phone is mounted well, show how to fix it; then step aside.
+                if !mount.settled {
+                    MountGuideView(guide: mount)
+                        .padding(.horizontal, Theme.Spacing.l)
+                        .padding(.trailing, 140) // Clear of the camera preview.
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+        }
         .overlay(alignment: .bottom) { footer }
         .animation(.smooth, value: model.warning)
+        .animation(.smooth, value: mount.settled)
         .onAppear {
             model.start()
+            mount.start()
+            motion.start()
             UIApplication.shared.isIdleTimerDisabled = true
         }
         .onDisappear {
             model.stop()
+            mount.stop()
+            motion.stop()
             UIApplication.shared.isIdleTimerDisabled = false
         }
         .statusBarHidden()
+        .onChange(of: location.location) { motion.update(gps: location.location) }
         .accessibilityIdentifier("scan.screen")
         .preferredColorScheme(.dark)
     }
@@ -138,6 +158,10 @@ struct RoadScene: View {
     var turnDistance: Double? = nil
     /// Animation clock (seconds); drives the moving road.
     var time: TimeInterval = 0
+    /// Metres travelled (from MotionFusion); when set, the road moves by this instead of time x speed.
+    var travelled: Double? = nil
+    /// Radians per second the car is turning (positive left): the road ahead bends with it.
+    var turnRate: Double = 0
 
     var body: some View {
         RealityView { content in
@@ -148,8 +172,10 @@ struct RoadScene: View {
             world.name = "world"
             world.addChild(Road.make())
 
-            let ego = SceneModels.shared.instance("suv-luxury", fit: 4.6, along: .length, turned: true)
-                ?? CarModel.make(paint: CarModel.pearl, lit: true)
+            let ego = SceneModels.shared.instance("suv-luxury", fit: 4.6, along: .length, turned: true).map { car in
+                SceneModels.clay(car, SceneModels.clayEgo, roughness: 0.3, clearcoat: 1)
+                return car
+            } ?? CarModel.make(paint: CarModel.pearl, lit: true)
             ego.position = [0, 0, 2.3] // Nose at z = 0, where the phone (windscreen) is.
             world.addChild(ego)
 
@@ -171,7 +197,11 @@ struct RoadScene: View {
             content.add(world)
         } update: { content in
             guard let world = content.entities.first(where: { $0.name == "world" }) else { return }
-            Road.move(world, travelled: Float(time * speed))
+            Road.move(world, travelled: Float(travelled ?? time * speed))
+            // Lean the road into the turn: a gentle swing of the whole scene ahead around our car.
+            if let road = world.findEntity(named: "road") {
+                road.orientation = simd_quatf(angle: Float(max(-0.35, min(0.35, turnRate * 0.6))), axis: [0, 1, 0])
+            }
             // People walk in place (8 frames a second); everyone else just slides.
             let walkFrame = Int(time * 8)
             Road.showTurn(world, turn: turn, distance: turnDistance)
@@ -181,13 +211,17 @@ struct RoadScene: View {
             }
             for object in objects {
                 let name = "object-\(object.id)"
-                let entity = world.children.first { $0.name == name } ?? {
+                let target = SIMD3<Float>(Float(object.lateral), 0, -Float(object.distance))
+                if let entity = world.children.first(where: { $0.name == name }) {
+                    // Glide towards each new measurement instead of jumping: detections are noisy frame to frame.
+                    entity.position += (target - entity.position) * 0.25
+                } else {
                     let made = ObjectModels.make(object.kind, id: object.id)
                     made.name = name
+                    made.position = target
                     world.addChild(made)
-                    return made
-                }()
-                entity.position = [Float(object.lateral), 0, -Float(object.distance)]
+                }
+                guard let entity = world.children.first(where: { $0.name == name }) else { continue }
                 ObjectModels.style(entity, for: object, danger: warning && abs(object.lateral) < 1.6)
                 if object.kind == .person {
                     SceneModels.showFrame(of: entity, animation: "walk", frame: walkFrame + object.id)
@@ -545,6 +579,12 @@ private enum ObjectModels {
                                    materials: [UnlitMaterial(color: UIColor(red: 0.85, green: 0.1, blue: 0.12, alpha: 1))])
             sign.position.y = 2.45
             root.addChild(sign)
+        }
+        // One calm matte colour per kind of road user; signs and signals keep their own colours.
+        switch kind {
+        case .car, .truck, .bus, .train, .motorbike, .bicycle: SceneModels.clay(root, SceneModels.clayVehicle)
+        case .person, .animal: SceneModels.clay(root, SceneModels.clayPerson)
+        case .trafficLight, .stopSign: break
         }
         // A red glow under anything that triggers the collision warning.
         let ring = ModelEntity(mesh: .generateBox(width: 2.6, height: 0.01, depth: 5.4, cornerRadius: 1.2),

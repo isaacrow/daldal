@@ -24,6 +24,8 @@ class Part:
     group: str = ""
     hidden_group: bool = False
     extra: dict = field(default_factory=dict)
+    roughness: float | None = None  # per part (else the model's); gold and glazed tile are shinier
+    metallic: float = 0.0
 
 
 def _safe(name):
@@ -49,14 +51,15 @@ def write_usdz(path, parts, roughness=0.85):
 
     def material_for(part):
         key = hashlib.sha1(part.texture).hexdigest()[:12] if part.texture else "c" + "_".join(f"{c:.3f}" for c in part.color)
+        key += f"_r{part.roughness if part.roughness is not None else roughness:.2f}_m{part.metallic:.2f}"
         if key in materials:
             return materials[key]
         mpath = f"/Model/Materials/{_safe('m' + key)}"
         material = UsdShade.Material.Define(stage, mpath)
         shader = UsdShade.Shader.Define(stage, mpath + "/Surface")
         shader.CreateIdAttr("UsdPreviewSurface")
-        shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(roughness)
-        shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
+        shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(part.roughness if part.roughness is not None else roughness)
+        shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(part.metallic)
         if part.texture:
             name = f"tex_{key}.png"
             (work / name).write_bytes(part.texture)

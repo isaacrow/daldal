@@ -16,6 +16,12 @@ struct ExploreView: View {
     @Environment(DriverStats.self) private var stats
     @Environment(HistoryStore.self) private var history
     @Environment(LandmarkModelStore.self) private var landmarks
+    @Environment(RoadFeatureStore.self) private var roadFeatures
+    @Environment(ARPlaceAlerts.self) private var arAlerts
+    @Environment(\.scenePhase) private var scenePhase
+    /// Something location-like was copied in another app (e.g. a pickup point in a driver app).
+    @State private var clipboardOffer = false
+    @State private var clipboardChange = UIPasteboard.general.changeCount
 
     /// What the bottom panel shows. One sheet whose content changes, like Apple Maps: switching content
     /// never closes and reopens a sheet, which iOS ignores when it happens mid-animation.
@@ -84,10 +90,15 @@ struct ExploreView: View {
                 select(place.place(languageCode: languageCode), record: false)
             },
             onSelectRoute: { index in nav.selectedRouteIndex = index },
+            onSelectPin: { id in
+                guard panel != .routes, let place = search.pinned.first(where: { $0.id == id }) else { return }
+                select(place, record: false)
+            },
             onCameraIdle: { center, zoom in
                 // Live data only makes sense at street level; it's also what keeps requests small.
                 guard zoom >= 11 else { return }
                 Task { await live.refresh(around: center) }
+                if zoom >= 13 { Task { await roadFeatures.refresh(around: center) } }
             }
         )
         .ignoresSafeArea()
@@ -138,6 +149,16 @@ struct ExploreView: View {
         .task {
             // Monuments with a 3D model stand on the map as pictures of their model.
             await landmarks.load()
+            // Every place with something to explore in AR raises a notification on arrival.
+            var spots = landmarks.models.keys.compactMap { id -> ARPlaceAlerts.Spot? in
+                if let place = guide.place(id: id) {
+                    return .init(id: id, name: place.name(languageCode: languageCode), coordinate: place.coordinate)
+                }
+                return heritage.site(id: id).map { .init(id: id, name: $0.name(languageCode: languageCode), coordinate: $0.coordinate) }
+            }
+            spots.append(.init(id: ARPlaceAlerts.karbalaID, name: String(localized: "Battle of Karbala"),
+                               coordinate: BattleSceneModel.site.coordinate))
+            arAlerts.setSpots(spots)
             map.showLandmarkIcons(landmarks.icons.compactMap { id, image in
                 if let place = guide.place(id: id) {
                     return MapController.LandmarkIcon(id: id, coordinate: place.coordinate, image: image, isGuide: true)
@@ -149,6 +170,30 @@ struct ExploreView: View {
             })
         }
         .onChange(of: nav.routes) { showRoutePreview(fit: true) }
+        .onChange(of: search.pinned) { map.showPins(search.pinned, fit: true) }
+        .onChange(of: roadFeatures.features) { map.showRoadFeatures(roadFeatures.features) }
+        .onChange(of: search.incoming) {
+            guard let place = search.incoming else { return }
+            search.incoming = nil
+            select(place, record: true)
+            map.showPins([place], fit: true)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { checkClipboard() }
+        }
+        .overlay(alignment: .top) { clipboardBanner.padding(.top, 64) }
+        .onChange(of: arAlerts.opened) {
+            // A tapped arrival notification: open what's there.
+            guard let id = arAlerts.opened else { return }
+            arAlerts.opened = nil
+            if id == ARPlaceAlerts.karbalaID {
+                battleFromBanner = true
+            } else if let place = guide.place(id: id) {
+                select(place.place(languageCode: languageCode), record: false)
+            } else if let site = heritage.site(id: id) {
+                select(site.place(languageCode: languageCode), record: false)
+            }
+        }
         .onChange(of: live.reports) { map.showLive(traffic: live.traffic, reports: live.reports) }
         .onChange(of: live.traffic) { map.showLive(traffic: live.traffic, reports: live.reports) }
         .onChange(of: nav.selectedRouteIndex) { showRoutePreview(fit: false) }
@@ -177,7 +222,10 @@ struct ExploreView: View {
         case .stats:
             StatsView()
         case .assistant:
-            VoiceAssistantView()
+            VoiceAssistantView(
+                onShow: { places in search.pinned = places },
+                onRoute: { place in planRoute(to: place) }
+            )
         case .discover:
             DiscoverView(near: location.location?.coordinate ?? map.visibleCenter) { place in
                 select(place.place(languageCode: languageCode), record: true)
@@ -197,7 +245,8 @@ struct ExploreView: View {
 
     /// A heritage site with its generated 3D model attached (shown at real height in geographic AR).
     private func withModel(_ site: HeritageSite) -> HeritageSite {
-        guard site.modelURL == nil, let model = landmarks.model(for: site.id) else { return site }
+        guard site.modelURL == nil, let model = landmarks.model(for: site.id),
+              LandmarkModelStore.isUnlocked(site.coordinate, from: location.location) else { return site }
         var site = site
         site.modelURL = LandmarkModelStore.base.appending(path: model.file)
         site.modelHeight = model.height ?? 20
@@ -337,6 +386,45 @@ struct ExploreView: View {
             .padding(.horizontal, Theme.Spacing.l)
             .padding(.bottom, Theme.Spacing.xl)
             .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
+    }
+
+    // MARK: Clipboard
+
+    /// Looks (without reading it, so iOS shows no paste prompt) for a link or number newly copied elsewhere.
+    private func checkClipboard() {
+        let pasteboard = UIPasteboard.general
+        guard pasteboard.changeCount != clipboardChange, pasteboard.hasStrings else { return }
+        clipboardChange = pasteboard.changeCount
+        Task {
+            let found = (try? await pasteboard.detectedPatterns(for: [\.probableWebURL, \.number])).map { !$0.isEmpty } ?? false
+            withAnimation(.smooth) { clipboardOffer = found }
+        }
+    }
+
+    @ViewBuilder private var clipboardBanner: some View {
+        if clipboardOffer {
+            HStack(spacing: Theme.Spacing.m) {
+                Icon(.copy, size: 18)
+                Text("Open the copied location?").font(.subheadline.weight(.semibold))
+                Spacer(minLength: 0)
+                // The system paste button reads the clipboard without iOS's "allow paste" prompt.
+                PasteButton(payloadType: String.self) { strings in
+                    Task { @MainActor in
+                        clipboardOffer = false
+                        if let text = strings.first { await search.open(sharedText: text) }
+                    }
+                }
+                .labelStyle(.titleOnly)
+                .buttonBorderShape(.capsule)
+                Button { withAnimation(.smooth) { clipboardOffer = false } } label: { Icon(.close, size: 14) }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Dismiss")
+            }
+            .padding(Theme.Spacing.m)
+            .glassEffect(.regular, in: .rect(cornerRadius: Theme.cornerRadius))
+            .padding(.horizontal, Theme.Spacing.l)
+            .transition(.move(edge: .top).combined(with: .opacity))
         }
     }
 

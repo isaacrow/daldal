@@ -6,6 +6,10 @@ import SwiftUI
 /// Test feature. The agent (its voice, language and knowledge) is set up in the ElevenLabs dashboard; the app
 /// only needs its public agent id, built in from the ELEVENLABS_AGENT_ID GitHub secret.
 struct VoiceAssistantView: View {
+    /// Marks what the assistant found on the map.
+    var onShow: ([Place]) -> Void = { _ in }
+    /// Starts a route the assistant was asked for.
+    var onRoute: (Place) -> Void = { _ in }
     @Environment(\.dismiss) private var dismiss
     @Environment(SearchStore.self) private var search
     @Environment(CityGuideStore.self) private var guide
@@ -38,7 +42,9 @@ struct VoiceAssistantView: View {
             }
             .onAppear {
                 guard agentID == nil, onDevice == nil else { return }
-                onDevice = OnDeviceAssistant(voice: nav.voice, search: search.service, guide: guide) { [location] in location.location }
+                onDevice = OnDeviceAssistant(voice: nav.voice, search: search.service, guide: guide,
+                                             location: { [location] in location.location },
+                                             onShow: onShow, onRoute: onRoute)
             }
             .onDisappear { onDevice?.stop() }
             .navigationTitle("Voice assistant")

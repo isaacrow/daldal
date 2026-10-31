@@ -10,6 +10,8 @@ struct DriveModeView: View {
     @Environment(CityMapsStore.self) private var cities
     @Environment(Connectivity.self) private var connectivity
     @Environment(LiveStore.self) private var live
+    @Environment(RoadFeatureStore.self) private var roadFeatures
+    @Environment(LocationService.self) private var location
     @Environment(\.colorScheme) private var colorScheme
     @State private var camera: MapViewCamera = .automotiveNavigation(zoom: 17, pitch: 55)
     @State private var confirmingEnd = false
@@ -17,6 +19,7 @@ struct DriveModeView: View {
     /// Map on top fading into the live 3D scanner below. On by default while navigating.
     @AppStorage("drive.split") private var split = true
     @State private var scanner: DriveScanModel?
+    @State private var motion = MotionFusion()
     @State private var overlay = DriveMapOverlay()
     @State private var reportSent = false
     @AppStorage("traffic.share") private var shareTraffic = true
@@ -41,9 +44,10 @@ struct DriveModeView: View {
                     // The scanner fills the lower half; the map above fades into it.
                     TimelineView(.animation) { timeline in
                         RoadScene(objects: scanner.objects, warning: scanner.warning,
-                                  speed: max(nav.state?.preferredUserLocation?.speed?.value ?? 0, 0),
+                                  speed: motion.speed,
                                   turn: upcoming?.maneuver, turnDistance: upcoming?.distance,
-                                  time: timeline.date.timeIntervalSinceReferenceDate)
+                                  time: timeline.date.timeIntervalSinceReferenceDate,
+                                  travelled: motion.distance, turnRate: motion.turnRate)
                     }
                     .frame(height: geometry.size.height * 0.5 + geometry.safeAreaInsets.bottom)
                     .frame(maxHeight: .infinity, alignment: .bottom)
@@ -74,9 +78,13 @@ struct DriveModeView: View {
         .onAppear {
             if scanner == nil { scanner = DriveScanModel(voice: nav.voice) }
             if split { scanner?.start() }
+            motion.start()
         }
         .onChange(of: split) { _, on in on ? scanner?.start() : scanner?.stop() }
-        .onDisappear { scanner?.stop() }
+        .onDisappear {
+            scanner?.stop()
+            motion.stop()
+        }
         .overlay(alignment: .top) {
             VStack(spacing: Theme.Spacing.s) {
                 if nav.phase == .arrived {
@@ -141,7 +149,12 @@ struct DriveModeView: View {
             ReportSheet { type in send(type) }
         }
         .onChange(of: live.reports) { overlay.apply(live) }
-        .onChange(of: nav.state?.preferredUserLocation) { overlay.showCar(nav.state?.preferredUserLocation) }
+        .onChange(of: nav.state?.preferredUserLocation) {
+            overlay.showCar(nav.state?.preferredUserLocation)
+            motion.update(gps: location.location)
+            warnAboutRoadFeatures()
+        }
+        .onChange(of: roadFeatures.features) { overlay.showRoadFeatures(roadFeatures.features) }
         .onChange(of: live.traffic) { overlay.apply(live) }
         .onChange(of: nav.routes) {
             // A reroute or a faster route: recolour the new line.
@@ -179,6 +192,24 @@ struct DriveModeView: View {
             }
         }
         .animation(.smooth, value: camera.isTrackingUserLocationWithCourse)
+    }
+
+    /// Speed cameras and stop signs on the route ahead: fetched around the car, announced once each.
+    private func warnAboutRoadFeatures() {
+        guard let here = nav.state?.preferredUserLocation?.coordinates.coordinate2D else { return }
+        Task { await roadFeatures.refresh(around: here) }
+        let route = nav.selectedRoute?.geometry.map(\.coordinate2D) ?? []
+        guard let travelled = RouteMath.distanceAlong(route, to: here, maxOffset: 60),
+              let feature = roadFeatures.nextWarning(on: route, travelled: travelled) else { return }
+        switch feature.kind {
+        case .speedCamera:
+            let limit = feature.maxSpeed.map { String(localized: "Speed camera ahead, limit \($0)") }
+            nav.voice.announce(limit ?? String(localized: "Speed camera ahead"))
+        case .stopSign:
+            nav.voice.announce(String(localized: "Stop sign ahead"))
+        case .trafficSignals:
+            break
+        }
     }
 
     private func send(_ type: ReportType) {

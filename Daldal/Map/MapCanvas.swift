@@ -12,6 +12,8 @@ struct MapCanvas: UIViewRepresentable {
     var onSelectHeritage: (String) -> Void = { _ in }
     var onSelectGuide: (String) -> Void = { _ in }
     var onSelectRoute: (Int) -> Void = { _ in }
+    /// A search or assistant result pinned on the map.
+    var onSelectPin: (String) -> Void = { _ in }
     var onCameraIdle: (CLLocationCoordinate2D, Double) -> Void = { _, _ in }
 
     @Environment(\.colorScheme) private var colorScheme
@@ -101,6 +103,11 @@ struct MapCanvas: UIViewRepresentable {
             guard let mapView = gesture.view as? MLNMapView else { return }
             let point = gesture.location(in: mapView)
             let hitArea = CGRect(x: point.x - 22, y: point.y - 22, width: 44, height: 44)
+            let pins = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.pinsLayer])
+            if let id = pins.first?.attribute(forKey: "pid") as? String {
+                parent.onSelectPin(id)
+                return
+            }
             // A landmark's 3D model on the map opens its card.
             let models = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.landmarkModelLayer])
             if let id = models.first?.attribute(forKey: "gid") as? String {
@@ -136,6 +143,7 @@ struct MapCanvas: UIViewRepresentable {
             parent.controller.installHeritageLayer(sites: parent.heritageSites, isDark: isDark, languageCode: parent.languageCode)
             parent.controller.installGuideLayer(places: parent.guidePlaces, isDark: isDark, languageCode: parent.languageCode)
             parent.controller.installLandmarkIcons()
+            parent.controller.reinstallPins()
             parent.controller.reinstallRoutes()
             parent.controller.reinstallLive()
             if parent.controller.is3D, mapView.camera.pitch < 1 {
@@ -221,6 +229,28 @@ enum HeritageMarkerImage {
             UIImage(named: DaldalIcon.heritage.assetName)?
                 .withTintColor(.white)
                 .draw(in: disc.insetBy(dx: 7, dy: 7))
+        }
+    }
+}
+
+/// A teardrop pin with a category glyph, for search and assistant results.
+enum PinImage {
+    static func make(_ icon: DaldalIcon) -> UIImage {
+        let size = CGSize(width: 32, height: 40)
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            let accent = UIColor(named: "AccentColor") ?? .systemTeal
+            let pin = UIBezierPath()
+            pin.move(to: CGPoint(x: 16, y: 39))
+            pin.addCurve(to: CGPoint(x: 2, y: 15), controlPoint1: CGPoint(x: 9, y: 31), controlPoint2: CGPoint(x: 2, y: 24))
+            pin.addArc(withCenter: CGPoint(x: 16, y: 15), radius: 14, startAngle: .pi, endAngle: 0, clockwise: true)
+            pin.addCurve(to: CGPoint(x: 16, y: 39), controlPoint1: CGPoint(x: 30, y: 24), controlPoint2: CGPoint(x: 23, y: 31))
+            pin.close()
+            accent.setFill()
+            pin.fill()
+            UIColor.white.setStroke()
+            pin.lineWidth = 2
+            pin.stroke()
+            UIImage(named: icon.assetName)?.withTintColor(.white).draw(in: CGRect(x: 8, y: 7, width: 16, height: 16))
         }
     }
 }

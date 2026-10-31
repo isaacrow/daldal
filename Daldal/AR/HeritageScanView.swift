@@ -23,6 +23,7 @@ struct HeritageScanView: View {
     var body: some View {
         ZStack {
             HeritageScanContainer(model: model).ignoresSafeArea()
+            HandIndicator(hand: model.hand)
         }
         .overlay(alignment: .top) { header }
         .overlay(alignment: .bottom) { footer }
@@ -93,6 +94,9 @@ final class HeritageScanModel {
         return "Turn around you and tap a card to hear its story."
     }
 
+    /// The visitor's hand: pinch and move sideways to turn the ring of stories, up and down to resize the monument.
+    private(set) var hand: HandControl.Hand?
+    @ObservationIgnored private let hands = HandControl()
     @ObservationIgnored private let voice: VoiceGuide
     @ObservationIgnored private weak var arView: ARView?
     @ObservationIgnored private var root: AnchorEntity?
@@ -125,6 +129,9 @@ final class HeritageScanModel {
             config.frameSemantics.insert(.personSegmentationWithDepth)
         }
         view.session.run(config)
+        hands.attach(to: view.session)
+        hands.onHand = { [weak self] hand in self?.hand = hand }
+        hands.onDrag = { [weak self] delta in self?.handDrag(delta) }
         update = view.scene.subscribe(to: SceneEvents.Update.self) { [weak self] event in
             self?.animate(by: Float(event.deltaTime))
         }
@@ -212,6 +219,15 @@ final class HeritageScanModel {
         arView.scene.addAnchor(anchor)
         root = anchor
         if let landmark { addLandmark(landmark, to: anchor) }
+    }
+
+    private func handDrag(_ delta: CGVector) {
+        guard let root else { return }
+        root.orientation = simd_quatf(angle: Float(delta.dx) * .pi * 1.5, axis: [0, 1, 0]) * root.orientation
+        if let landmark = root.findEntity(named: "landmark") {
+            let next = min(max(landmark.scale.x * (1 - Float(delta.dy) * 1.8), 0.4), 3)
+            landmark.scale = SIMD3(repeating: next)
+        }
     }
 
     func showLandmark(_ entity: Entity) {

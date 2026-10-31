@@ -11,6 +11,8 @@ struct DaldalApp: App {
     @State private var guide = CityGuideStore()
     @State private var history = HistoryStore()
     @State private var landmarks = LandmarkModelStore()
+    @State private var roadFeatures = RoadFeatureStore()
+    @State private var arAlerts = ARPlaceAlerts()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -24,6 +26,8 @@ struct DaldalApp: App {
                 .environment(guide)
                 .environment(history)
                 .environment(landmarks)
+                .environment(roadFeatures)
+                .environment(arAlerts)
                 .environment(services.cities)
                 .environment(services.connectivity)
                 .environment(services.navigation)
@@ -39,12 +43,19 @@ struct DaldalApp: App {
                         return ordered.compactMap { try? OfflineSearchCache.service(for: $0) }
                     }
                 }
+                .onOpenURL { url in
+                    // daldal://place?lat=..&lon=..&name=.. and map links handed to Daldal by other apps.
+                    Task { await search.open(sharedText: url.absoluteString) }
+                }
                 .onChange(of: scenePhase, initial: true) { _, phase in
                     // Keep location on in the background only while driving; navigation has its own provider.
                     if phase == .active { location.start() } else if phase == .background { location.stop() }
                 }
                 .onChange(of: location.location) { _, newValue in
-                    if let newValue { heritage.update(location: newValue) }
+                    if let newValue {
+                        heritage.update(location: newValue)
+                        arAlerts.update(location: newValue)
+                    }
                 }
         }
     }

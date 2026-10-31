@@ -179,6 +179,64 @@ final class MapController {
     }
 
     static let landmarkModelLayer = "landmark-models"
+    static let pinsLayer = "result-pins"
+
+    @ObservationIgnored private var pins: [Place] = []
+    @ObservationIgnored private var roadFeatures: [RoadFeature] = []
+
+    /// Speed cameras and stop signs, as small road signs from street zoom.
+    func showRoadFeatures(_ features: [RoadFeature]) {
+        roadFeatures = features
+        guard let style = mapView?.style else { return }
+        RoadFeatureStore.draw(features, in: style)
+    }
+
+    /// Marks search or assistant results on the map with their category badge, and frames them.
+    func showPins(_ places: [Place], fit: Bool) {
+        pins = places
+        reinstallPins()
+        guard fit, let mapView, !places.isEmpty else { return }
+        var coordinates = places.prefix(12).map(\.coordinate)
+        if let here = mapView.userLocation?.location?.coordinate { coordinates.append(here) }
+        if coordinates.count == 1 {
+            mapView.setCenter(coordinates[0], zoomLevel: 15, animated: true)
+        } else {
+            mapView.setVisibleCoordinates(&coordinates, count: UInt(coordinates.count),
+                                          edgePadding: UIEdgeInsets(top: 140, left: 48, bottom: 360, right: 80), animated: true)
+        }
+    }
+
+    func reinstallPins() {
+        guard let style = mapView?.style else { return }
+        if !roadFeatures.isEmpty { RoadFeatureStore.draw(roadFeatures, in: style) }
+        let features = pins.map { place in
+            let name = "pin-\(place.category.rawValue)"
+            if style.image(forName: name) == nil { style.setImage(PinImage.make(place.category.icon), forName: name) }
+            let feature = MLNPointFeature()
+            feature.coordinate = place.coordinate
+            feature.attributes = ["pid": place.id, "icon": name, "name": place.name]
+            return feature
+        }
+        let shape = MLNShapeCollectionFeature(shapes: features)
+        if let source = style.source(withIdentifier: Self.pinsLayer) as? MLNShapeSource {
+            source.shape = shape
+            return
+        }
+        let source = MLNShapeSource(identifier: Self.pinsLayer, shape: shape, options: nil)
+        style.addSource(source)
+        let layer = MLNSymbolStyleLayer(identifier: Self.pinsLayer, source: source)
+        layer.iconImageName = NSExpression(forKeyPath: "icon")
+        layer.iconAnchor = NSExpression(forConstantValue: "bottom")
+        layer.iconAllowsOverlap = NSExpression(forConstantValue: true)
+        layer.text = NSExpression(forKeyPath: "name")
+        layer.textFontNames = NSExpression(forConstantValue: ["Noto Sans Bold"])
+        layer.textFontSize = NSExpression(forConstantValue: 11)
+        layer.textAnchor = NSExpression(forConstantValue: "top")
+        layer.textOptional = NSExpression(forConstantValue: true)
+        layer.textHaloColor = NSExpression(forConstantValue: UIColor.white)
+        layer.textHaloWidth = NSExpression(forConstantValue: 1.4)
+        style.addLayer(layer)
+    }
 
     /// A monument's 3D model drawn on the map as a picture of the model standing at its place.
     struct LandmarkIcon {

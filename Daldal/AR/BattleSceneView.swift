@@ -19,6 +19,7 @@ struct BattleSceneView: View {
     var body: some View {
         ZStack {
             BattleSceneContainer(model: model).ignoresSafeArea()
+            HandIndicator(hand: model.hand)
         }
         .overlay(alignment: .top) {
             HStack(alignment: .top) {
@@ -120,6 +121,9 @@ final class BattleSceneModel {
     private(set) var isPlaced = false
     private(set) var unsupported = false
     private(set) var stepIndex = 0
+    /// The visitor's hand in front of the camera: pinch and move to turn and resize the battlefield.
+    private(set) var hand: HandControl.Hand?
+    @ObservationIgnored private let hands = HandControl()
     var step: Step { Self.steps[stepIndex] }
 
     var credits: String {
@@ -159,6 +163,9 @@ final class BattleSceneModel {
             config.frameSemantics.insert(.personSegmentationWithDepth)
         }
         view.session.run(config)
+        hands.attach(to: view.session)
+        hands.onHand = { [weak self] hand in self?.hand = hand }
+        hands.onDrag = { [weak self] delta in self?.handDrag(delta) }
         let coaching = ARCoachingOverlayView()
         coaching.session = view.session
         coaching.goal = .horizontalPlane
@@ -202,6 +209,14 @@ final class BattleSceneModel {
             isPlaced = true
             go(by: 0)
         }
+    }
+
+    /// Sideways turns the field around its centre; up and down makes it bigger or smaller.
+    private func handDrag(_ delta: CGVector) {
+        guard let scene, isPlaced else { return }
+        scene.orientation = simd_quatf(angle: Float(delta.dx) * .pi * 1.5, axis: [0, 1, 0]) * scene.orientation
+        let next = min(max(scene.scale.x * (1 - Float(delta.dy) * 1.8), 0.25), 4)
+        scene.scale = SIMD3(repeating: next)
     }
 
     func pinched(_ scale: CGFloat) {

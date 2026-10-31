@@ -98,6 +98,8 @@ def main(cities_path, out_path):
     cities = json.load(open(cities_path, encoding="utf-8"))
     guides = []
     for city in cities:
+        if city.get("country"):  # The All of Iraq map pack, not a city.
+            continue
         places = places_in(city["bbox"])
         for p in places:
             p["summary_ar"] = summary("ar", p.get("wiki_ar"))

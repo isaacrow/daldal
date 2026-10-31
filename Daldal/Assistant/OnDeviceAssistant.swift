@@ -32,7 +32,8 @@ final class OnDeviceAssistant {
     @ObservationIgnored private var task: SFSpeechRecognitionTask?
     @ObservationIgnored private let recognizer: SFSpeechRecognizer?
 
-    init(voice: VoiceGuide, search: any PlaceSearchService, guide: CityGuideStore, location: @escaping () -> CLLocation?) {
+    init(voice: VoiceGuide, search: any PlaceSearchService, guide: CityGuideStore, location: @escaping () -> CLLocation?,
+         onShow: @escaping ([Place]) -> Void = { _ in }, onRoute: @escaping (Place) -> Void = { _ in }) {
         self.voice = voice
         let localeID = AppLanguage.code == "ar" ? "ar-SA" : "en-US"
         recognizer = SFSpeechRecognizer(locale: Locale(identifier: localeID))
@@ -43,14 +44,17 @@ final class OnDeviceAssistant {
                 status = .unavailable(String(localized: "Apple Intelligence on this iPhone doesn't support this language yet."))
                 return
             }
-            let context = AssistantContext(search: search, guide: guide, location: location)
-            let tools: [any Tool] = [FindPlaceTool(context: context), PlacesToVisitTool(context: context)]
+            let context = AssistantContext(search: search, guide: guide, location: location, onShow: onShow, onRoute: onRoute)
+            let tools: [any Tool] = [FindPlaceTool(context: context), NearbyTool(context: context),
+                                     NavigateTool(context: context), PlacesToVisitTool(context: context)]
             session = LanguageModelSession(tools: tools) {
                 """
                 You are Daldal, a friendly navigation assistant for drivers and visitors in Iraq.
                 Answer in the same language the user speaks (Arabic or English), in at most three short sentences,
                 because your answer is read aloud. Use the tools to find places and places to visit; never invent
-                addresses or distances. If asked to navigate, tell the user to tap the place and then Directions.
+                addresses or distances. Places you find are marked on the map. For everyday needs near the user
+                (toilets, restaurants, fuel, pharmacy, ATM, mosque, parking, hotel) use nearby. When the user wants to
+                go somewhere, call navigate with the place's name or its number in the last list; it starts the route.
                 """
             }
         case .unavailable(.deviceNotEligible):
@@ -167,11 +171,18 @@ final class AssistantContext {
     let search: any PlaceSearchService
     let guide: CityGuideStore
     let location: () -> CLLocation?
+    let onShow: ([Place]) -> Void
+    let onRoute: (Place) -> Void
+    /// The last places found, so "take me to the second one" works.
+    private var lastFound: [Place] = []
 
-    init(search: any PlaceSearchService, guide: CityGuideStore, location: @escaping () -> CLLocation?) {
+    init(search: any PlaceSearchService, guide: CityGuideStore, location: @escaping () -> CLLocation?,
+         onShow: @escaping ([Place]) -> Void, onRoute: @escaping (Place) -> Void) {
         self.search = search
         self.guide = guide
         self.location = location
+        self.onShow = onShow
+        self.onRoute = onRoute
     }
 
     func findPlaces(_ query: String) async -> String {
@@ -179,9 +190,43 @@ final class AssistantContext {
         guard let places = try? await search.search(query, near: here?.coordinate), !places.isEmpty else {
             return "No places found."
         }
-        return places.prefix(5).map { place in
+        return remember(Array(places.prefix(5)))
+    }
+
+    func nearby(_ kind: String) async -> String {
+        guard let category = NearbyCategory(spoken: kind) else {
+            return await findPlaces(kind)
+        }
+        let here = location()?.coordinate ?? Region.defaultCenter
+        guard let places = try? await Overpass.nearby(category, around: here, languageCode: AppLanguage.code),
+              !places.isEmpty else { return "None found within 15 km." }
+        return remember(Array(places.prefix(5)))
+    }
+
+    func navigate(to target: String) async -> String {
+        let trimmed = target.trimmingCharacters(in: .whitespaces).lowercased()
+        let ordinals: [(String, Int)] = [("1", 0), ("first", 0), ("\u{0627}\u{0644}\u{0627}\u{0648}\u{0644}", 0),
+                                         ("\u{0627}\u{0644}\u{0623}\u{0648}\u{0644}", 0), ("2", 1), ("second", 1),
+                                         ("\u{0627}\u{0644}\u{062B}\u{0627}\u{0646}\u{064A}", 1), ("3", 2), ("third", 2),
+                                         ("\u{0627}\u{0644}\u{062B}\u{0627}\u{0644}\u{062B}", 2), ("4", 3), ("5", 4)]
+        var place = ordinals.first { trimmed.contains($0.0) }.flatMap { lastFound.indices.contains($0.1) ? lastFound[$0.1] : nil }
+        place = place ?? lastFound.first { $0.name.lowercased().contains(trimmed) || trimmed.contains($0.name.lowercased()) }
+        if place == nil, let found = try? await search.search(target, near: location()?.coordinate).first {
+            place = found
+        }
+        guard let place else { return "Couldn't find that place." }
+        onRoute(place)
+        let km = place.distance(from: location()).map { String(format: "%.1f km", $0 / 1000) } ?? ""
+        return "Route started to \(place.name) \(km)."
+    }
+
+    private func remember(_ places: [Place]) -> String {
+        lastFound = places
+        onShow(places)
+        let here = location()
+        return places.enumerated().map { index, place in
             let km = place.distance(from: here).map { String(format: "%.1f km away", $0 / 1000) } ?? ""
-            return "\(place.name) (\(place.subtitle)) \(km)"
+            return "\(index + 1). \(place.name) (\(place.subtitle)) \(km)"
         }.joined(separator: "\n")
     }
 
@@ -211,6 +256,40 @@ nonisolated struct FindPlaceTool: Tool {
 
     func call(arguments: Arguments) async throws -> String {
         await context.findPlaces(arguments.query)
+    }
+}
+
+/// Everyday places near the user (toilets, restaurants, fuel...) from OpenStreetMap, marked on the map.
+nonisolated struct NearbyTool: Tool {
+    let name = "nearby"
+    let description = "Find the nearest toilets, restaurants, cafes, fuel stations, pharmacies, hospitals, ATMs, mosques, parking or hotels."
+    let context: AssistantContext
+
+    @Generable
+    nonisolated struct Arguments {
+        @Guide(description: "The kind of place, e.g. toilets, restaurant, fuel, pharmacy")
+        var kind: String
+    }
+
+    func call(arguments: Arguments) async throws -> String {
+        await context.nearby(arguments.kind)
+    }
+}
+
+/// Starts a route to a place the user named or picked from the last list.
+nonisolated struct NavigateTool: Tool {
+    let name = "navigate"
+    let description = "Start driving directions to a place: its name, or its number in the last list of results."
+    let context: AssistantContext
+
+    @Generable
+    nonisolated struct Arguments {
+        @Guide(description: "The place's name or its number in the last list (1, 2, 3...)")
+        var place: String
+    }
+
+    func call(arguments: Arguments) async throws -> String {
+        await context.navigate(to: arguments.place)
     }
 }
 

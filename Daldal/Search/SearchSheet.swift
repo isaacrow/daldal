@@ -19,7 +19,17 @@ struct SearchSheet: View {
         @Bindable var search = search
         NavigationStack {
             List {
-                if search.query.trimmingCharacters(in: .whitespaces).count < 2 {
+                if let category = search.category, search.query.trimmingCharacters(in: .whitespaces).count < 2 {
+                    Section {
+                        results
+                    } header: {
+                        HStack {
+                            Text("\(String(localized: category.title)) near you")
+                            Spacer()
+                            Button("All categories") { search.reset() }.font(.footnote)
+                        }
+                    }
+                } else if search.query.trimmingCharacters(in: .whitespaces).count < 2 {
                     suggestions
                 } else {
                     results
@@ -43,7 +53,32 @@ struct SearchSheet: View {
 
     // MARK: Empty query
 
+    /// A fixed grid (not a sideways scroller, which swallows taps inside a sheet on real phones).
+    private var categoryGrid: some View {
+        Section("Find nearby") {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.s), count: 4), spacing: Theme.Spacing.s) {
+                ForEach(NearbyCategory.allCases) { category in
+                    Button {
+                        isFieldFocused = false
+                        search.search(category: category)
+                    } label: {
+                        VStack(spacing: 4) {
+                            Icon(category.icon, size: 20)
+                            Text(category.title).font(.caption2).lineLimit(1).minimumScaleFactor(0.75)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .contentShape(.rect)
+                    }
+                    .buttonStyle(.glass)
+                    .accessibilityIdentifier("category.\(category.rawValue)")
+                }
+            }
+            .listRowInsets(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+        }
+    }
+
     @ViewBuilder private var suggestions: some View {
+        categoryGrid
         Section {
             savedRow(.home, icon: .home, title: "Home")
             savedRow(.work, icon: .work, title: "Work")

@@ -1,3 +1,4 @@
+import CoreLocation
 import SwiftUI
 import UIKit
 
@@ -28,7 +29,11 @@ struct PlaceCard: View {
                 header
                 actions
                 if let model = landmarks.model(for: place.guideID ?? place.heritageID) {
-                    Landmark3DView(model: model)
+                    if LandmarkModelStore.isUnlocked(place.coordinate, from: location.location) {
+                        Landmark3DView(model: model)
+                    } else {
+                        LockedModelCard(icon: landmarks.icons[model.id], distance: place.distance(from: location.location))
+                    }
                 }
                 if let guidePlace {
                     GuideDetails(place: guidePlace, voice: nav.voice)
@@ -88,7 +93,11 @@ struct PlaceCard: View {
                     actionButton("History in AR", icon: .history, id: "place.history") { onHistory(place) }
                 }
                 if BattleSceneModel.isNear(place.coordinate) {
-                    actionButton("Battle of Karbala in AR", icon: .history, id: "place.battle") { onBattle() }
+                    // The battle opens on the battlefield itself.
+                    let there = location.location.map { BattleSceneModel.isNear($0.coordinate) } ?? false
+                    actionButton(there ? "Battle of Karbala in AR" : "Battle of Karbala: unlocks in Karbala",
+                                 icon: .history, id: "place.battle") { onBattle() }
+                        .disabled(!there)
                 }
                 ShareLink(item: shareURL, subject: Text(place.name)) {
                     Label { Text("Share") } icon: { Icon(.share, size: 18) }
@@ -126,10 +135,9 @@ struct PlaceCard: View {
     }
 
     /// An OpenStreetMap link opens anywhere, with or without Daldal installed.
-    private var shareURL: URL {
-        let lat = place.latitude, lon = place.longitude
-        return URL(string: "https://www.openstreetmap.org/?mlat=\(lat)&mlon=\(lon)#map=17/\(lat)/\(lon)")!
-    }
+    /// A Google Maps link: the one format every other app (Uber, Careem, WhatsApp...) understands,
+    /// and Daldal reads it back when it's pasted or opened.
+    private var shareURL: URL { LocationLink.shareURL(for: place.coordinate) }
 }
 
 /// A place to visit: photo, a short description, a Listen button, and the Wikipedia credit.
@@ -207,5 +215,41 @@ private struct HeritageDetails: View {
             }
             .font(.caption)
         }
+    }
+}
+
+/// A monument's model before you get there: its picture, a lock, and how far away the place is.
+struct LockedModelCard: View {
+    let icon: UIImage?
+    let distance: CLLocationDistance?
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.m) {
+            ZStack {
+                if let icon {
+                    Image(uiImage: icon).resizable().scaledToFit().blur(radius: 2).opacity(0.6)
+                }
+                Icon(.arView, size: 22).foregroundStyle(.white)
+                    .padding(8)
+                    .background(.black.opacity(0.55), in: .circle)
+            }
+            .frame(width: 72, height: 72)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("3D model unlocks on site").font(.headline)
+                if let distance {
+                    Text("Come within 500 m to explore it in 3D and AR. You're \(Measurement(value: distance, unit: UnitLength.meters).formatted(.measurement(width: .abbreviated, usage: .road))) away.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Come within 500 m to explore it in 3D and AR.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(Theme.Spacing.m)
+        .background(Color.secondary.opacity(0.1), in: .rect(cornerRadius: Theme.cornerRadius))
+        .accessibilityIdentifier("place.model3d.locked")
     }
 }
