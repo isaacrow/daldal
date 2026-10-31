@@ -49,7 +49,7 @@ struct DriveModeView: View {
                     }
                     .frame(height: geometry.size.height * 0.5 + geometry.safeAreaInsets.bottom)
                     .frame(maxHeight: .infinity, alignment: .bottom)
-                    .background(Color(white: 0.9))
+                    .background(RoadScene.sky)
                     .transition(.opacity)
                 }
                 if let styleURL {

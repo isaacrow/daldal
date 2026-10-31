@@ -15,6 +15,7 @@ struct DriveScanView: View {
 
     var body: some View {
         ZStack {
+            RoadScene.sky.ignoresSafeArea()
             TimelineView(.animation) { timeline in
                 RoadScene(objects: model.objects, warning: model.warning,
                           speed: max(location.location?.speed ?? 0, 0),
@@ -209,11 +210,13 @@ struct RoadScene: View {
                 ObjectModels.style(entity, for: object, danger: warning && abs(object.lateral) < 1.6)
             }
         }
-        .background(
-            // The horizon fades into a pale sky, as on Tesla's screen.
-            LinearGradient(colors: [Color(white: 0.97), Color(white: 0.9), Color(white: 0.86)],
-                           startPoint: .top, endPoint: .bottom)
-        )
+    }
+
+    /// The pale sky the ground fades into, as on Tesla's screen. Drawn behind the 3D view by its container:
+    /// a background modifier on the RealityView itself hides what RealityKit draws.
+    static var sky: some View {
+        LinearGradient(colors: [Color(white: 0.97), Color(white: 0.9), Color(white: 0.86)],
+                       startPoint: .top, endPoint: .bottom)
     }
 }
 
