@@ -118,6 +118,11 @@ final class VoiceGuide: NSObject {
         say(phraser.arrived(at: destinationName), interrupt: true)
     }
 
+    /// Stops whatever is being read (a place story), without touching navigation state.
+    func stopSpeaking() {
+        synthesizer.stopSpeaking(at: .immediate)
+    }
+
     func end() {
         synthesizer.stopSpeaking(at: .immediate)
         spoken = []

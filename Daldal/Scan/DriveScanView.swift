@@ -5,6 +5,7 @@ import SwiftUI
 /// Drive Scan: a 3D picture of the road around the car, built live from the camera.
 struct DriveScanView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(LocationService.self) private var location
     @State private var model: DriveScanModel
 
     init(voice: VoiceGuide) {
@@ -13,7 +14,11 @@ struct DriveScanView: View {
 
     var body: some View {
         ZStack {
-            RoadScene(objects: model.objects, warning: model.warning)
+            TimelineView(.animation) { timeline in
+                RoadScene(objects: model.objects, warning: model.warning,
+                          speed: max(location.location?.speed ?? 0, 0),
+                          time: timeline.date.timeIntervalSinceReferenceDate)
+            }
                 .ignoresSafeArea()
                 .background(Color.black)
         }
@@ -122,9 +127,17 @@ struct DriveScanView: View {
 
 /// RealityKit scene with a virtual camera: our car, the road, and everything detected around us,
 /// rendered with physically based materials and shadowed lighting.
-private struct RoadScene: View {
+/// Reused by the full-screen Drive Scan and by Drive Mode's split view.
+struct RoadScene: View {
     let objects: [ScannedObject]
     let warning: Bool
+    /// Metres per second; the lane markings stream past at this speed.
+    var speed: Double = 0
+    /// The next turn, drawn as a glowing arrow on the road once it's within reach.
+    var turn: Maneuver? = nil
+    var turnDistance: Double? = nil
+    /// Animation clock (seconds); drives the moving road.
+    var time: TimeInterval = 0
 
     var body: some View {
         RealityView { content in
@@ -156,6 +169,8 @@ private struct RoadScene: View {
             content.add(world)
         } update: { content in
             guard let world = content.entities.first(where: { $0.name == "world" }) else { return }
+            Road.move(world, travelled: Float(time * speed))
+            Road.showTurn(world, turn: turn, distance: turnDistance)
             let live = Set(objects.map { "object-\($0.id)" })
             for child in world.children where child.name.hasPrefix("object-") && !live.contains(child.name) {
                 child.removeFromParent()
@@ -209,13 +224,64 @@ private enum Road {
         }
         let dash = UnlitMaterial(color: UIColor(white: 0.85, alpha: 0.45))
         for x: Float in [-1.75, 1.75] {
-            for z in stride(from: Float(6), to: -66, by: -9) {
+            for k in 0..<dashCount {
                 let piece = ModelEntity(mesh: .generateBox(width: 0.1, height: 0.005, depth: 3), materials: [dash])
-                piece.position = [x, 0.006, z]
+                piece.name = "dash-\(k)"
+                piece.position = [x, 0.006, 6 - Float(k) * dashSpacing]
                 road.addChild(piece)
             }
         }
+
+        // The next-turn arrow: a glowing shaft and head painted on the road, pointing along -z.
+        let glow = UnlitMaterial(color: (UIColor(named: "AccentColor") ?? .systemTeal).withAlphaComponent(0.9))
+        let arrow = Entity()
+        arrow.name = "turn-arrow"
+        let shaft = ModelEntity(mesh: .generateBox(width: 0.7, height: 0.01, depth: 4.5, cornerRadius: 0.2), materials: [glow])
+        shaft.position = [0, 0.012, 0]
+        arrow.addChild(shaft)
+        for side: Float in [-1, 1] {
+            let wing = ModelEntity(mesh: .generateBox(width: 0.7, height: 0.01, depth: 2.6, cornerRadius: 0.2), materials: [glow])
+            wing.position = [side * 0.75, 0.012, -2.2]
+            wing.orientation = simd_quatf(angle: side * -0.8, axis: [0, 1, 0])
+            arrow.addChild(wing)
+        }
+        arrow.isEnabled = false
+        road.addChild(arrow)
+        road.name = "road"
         return road
+    }
+
+    static let dashCount = 9
+    static let dashSpacing: Float = 9
+
+    /// Streams the lane dashes towards the camera as the car moves.
+    static func move(_ world: Entity, travelled: Float) {
+        guard let road = world.findEntity(named: "road") else { return }
+        let offset = travelled.truncatingRemainder(dividingBy: dashSpacing)
+        for child in road.children where child.name.hasPrefix("dash-") {
+            guard let k = Int(child.name.dropFirst(5)) else { continue }
+            child.position.z = 6 - Float(k) * dashSpacing + offset
+        }
+    }
+
+    /// Shows the next turn on the road surface when it's within 120 m, pointing the way to go.
+    static func showTurn(_ world: Entity, turn: Maneuver?, distance: Double?) {
+        guard let arrow = world.findEntity(named: "turn-arrow") else { return }
+        guard let turn, let distance, distance < 120 else {
+            arrow.isEnabled = false
+            return
+        }
+        let yaw: Float = switch turn.direction {
+        case .left, .sharpLeft: .pi / 2
+        case .slightLeft: .pi / 4
+        case .right, .sharpRight: -.pi / 2
+        case .slightRight: -.pi / 4
+        case .uTurn: .pi
+        default: 0
+        }
+        arrow.isEnabled = true
+        arrow.position = [0, 0, -Float(max(distance, 8))]
+        arrow.orientation = simd_quatf(angle: yaw, axis: [0, 1, 0])
     }
 }
 

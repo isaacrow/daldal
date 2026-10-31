@@ -50,6 +50,16 @@ final class PlaceCardButtonsUITests: XCTestCase {
         XCTAssertTrue(opened, "tapping View in AR didn't open the AR screen")
     }
 
+    func testHistoryInAROpens() {
+        let app = launchWithCard()
+        let button = app.buttons["place.history"]
+        XCTAssertTrue(button.waitForExistence(timeout: 15), "Karbala's shrine should offer History in AR")
+        button.tap()
+        let opened = app.staticTexts[noAR].waitForExistence(timeout: 15)
+        shot("after-history")
+        XCTAssertTrue(opened, "tapping History in AR didn't open the AR screen")
+    }
+
     func testWalkWithAROpens() {
         let app = launchWithCard()
         app.buttons["place.walk"].tap()
@@ -79,10 +89,13 @@ final class PlaceCardButtonsUITests: XCTestCase {
         shot("stats")
         app.buttons["Close"].firstMatch.tap()
         app.buttons["map.assistant"].tap()
-        // Without an agent id built in, the assistant explains how to set it up; with one, it offers to start.
-        let setup = app.staticTexts["Set up the voice assistant"]
+        // Without an agent id built in, the free on-device assistant opens (or explains why it can't run here);
+        // with one, the ElevenLabs assistant offers to start.
+        let talk = app.buttons["assistant.talk"]
+        let fallback = app.buttons["Set up the ElevenLabs assistant instead"]
         let start = app.buttons["Start talking"]
-        XCTAssertTrue(setup.waitForExistence(timeout: 15) || start.exists, "the voice assistant didn't open")
+        let opened = talk.waitForExistence(timeout: 15) || fallback.exists || start.exists
+        XCTAssertTrue(opened, "the voice assistant didn't open")
         shot("assistant")
     }
 

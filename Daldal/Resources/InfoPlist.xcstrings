@@ -41,6 +41,16 @@
           }
         }
       }
+    },
+    "NSSpeechRecognitionUsageDescription": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يحوّل دلدل ما تقوله للمساعد إلى نص على جهازك."
+          }
+        }
+      }
     }
   }
 }

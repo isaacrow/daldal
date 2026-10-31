@@ -7,6 +7,11 @@ import SwiftUI
 /// only needs its public agent id, built in from the ELEVENLABS_AGENT_ID GitHub secret.
 struct VoiceAssistantView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(SearchStore.self) private var search
+    @Environment(CityGuideStore.self) private var guide
+    @Environment(LocationService.self) private var location
+    @Environment(NavigationModel.self) private var nav
+    @State private var onDevice: OnDeviceAssistant?
     @State private var conversation: Conversation?
     @State private var failure: String?
     @State private var connecting = false
@@ -21,7 +26,7 @@ struct VoiceAssistantView: View {
         NavigationStack {
             Group {
                 if agentID == nil {
-                    SetupInstructions()
+                    if let onDevice { OnDeviceConversation(assistant: onDevice) }
                 } else if let conversation {
                     LiveConversation(conversation: conversation) {
                         Task { await conversation.endConversation() }
@@ -31,6 +36,11 @@ struct VoiceAssistantView: View {
                     startScreen
                 }
             }
+            .onAppear {
+                guard agentID == nil, onDevice == nil else { return }
+                onDevice = OnDeviceAssistant(voice: nav.voice, search: search.service, guide: guide) { [location] in location.location }
+            }
+            .onDisappear { onDevice?.stop() }
             .navigationTitle("Voice assistant")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -176,6 +186,92 @@ private struct AssistantOrb: View {
         .animation(.easeInOut(duration: speaking ? 0.45 : 1.6).repeatForever(autoreverses: true), value: pulse)
         .onAppear { pulse = true }
         .accessibilityHidden(true)
+    }
+}
+
+/// The free assistant: hold a conversation with Apple Intelligence on the phone, no account needed.
+private struct OnDeviceConversation: View {
+    let assistant: OnDeviceAssistant
+    @State private var typed = ""
+    @State private var showSetup = false
+
+    var body: some View {
+        VStack(spacing: Theme.Spacing.l) {
+            AssistantOrb(active: assistant.status == .listening, speaking: assistant.status == .thinking)
+                .padding(.top, Theme.Spacing.l)
+            Text(statusText).font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                .padding(.horizontal, Theme.Spacing.l)
+
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                        ForEach(assistant.lines) { line in
+                            Text(line.text)
+                                .padding(Theme.Spacing.m)
+                                .background(line.fromUser ? Theme.accent.opacity(0.18) : Color.secondary.opacity(0.12),
+                                            in: .rect(cornerRadius: 16))
+                                .frame(maxWidth: .infinity, alignment: line.fromUser ? .trailing : .leading)
+                                .id(line.id)
+                        }
+                        if !assistant.partial.isEmpty {
+                            Text(assistant.partial).foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                    }
+                    .padding(.horizontal, Theme.Spacing.l)
+                }
+                .onChange(of: assistant.lines.count) {
+                    if let last = assistant.lines.last { withAnimation { proxy.scrollTo(last.id, anchor: .bottom) } }
+                }
+            }
+
+            if case .unavailable = assistant.status {
+                Button("Set up the ElevenLabs assistant instead") { showSetup = true }
+                    .font(.footnote)
+            } else {
+                HStack(spacing: Theme.Spacing.m) {
+                    TextField("Type a question", text: $typed)
+                        .textFieldStyle(.plain)
+                        .padding(Theme.Spacing.m)
+                        .glassEffect(.regular, in: .capsule)
+                        .submitLabel(.send)
+                        .onSubmit(send)
+                    Button {
+                        assistant.toggleListening()
+                    } label: {
+                        Icon(assistant.status == .listening ? .close : .assistant, size: 22)
+                            .frame(width: 52, height: 52)
+                    }
+                    .buttonStyle(.glassProminent)
+                    .buttonBorderShape(.circle)
+                    .disabled(assistant.status == .thinking)
+                    .accessibilityLabel(assistant.status == .listening ? "Stop listening" : "Talk")
+                    .accessibilityIdentifier("assistant.talk")
+                }
+                .padding(.horizontal, Theme.Spacing.l)
+                Text("Free test assistant: runs on your iPhone with Apple Intelligence. Only place searches use the internet.")
+                    .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                    .padding(.horizontal, Theme.Spacing.l)
+            }
+        }
+        .padding(.bottom, Theme.Spacing.l)
+        .sheet(isPresented: $showSetup) { SetupInstructions() }
+    }
+
+    private func send() {
+        let question = typed.trimmingCharacters(in: .whitespaces)
+        guard !question.isEmpty else { return }
+        typed = ""
+        Task { await assistant.answer(question) }
+    }
+
+    private var statusText: String {
+        switch assistant.status {
+        case .ready: String(localized: "Tap the microphone and ask about places to visit or anywhere in Iraq.")
+        case .listening: String(localized: "Listening…")
+        case .thinking: String(localized: "Thinking…")
+        case .unavailable(let reason): reason
+        }
     }
 }
 

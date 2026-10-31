@@ -14,6 +14,7 @@ struct ExploreView: View {
     @Environment(LiveStore.self) private var live
     @Environment(CityGuideStore.self) private var guide
     @Environment(DriverStats.self) private var stats
+    @Environment(HistoryStore.self) private var history
 
     /// What the bottom panel shows. One sheet whose content changes, like Apple Maps: switching content
     /// never closes and reopens a sheet, which iOS ignores when it happens mid-animation.
@@ -33,6 +34,8 @@ struct ExploreView: View {
     @State private var arSite: HeritageSite?
     /// Walking AR navigation opened from a place card (presented on top of the panel).
     @State private var walkDestination: Place?
+    /// Heritage Scan (the place's story and nearby battles in AR), opened from a place card.
+    @State private var historyPlace: Place?
     /// Drive Scan. Presented from the panel when one is open, else from the map, so it never collides with it.
     @State private var scanning = false
     /// Heritage AR opened from the "You're at" banner (no panel showing).
@@ -98,6 +101,15 @@ struct ExploreView: View {
                 .fullScreenCover(isPresented: scanBinding(whenPanelOpen: true)) {
                     DriveScanView(voice: nav.voice)
                 }
+                .fullScreenCover(item: $historyPlace) { place in
+                    HeritageScanView(
+                        title: place.name,
+                        summary: place.guideID.flatMap(guide.place(id:))?.summary(languageCode: languageCode),
+                        events: history.events(near: place.coordinate, languageCode: languageCode),
+                        languageCode: languageCode,
+                        voice: nav.voice
+                    )
+                }
                 .fullScreenCover(item: $walkDestination) { place in
                     WalkARView(destination: place,
                                provider: DaldalRouteProvider(cities: { [cities] in cities.installedCities }),
@@ -126,7 +138,8 @@ struct ExploreView: View {
                 place: place,
                 onOpenAR: openAR,
                 onDirections: { place in planRoute(to: place) },
-                onWalk: { place in walkDestination = place }
+                onWalk: { place in walkDestination = place },
+                onHistory: { place in historyPlace = place }
             )
         case .routes:
             RoutePreviewCard(

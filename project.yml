@@ -88,6 +88,7 @@ targets:
         # Public ElevenLabs agent for the voice assistant, from the ELEVENLABS_AGENT_ID GitHub secret.
         ElevenLabsAgentID: $(ELEVENLABS_AGENT_ID)
         NSMicrophoneUsageDescription: "Daldal uses the microphone only while you talk to the voice assistant."
+        NSSpeechRecognitionUsageDescription: "Daldal turns what you say to the assistant into text, on your iPhone."
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.daldal.ios

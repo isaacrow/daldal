@@ -14,7 +14,9 @@ struct DriveModeView: View {
     @State private var camera: MapViewCamera = .automotiveNavigation(zoom: 17, pitch: 55)
     @State private var confirmingEnd = false
     @State private var reporting = false
-    @State private var scanning = false
+    /// Map on top fading into the live 3D scanner below. On by default while navigating.
+    @AppStorage("drive.split") private var split = true
+    @State private var scanner: DriveScanModel?
     @State private var overlay = DriveMapOverlay()
     @State private var reportSent = false
     @AppStorage("traffic.share") private var shareTraffic = true
@@ -33,15 +35,48 @@ struct DriveModeView: View {
     }
 
     var body: some View {
-        ZStack {
-            if let styleURL {
-                NavigationMapView(styleURL: styleURL, camera: $camera, navigationState: nav.state, onStyleLoaded: { style in
-                    overlay.style = style
-                    overlay.apply(live)
-                })
-                .ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack(alignment: .top) {
+                if split, let scanner {
+                    // The scanner fills the lower half; the map above fades into it.
+                    TimelineView(.animation) { timeline in
+                        RoadScene(objects: scanner.objects, warning: scanner.warning,
+                                  speed: max(nav.state?.preferredUserLocation?.speed?.value ?? 0, 0),
+                                  turn: upcoming?.maneuver, turnDistance: upcoming?.distance,
+                                  time: timeline.date.timeIntervalSinceReferenceDate)
+                    }
+                    .frame(height: geometry.size.height * 0.5 + geometry.safeAreaInsets.bottom)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .background(Color.black)
+                    .transition(.opacity)
+                }
+                if let styleURL {
+                    NavigationMapView(styleURL: styleURL, camera: $camera, navigationState: nav.state, onStyleLoaded: { style in
+                        overlay.style = style
+                        overlay.route = nav.selectedRoute?.geometry.map(\.coordinate2D) ?? []
+                        overlay.apply(live)
+                    })
+                    .frame(height: split ? geometry.size.height * 0.62 + geometry.safeAreaInsets.top : nil)
+                    .mask {
+                        if split {
+                            LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.8),
+                                                   .init(color: .clear, location: 1)],
+                                           startPoint: .top, endPoint: .bottom)
+                        } else {
+                            Rectangle()
+                        }
+                    }
+                }
             }
+            .ignoresSafeArea()
         }
+        .animation(.smooth, value: split)
+        .onAppear {
+            if scanner == nil { scanner = DriveScanModel(voice: nav.voice) }
+            if split { scanner?.start() }
+        }
+        .onChange(of: split) { _, on in on ? scanner?.start() : scanner?.stop() }
+        .onDisappear { scanner?.stop() }
         .overlay(alignment: .top) {
             VStack(spacing: Theme.Spacing.s) {
                 if nav.phase == .arrived {
@@ -105,12 +140,14 @@ struct DriveModeView: View {
         .sheet(isPresented: $reporting) {
             ReportSheet { type in send(type) }
         }
-        .fullScreenCover(isPresented: $scanning) {
-            DriveScanView(voice: nav.voice)
-        }
         .onChange(of: live.reports) { overlay.apply(live) }
         .onChange(of: nav.state?.preferredUserLocation) { overlay.showCar(nav.state?.preferredUserLocation) }
         .onChange(of: live.traffic) { overlay.apply(live) }
+        .onChange(of: nav.routes) {
+            // A reroute or a faster route: recolour the new line.
+            overlay.route = nav.selectedRoute?.geometry.map(\.coordinate2D) ?? []
+            overlay.apply(live)
+        }
         .sensoryFeedback(.success, trigger: reportSent) { _, sent in sent }
         .confirmationDialog("End this trip?", isPresented: $confirmingEnd, titleVisibility: .visible) {
             Button("End trip", role: .destructive) { nav.stop() }
@@ -132,7 +169,7 @@ struct DriveModeView: View {
                     GlassIconButton(icon: .report, label: "Report") { reporting = true }
                         .glassEffectID("report", in: glass)
                 }
-                GlassIconButton(icon: .scan, label: "Drive Scan") { scanning = true }
+                GlassIconButton(icon: .scan, label: split ? "Hide scanner" : "Show scanner", isActive: split) { split.toggle() }
                     .glassEffectID("scan", in: glass)
                 GlassIconButton(icon: nav.voice.isMuted ? .volumeOff : .volume,
                                 label: nav.voice.isMuted ? "Unmute voice" : "Mute voice") {

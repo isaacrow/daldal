@@ -1809,6 +1809,286 @@
           }
         }
       }
+    },
+    "Hide scanner": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إخفاء الماسح"
+          }
+        }
+      }
+    },
+    "Show scanner": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إظهار الماسح"
+          }
+        }
+      }
+    },
+    "Apple Intelligence on this iPhone doesn't support this language yet.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذكاء Apple على هذا الآيفون لا يدعم هذه اللغة بعد."
+          }
+        }
+      }
+    },
+    "This iPhone doesn't support Apple Intelligence. The ElevenLabs assistant can be set up instead.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هذا الآيفون لا يدعم ذكاء Apple. يمكنك إعداد مساعد ElevenLabs بدلاً منه."
+          }
+        }
+      }
+    },
+    "Turn on Apple Intelligence in Settings to use the free assistant.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فعّل ذكاء Apple من الإعدادات لاستخدام المساعد المجاني."
+          }
+        }
+      }
+    },
+    "Apple Intelligence is still downloading. Try again in a few minutes.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ما زال ذكاء Apple قيد التنزيل. حاول بعد بضع دقائق."
+          }
+        }
+      }
+    },
+    "The on-device assistant isn't available right now.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المساعد على الجهاز غير متاح الآن."
+          }
+        }
+      }
+    },
+    "Allow speech recognition and the microphone in Settings to talk to the assistant.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسمح بالتعرّف على الكلام والميكروفون من الإعدادات للتحدث مع المساعد."
+          }
+        }
+      }
+    },
+    "Sorry, I couldn't answer that. Try asking another way.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عذراً، لم أستطع الإجابة. جرّب السؤال بطريقة أخرى."
+          }
+        }
+      }
+    },
+    "Set up the ElevenLabs assistant instead": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعداد مساعد ElevenLabs بدلاً من ذلك"
+          }
+        }
+      }
+    },
+    "Type a question": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اكتب سؤالاً"
+          }
+        }
+      }
+    },
+    "Stop listening": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إيقاف الاستماع"
+          }
+        }
+      }
+    },
+    "Talk": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحدّث"
+          }
+        }
+      }
+    },
+    "Free test assistant: runs on your iPhone with Apple Intelligence. Only place searches use the internet.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مساعد تجريبي مجاني: يعمل على آيفونك بذكاء Apple. البحث عن الأماكن فقط يستخدم الإنترنت."
+          }
+        }
+      }
+    },
+    "Tap the microphone and ask about places to visit or anywhere in Iraq.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اضغط على الميكروفون واسأل عن أماكن للزيارة أو أي مكان في العراق."
+          }
+        }
+      }
+    },
+    "History in AR": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التاريخ بالواقع المعزز"
+          }
+        }
+      }
+    },
+    "No recorded battles nearby": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد معارك مسجّلة قريبة"
+          }
+        }
+      }
+    },
+    "%lld moments in history": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld لحظات من التاريخ"
+          }
+        }
+      }
+    },
+    "Place here": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضعها هنا"
+          }
+        }
+      }
+    },
+    "Wikipedia, CC BY-SA": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ويكيبيديا، CC BY-SA"
+          }
+        }
+      }
+    },
+    "Turn around you and tap a card to hear its story.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التفت حولك واضغط على بطاقة لتسمع قصتها."
+          }
+        }
+      }
+    },
+    "Tap to listen": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اضغط للاستماع"
+          }
+        }
+      }
+    },
+    "Siege": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حصار"
+          }
+        }
+      }
+    },
+    "Battle": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معركة"
+          }
+        }
+      }
+    },
+    "Uprising": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثورة"
+          }
+        }
+      }
+    },
+    "Remembrance": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذكرى"
+          }
+        }
+      }
+    },
+    "Event": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حدث"
+          }
+        }
+      }
+    },
+    "%lld BC": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ق.م"
+          }
+        }
+      }
     }
   }
 }

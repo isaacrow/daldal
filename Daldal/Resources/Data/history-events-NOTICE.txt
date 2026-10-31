@@ -1,0 +1,3 @@
+history-events.json: battles, sieges and events in Iraq before 1950, from Wikidata (CC0); descriptions are
+summaries of Wikipedia articles (CC BY-SA 4.0), credited and linked per event in the app.
+Rebuild with scripts/history/build_history.py.

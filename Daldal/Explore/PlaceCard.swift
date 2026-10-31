@@ -7,12 +7,14 @@ struct PlaceCard: View {
     let onOpenAR: (Place) -> Void
     let onDirections: (Place) -> Void
     let onWalk: (Place) -> Void
+    let onHistory: (Place) -> Void
 
     @Environment(LocationService.self) private var location
     @Environment(SavedPlacesStore.self) private var saved
     @Environment(HeritageStore.self) private var heritage
     @Environment(CityGuideStore.self) private var guide
     @Environment(NavigationModel.self) private var nav
+    @Environment(HistoryStore.self) private var history
     @State private var copied = false
 
     private var site: HeritageSite? { place.heritageID.flatMap(heritage.site(id:)) }
@@ -75,6 +77,10 @@ struct PlaceCard: View {
                 actionButton("Walk with AR", icon: .walk, id: "place.walk") { onWalk(place) }
                 if site != nil {
                     actionButton("View in AR", icon: .arView, id: "place.ar") { onOpenAR(place) }
+                }
+                if site != nil || guidePlace != nil
+                    || !history.events(near: place.coordinate, languageCode: AppLanguage.code).isEmpty {
+                    actionButton("History in AR", icon: .history, id: "place.history") { onHistory(place) }
                 }
                 ShareLink(item: shareURL, subject: Text(place.name)) {
                     Label { Text("Share") } icon: { Icon(.share, size: 18) }

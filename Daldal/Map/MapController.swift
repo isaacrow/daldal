@@ -222,6 +222,8 @@ final class MapController {
             }
         }
 
+        drawRouteTraffic()
+
         guard fit, routes.indices.contains(selected) else { return }
         var coordinates = routes[selected]
         let camera = mapView.camera
@@ -235,6 +237,14 @@ final class MapController {
     func clearRoutes() {
         previewRoutes = nil
         (mapView?.style?.source(withIdentifier: Self.routeLayer) as? MLNShapeSource)?.shape = nil
+        drawRouteTraffic()
+    }
+
+    /// Colours the selected route by live traffic (nothing when there's no route or no traffic data).
+    private func drawRouteTraffic() {
+        guard let style = mapView?.style else { return }
+        let route = previewRoutes.flatMap { $0.routes.indices.contains($0.selected) ? $0.routes[$0.selected] : nil } ?? []
+        RouteTraffic.draw(RouteTraffic.stretches(along: route, traffic: liveTraffic), in: style, above: Self.routeLayer)
     }
 
     @ObservationIgnored private var liveTraffic: Data?
@@ -247,6 +257,7 @@ final class MapController {
         guard let style = mapView?.style else { return }
         LiveLayers.updateTraffic(traffic, in: style)
         LiveLayers.updateReports(reports, in: style)
+        drawRouteTraffic()
     }
 
     func reinstallLive() {

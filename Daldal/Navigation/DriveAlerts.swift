@@ -6,6 +6,8 @@ import SwiftUI
 @MainActor
 final class DriveMapOverlay {
     weak var style: MLNStyle?
+    /// The route being driven, coloured by live traffic.
+    var route: [CLLocationCoordinate2D] = []
 
     func showCar(_ location: UserLocation?) {
         guard let style, let location else { return }
@@ -17,6 +19,8 @@ final class DriveMapOverlay {
         guard let style else { return }
         LiveLayers.updateTraffic(live.traffic, in: style)
         LiveLayers.updateReports(live.reports, in: style)
+        // Ferrostar draws its route on top of the style, so the colours go on top too (under the car).
+        RouteTraffic.draw(RouteTraffic.stretches(along: route, traffic: live.traffic), in: style, above: nil)
     }
 }
 
