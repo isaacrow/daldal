@@ -182,8 +182,7 @@ final class AssistantContext {
         return places.prefix(5).map { place in
             let km = place.distance(from: here).map { String(format: "%.1f km away", $0 / 1000) } ?? ""
             return "\(place.name) (\(place.subtitle)) \(km)"
-        }.joined(separator: "
-")
+        }.joined(separator: "\n")
     }
 
     func placesToVisit(_ count: Int) -> String {
@@ -194,8 +193,7 @@ final class AssistantContext {
         return city.places.prefix(max(1, min(count, 8))).map { place in
             let summary = place.summary(languageCode: language).map { String($0.prefix(160)) } ?? ""
             return "\(place.name(languageCode: language)): \(summary)"
-        }.joined(separator: "
-")
+        }.joined(separator: "\n")
     }
 }
 
