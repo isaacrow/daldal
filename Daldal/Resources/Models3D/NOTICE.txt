@@ -1,2 +1,5 @@
 Vehicles, people and castle/siege models from Kenney (https://kenney.nl): Car Kit, Mini Characters and Castle Kit,
 Creative Commons Zero (CC0). Converted to USDZ (animations baked into frames) by scripts/models/kenney_to_usdz.py.
+
+Battle of Karbala scene: warrior-hooded (Hooded Adventurer), horse-white, horse-brown, tent and spear by Quaternius,
+CC0, via poly.pizza. camel by Poly by Google, CC BY 3.0 (https://poly.pizza/m/7XeLogrxLad), credited in the scene.

@@ -8,6 +8,7 @@ struct PlaceCard: View {
     let onDirections: (Place) -> Void
     let onWalk: (Place) -> Void
     let onHistory: (Place) -> Void
+    let onBattle: () -> Void
 
     @Environment(LocationService.self) private var location
     @Environment(SavedPlacesStore.self) private var saved
@@ -85,6 +86,9 @@ struct PlaceCard: View {
                 if site != nil || guidePlace != nil
                     || !history.events(near: place.coordinate, languageCode: AppLanguage.code).isEmpty {
                     actionButton("History in AR", icon: .history, id: "place.history") { onHistory(place) }
+                }
+                if BattleSceneModel.isNear(place.coordinate) {
+                    actionButton("Battle of Karbala in AR", icon: .history, id: "place.battle") { onBattle() }
                 }
                 ShareLink(item: shareURL, subject: Text(place.name)) {
                     Label { Text("Share") } icon: { Icon(.share, size: 18) }

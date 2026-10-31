@@ -76,7 +76,7 @@ final class SceneModels {
     }
 
     /// The animations kenney_to_usdz.py bakes (USD prim names, so "-" became "_").
-    static let animationNames: Set<String> = ["walk", "idle", "attack_melee_right"]
+    static let animationNames: Set<String> = ["walk", "idle", "attack_melee_right", "sword_slash", "run", "idle_sword", "gallop"]
 
     private static func collectFrames(_ entity: Entity, into groups: inout [(Entity, String, Int)]) {
         for child in entity.children {
@@ -102,5 +102,37 @@ final class SceneModels {
             entity.components.set(model)
         }
         for child in entity.children { tint(child, color) }
+    }
+
+    /// A date palm: a ringed, slightly leaning trunk and a crown of drooping fronds.
+    static func datePalm(seed: Int) -> Entity {
+        var bark = PhysicallyBasedMaterial()
+        bark.baseColor = .init(tint: UIColor(red: 0.45, green: 0.35, blue: 0.24, alpha: 1))
+        bark.roughness = 0.95
+        var frond = PhysicallyBasedMaterial()
+        frond.baseColor = .init(tint: UIColor(red: 0.30, green: 0.48, blue: 0.20, alpha: 1))
+        frond.roughness = 0.8
+        let palm = Entity()
+        let lean = Float(seed % 3 - 1) * 0.04
+        let rings = 9
+        for r in 0..<rings {
+            let ring = ModelEntity(mesh: .generateCylinder(height: 0.62, radius: 0.2 - Float(r) * 0.006), materials: [bark])
+            ring.position = [lean * Float(r) * 0.6, 0.31 + Float(r) * 0.6, 0]
+            palm.addChild(ring)
+        }
+        let top = SIMD3<Float>(lean * Float(rings) * 0.6, Float(rings) * 0.6 + 0.1, 0)
+        let fronds = 9
+        for f in 0..<fronds {
+            let yaw = Float(f) / Float(fronds) * 2 * .pi + Float(seed) * 0.4
+            let leaf = ModelEntity(mesh: .generateBox(width: 0.45, height: 0.03, depth: 2.6, cornerRadius: 0.012), materials: [frond])
+            leaf.position = [0, 0, -1.2]
+            let pivot = Entity()
+            pivot.position = top
+            pivot.orientation = simd_quatf(angle: yaw, axis: [0, 1, 0]) * simd_quatf(angle: -0.45 - Float(f % 3) * 0.12, axis: [1, 0, 0])
+            pivot.addChild(leaf)
+            palm.addChild(pivot)
+        }
+        palm.components.set(GroundingShadowComponent(castsShadow: true))
+        return palm
     }
 }

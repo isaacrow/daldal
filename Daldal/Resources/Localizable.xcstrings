@@ -2119,6 +2119,106 @@
           }
         }
       }
+    },
+    "Battle of Karbala": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معركة كربلاء"
+          }
+        }
+      }
+    },
+    "Battle of Karbala in AR": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معركة كربلاء بالواقع المعزز"
+          }
+        }
+      }
+    },
+    "10 Muharram 61 AH · 680 CE": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العاشر من محرم 61 هـ · 680 م"
+          }
+        }
+      }
+    },
+    "Preparing the battlefield…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ تجهيز ساحة المعركة…"
+          }
+        }
+      }
+    },
+    "Point at the ground and tap to place the battlefield.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وجّه الكاميرا نحو الأرض واضغط لوضع ساحة المعركة."
+          }
+        }
+      }
+    },
+    "Previous": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السابق"
+          }
+        }
+      }
+    },
+    "Next": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التالي"
+          }
+        }
+      }
+    },
+    "%lld / %lld": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld"
+          }
+        }
+      }
+    },
+    "Models: Quaternius (CC0), camel by Poly by Google (CC BY 3.0).": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "النماذج: Quaternius ‏(CC0)، والجمل من Poly by Google ‏(CC BY 3.0)."
+          }
+        }
+      }
+    },
+    "Paintings shown with the artists' permission.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللوحات معروضة بإذن من الفنانين."
+          }
+        }
+      }
     }
   }
 }

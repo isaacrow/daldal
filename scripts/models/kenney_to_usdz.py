@@ -27,7 +27,16 @@ CASTLE = ["siege-tower", "siege-ram", "siege-catapult", "siege-trebuchet", "sieg
           "wall", "wall-half", "wall-corner", "wall-doorway", "tower-square", "tower-hexagon-base",
           "tower-hexagon-roof", "gate", "flag-banner-long", "flag-pennant", "rocks-large", "tree-large", "ground-hills"]
 ANIMATIONS = {"walk": 8, "attack-melee-right": 8, "idle": 4}
-WALK_ONLY = {"walk": 8}
+# CC0 models by Quaternius from poly.pizza, for the Battle of Karbala scene: robed warriors, horses, camp.
+# (file in the download folder, model name, animations to bake)
+KARBALA = [
+    ("hooded.glb", "warrior-hooded", {"sword_slash": 6, "run": 6, "idle_sword": 2}),
+    ("white-horse.glb", "horse-white", {"gallop": 6, "walk": 6, "idle": 2}),
+    ("horse.glb", "horse-brown", {"gallop": 6, "walk": 6, "idle": 2}),
+    ("camel.glb", "camel", None),
+    ("tent.glb", "tent", None),
+    ("spear.glb", "spear", None),
+]
 
 
 class Gltf:
@@ -181,23 +190,32 @@ def convert(source, target, animations=None):
     g = Gltf(source)
     if not animations:
         return write_usdz(target, parts(g, pose(g)), roughness=0.6)
-    by_name = {a.get("name"): a for a in g.json.get("animations", [])}
+    # Exporters prefix names ("CharacterArmature|Sword_Slash"); match on the plain, lower-case name.
+    by_name = {}
+    for a in g.json.get("animations", []):
+        by_name.setdefault(a.get("name", "").split("|")[-1].lower().replace("-", "_"), a)
     model = []
     first = True
     for name, frames in animations.items():
-        animation = by_name.get(name)
+        animation = by_name.get(name.replace("-", "_"))
         if not animation:
             continue
         end = max(float(g.accessor(s["input"]).max()) for s in animation["samplers"])
         for k in range(frames):
-            model += parts(g, pose(g, animation, end * k / frames), f"{name}_{k}", hidden=not first)
+            model += parts(g, pose(g, animation, end * k / frames), f"{name.replace('-', '_')}_{k}", hidden=not first)
             first = False
     return write_usdz(target, model, roughness=0.6)
 
 
-def main(kenney, out):
+def main(kenney, out, polypizza=None):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
+    if polypizza:
+        for file, name, animations in KARBALA:
+            target = out / f"{name}.usdz"
+            convert(Path(polypizza) / file, target, animations)
+            print(f"{name:24} {target.stat().st_size // 1024} KB")
+        return
     kits = {"car-kit": (VEHICLES, None), "mini-characters": (PEOPLE, ANIMATIONS), "castle-kit": (CASTLE, None)}
     for kit, (names, animations) in kits.items():
         folder = Path(kenney) / kit / "Models" / "GLB format"
@@ -212,4 +230,5 @@ def main(kenney, out):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    # kenney_to_usdz.py <kenney folder> <out> [<poly.pizza folder>: convert the Karbala set instead]
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)

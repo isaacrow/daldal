@@ -37,6 +37,9 @@ struct ExploreView: View {
     @State private var walkDestination: Place?
     /// Heritage Scan (the place's story and nearby battles in AR), opened from a place card.
     @State private var historyPlace: Place?
+    /// The Battle of Karbala scene, from a place card near the battlefield or the arrival banner there.
+    @State private var battleFromCard = false
+    @State private var battleFromBanner = false
     /// Drive Scan. Presented from the panel when one is open, else from the map, so it never collides with it.
     @State private var scanning = false
     /// Heritage AR opened from the "You're at" banner (no panel showing).
@@ -113,11 +116,17 @@ struct ExploreView: View {
                     )
                     .environment(landmarks)
                 }
+                .fullScreenCover(isPresented: $battleFromCard) {
+                    BattleSceneView(languageCode: languageCode, voice: nav.voice)
+                }
                 .fullScreenCover(item: $walkDestination) { place in
                     WalkARView(destination: place,
                                provider: DaldalRouteProvider(cities: { [cities] in cities.installedCities }),
                                voice: nav.voice)
                 }
+        }
+        .fullScreenCover(isPresented: $battleFromBanner) {
+            BattleSceneView(languageCode: languageCode, voice: nav.voice)
         }
         .fullScreenCover(item: $bannerARSite) { site in
             GeoARView(site: withModel(site), languageCode: languageCode)
@@ -155,7 +164,8 @@ struct ExploreView: View {
                 onOpenAR: openAR,
                 onDirections: { place in planRoute(to: place) },
                 onWalk: { place in walkDestination = place },
-                onHistory: { place in historyPlace = place }
+                onHistory: { place in historyPlace = place },
+                onBattle: { battleFromCard = true }
             )
         case .routes:
             RoutePreviewCard(
@@ -321,6 +331,7 @@ struct ExploreView: View {
             ArrivalBanner(
                 siteName: site.name(languageCode: languageCode),
                 onOpenAR: { bannerARSite = site },
+                onOpenBattle: BattleSceneModel.isNear(site.coordinate) ? { battleFromBanner = true } : nil,
                 onDismiss: { withAnimation(.smooth) { heritage.dismissNearby() } }
             )
             .padding(.horizontal, Theme.Spacing.l)
@@ -385,6 +396,8 @@ private struct SearchBarButton: View {
 private struct ArrivalBanner: View {
     let siteName: String
     let onOpenAR: () -> Void
+    /// At Karbala: the battle scene, offered next to the site's own AR.
+    let onOpenBattle: (() -> Void)?
     let onDismiss: () -> Void
 
     var body: some View {
@@ -404,6 +417,13 @@ private struct ArrivalBanner: View {
                     .font(.subheadline.weight(.semibold))
             }
             .buttonStyle(.glassProminent)
+            if let onOpenBattle {
+                Button(action: onOpenBattle) {
+                    Icon(.history, size: 18)
+                }
+                .buttonStyle(.glass)
+                .accessibilityLabel("Battle of Karbala in AR")
+            }
             Button(action: onDismiss) {
                 Icon(.close, size: 14)
                     .foregroundStyle(.secondary)

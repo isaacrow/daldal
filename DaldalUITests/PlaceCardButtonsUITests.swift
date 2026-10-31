@@ -61,6 +61,17 @@ final class PlaceCardButtonsUITests: XCTestCase {
         XCTAssertTrue(shown, "the Imam Husayn shrine card should show its 3D model")
     }
 
+    func testBattleOfKarbalaOpens() {
+        let app = launchWithCard()
+        let button = app.buttons["place.battle"]
+        XCTAssertTrue(button.waitForExistence(timeout: 15), "the shrine is on the battlefield, so it should offer the battle scene")
+        if !button.isHittable { app.swipeUp() }
+        button.tap()
+        let opened = app.staticTexts[noAR].waitForExistence(timeout: 15)
+        shot("after-battle")
+        XCTAssertTrue(opened, "tapping Battle of Karbala in AR didn't open the scene")
+    }
+
     func testHistoryInAROpens() {
         let app = launchWithCard()
         let button = app.buttons["place.history"]
