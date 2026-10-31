@@ -23,7 +23,7 @@ struct DaldalApp: App {
         _ = MeshResource.generateBox(size: 0.01)
     }
 
-    var body: some Scene {
+    var body: some SwiftUI.Scene {
         WindowGroup {
             ExploreView()
                 .environment(location)
