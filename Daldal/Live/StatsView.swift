@@ -27,6 +27,8 @@ struct StatsView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                    AppCredit()
+                        .padding(.top, Theme.Spacing.xl)
                 }
                 .padding(Theme.Spacing.l)
             }
@@ -87,5 +89,31 @@ private struct StatTile: View {
         .padding(Theme.Spacing.l)
         .background(Theme.accent.opacity(0.08), in: .rect(cornerRadius: 20))
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// Who made Daldal. The name is shown in both scripts whatever the app's language.
+struct AppCredit: View {
+    var body: some View {
+        VStack(spacing: 6) {
+            Image("LaunchLogo")
+                .resizable()
+                .renderingMode(.template)
+                .scaledToFit()
+                .frame(height: 44)
+                .foregroundStyle(.primary)
+                .accessibilityHidden(true)
+            Text("Designed and developed by")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(verbatim: "اسحاق فالح علي آل محمد")
+                .font(.subheadline.weight(.semibold))
+            Text(verbatim: "Isaac Faleh Ali Almohammed")
+                .font(.subheadline.weight(.semibold))
+                .environment(\.layoutDirection, .leftToRight)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("app.credit")
     }
 }

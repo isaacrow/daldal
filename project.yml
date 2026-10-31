@@ -71,6 +71,7 @@ targets:
         CFBundleShortVersionString: "0.1.0"
         CFBundleVersion: "1"
         CFBundleLocalizations: [ar, en]
+        NSHumanReadableCopyright: "Designed and developed by Isaac Faleh Ali Almohammed (اسحاق فالح علي آل محمد)"
         # Phones set to a language we don't support yet (e.g. Kurdish) fall back to Arabic, not English.
         CFBundleDevelopmentRegion: ar
         UILaunchScreen:

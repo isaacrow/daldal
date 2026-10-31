@@ -2589,6 +2589,16 @@
           }
         }
       }
+    },
+    "Designed and developed by": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصميم وتطوير"
+          }
+        }
+      }
     }
   }
 }

@@ -1,5 +1,7 @@
 # دلدل — Daldal
 
+Designed and developed by **اسحاق فالح علي آل محمد / Isaac Faleh Ali Almohammed**.
+
 A navigation app for Iraq. It uses an open 3D map (no Google or Apple maps), Liquid Glass, and geographic AR at heritage sites.
 
 Status: **Phase 3** — live traffic from anonymous drivers, driver reports, live ETAs, faster-route switching and closure avoidance, on top of Phase 2 (offline map, routing, Drive Mode, Arabic voice) and Phase 1 (3D map, search, heritage, geographic AR). See [PLAN.md](PLAN.md).
