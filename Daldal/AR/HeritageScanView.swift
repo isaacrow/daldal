@@ -335,7 +335,7 @@ final class HeritageScanModel {
         for row in 0..<rows {
             for column in 0..<columns {
                 let index = row * columns + column + Int(phase * 3)
-                guard let soldier = library.instance(SceneModels.people[abs(index) % SceneModels.people.count], fit: 0.1) else {
+                guard let soldier = library.instance(SceneModels.soldiers[abs(index) % SceneModels.soldiers.count], fit: 0.1) else {
                     return nil
                 }
                 SceneModels.tint(soldier, color)

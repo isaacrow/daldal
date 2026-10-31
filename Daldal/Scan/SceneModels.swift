@@ -15,7 +15,9 @@ final class SceneModels {
                          "character-male-e", "character-male-f", "character-female-a", "character-female-b",
                          "character-female-c", "character-female-d", "character-female-e", "character-female-f"]
     static let road = cars + trucks + people + ["ambulance", "firetruck", "tractor"]
-    static let history = people + ["siege-tower", "siege-ram", "siege-catapult", "siege-trebuchet", "siege-ballista",
+    /// Three soldier variants are plenty at table-top size, and each animated figure is heavy in memory.
+    static let soldiers = Array(people.prefix(3))
+    static let history = soldiers + ["siege-tower", "siege-ram", "siege-catapult", "siege-trebuchet", "siege-ballista",
                                    "wall", "wall-half", "wall-corner", "wall-doorway", "tower-square", "tower-hexagon-base",
                                    "tower-hexagon-roof", "gate", "flag-banner-long", "flag-pennant", "rocks-large",
                                    "tree-large", "ground-hills"]

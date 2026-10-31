@@ -33,7 +33,13 @@ final class ShareViewController: UIViewController {
         var responder: UIResponder? = self
         while let current = responder {
             if let application = current as? UIApplication {
-                application.open(url, options: [:], completionHandler: nil)
+                // open(_:options:completionHandler:) is unavailable to extensions at compile time; call it by name.
+                let selector = NSSelectorFromString("openURL:options:completionHandler:")
+                if application.responds(to: selector) {
+                    typealias Open = @convention(c) (AnyObject, Selector, NSURL, NSDictionary, AnyObject?) -> Void
+                    let open = unsafeBitCast(application.method(for: selector), to: Open.self)
+                    open(application, selector, url as NSURL, [:] as NSDictionary, nil)
+                }
                 break
             }
             responder = current.next

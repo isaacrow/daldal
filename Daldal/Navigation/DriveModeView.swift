@@ -19,7 +19,6 @@ struct DriveModeView: View {
     /// Map on top fading into the live 3D scanner below. On by default while navigating.
     @AppStorage("drive.split") private var split = true
     @State private var scanner: DriveScanModel?
-    @State private var motion = MotionFusion()
     @State private var overlay = DriveMapOverlay()
     @State private var reportSent = false
     @AppStorage("traffic.share") private var shareTraffic = true
@@ -44,14 +43,13 @@ struct DriveModeView: View {
                     // The scanner fills the lower half; the map above fades into it.
                     TimelineView(.animation) { timeline in
                         RoadScene(objects: scanner.objects, warning: scanner.warning,
-                                  speed: motion.speed,
+                                  speed: max(nav.state?.preferredUserLocation?.speed?.value ?? 0, 0),
                                   turn: upcoming?.maneuver, turnDistance: upcoming?.distance,
-                                  time: timeline.date.timeIntervalSinceReferenceDate,
-                                  travelled: motion.distance, turnRate: motion.turnRate)
+                                  time: timeline.date.timeIntervalSinceReferenceDate)
                     }
                     .frame(height: geometry.size.height * 0.5 + geometry.safeAreaInsets.bottom)
                     .frame(maxHeight: .infinity, alignment: .bottom)
-                    .background(Color.black)
+                    .background(Color(white: 0.9))
                     .transition(.opacity)
                 }
                 if let styleURL {
@@ -78,13 +76,9 @@ struct DriveModeView: View {
         .onAppear {
             if scanner == nil { scanner = DriveScanModel(voice: nav.voice) }
             if split { scanner?.start() }
-            motion.start()
         }
         .onChange(of: split) { _, on in on ? scanner?.start() : scanner?.stop() }
-        .onDisappear {
-            scanner?.stop()
-            motion.stop()
-        }
+        .onDisappear { scanner?.stop() }
         .overlay(alignment: .top) {
             VStack(spacing: Theme.Spacing.s) {
                 if nav.phase == .arrived {
@@ -151,7 +145,6 @@ struct DriveModeView: View {
         .onChange(of: live.reports) { overlay.apply(live) }
         .onChange(of: nav.state?.preferredUserLocation) {
             overlay.showCar(nav.state?.preferredUserLocation)
-            motion.update(gps: location.location)
             warnAboutRoadFeatures()
         }
         .onChange(of: roadFeatures.features) { overlay.showRoadFeatures(roadFeatures.features) }

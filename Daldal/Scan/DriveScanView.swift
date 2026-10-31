@@ -8,7 +8,6 @@ struct DriveScanView: View {
     @Environment(LocationService.self) private var location
     @State private var model: DriveScanModel
     @State private var mount = MountGuide()
-    @State private var motion = MotionFusion()
 
     init(voice: VoiceGuide) {
         _model = State(initialValue: DriveScanModel(voice: voice))
@@ -18,12 +17,10 @@ struct DriveScanView: View {
         ZStack {
             TimelineView(.animation) { timeline in
                 RoadScene(objects: model.objects, warning: model.warning,
-                          speed: motion.speed,
-                          time: timeline.date.timeIntervalSinceReferenceDate,
-                          travelled: motion.distance, turnRate: motion.turnRate)
+                          speed: max(location.location?.speed ?? 0, 0),
+                          time: timeline.date.timeIntervalSinceReferenceDate)
             }
                 .ignoresSafeArea()
-                .background(Color.black)
         }
         .overlay(alignment: .topTrailing) {
             CameraPreview(model: model)
@@ -51,19 +48,16 @@ struct DriveScanView: View {
         .onAppear {
             model.start()
             mount.start()
-            motion.start()
             UIApplication.shared.isIdleTimerDisabled = true
         }
         .onDisappear {
             model.stop()
             mount.stop()
-            motion.stop()
             UIApplication.shared.isIdleTimerDisabled = false
         }
         .statusBarHidden()
-        .onChange(of: location.location) { motion.update(gps: location.location) }
         .accessibilityIdentifier("scan.screen")
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light) // Tesla's light display
     }
 
     private var header: some View {
@@ -145,65 +139,55 @@ struct DriveScanView: View {
 
 // MARK: 3D road
 
-/// RealityKit scene with a virtual camera: our car, the road, and everything detected around us,
-/// rendered with physically based materials and shadowed lighting.
+/// The road around the car, drawn the way Tesla's driving display does it: a calm light-grey world, soft grey
+/// lane lines, our car glossy black from behind, everyone else as smooth light-grey shapes and white figures.
+/// Everything is built from simple shapes in code, so it appears instantly and uses little memory.
 /// Reused by the full-screen Drive Scan and by Drive Mode's split view.
 struct RoadScene: View {
     let objects: [ScannedObject]
     let warning: Bool
     /// Metres per second; the lane markings stream past at this speed.
     var speed: Double = 0
-    /// The next turn, drawn as a glowing arrow on the road once it's within reach.
+    /// The next turn, drawn as an arrow on the road once it's within reach.
     var turn: Maneuver? = nil
     var turnDistance: Double? = nil
     /// Animation clock (seconds); drives the moving road.
     var time: TimeInterval = 0
-    /// Metres travelled (from MotionFusion); when set, the road moves by this instead of time x speed.
-    var travelled: Double? = nil
-    /// Radians per second the car is turning (positive left): the road ahead bends with it.
-    var turnRate: Double = 0
+
+    /// Detected objects are drawn this much further ahead than measured, so they never crowd our car's nose.
+    static let clearance: Float = 2.5
 
     var body: some View {
         RealityView { content in
             content.camera = .virtual
-            await SceneModels.shared.preload(SceneModels.road)
-
             let world = Entity()
             world.name = "world"
             world.addChild(Road.make())
 
-            let ego = SceneModels.shared.instance("suv-luxury", fit: 4.6, along: .length, turned: true).map { car in
-                SceneModels.clay(car, SceneModels.clayEgo, roughness: 0.3, clearcoat: 1)
-                return car
-            } ?? CarModel.make(paint: CarModel.pearl, lit: true)
+            let ego = Vehicles.car(paint: Vehicles.egoPaint, lit: true)
             ego.position = [0, 0, 2.3] // Nose at z = 0, where the phone (windscreen) is.
             world.addChild(ego)
 
-            // Key light with shadows, from ahead-right like a late-afternoon sun, plus a soft fill.
-            let sun = DirectionalLight()
-            sun.light.intensity = 4200
-            sun.shadow = DirectionalLightComponent.Shadow(maximumDistance: 45, depthBias: 3)
-            sun.look(at: [0, 0, -10], from: [8, 14, -2], relativeTo: nil)
-            world.addChild(sun)
+            // Soft, even light from above, like an overcast sky, with gentle shadows under the cars.
+            let key = DirectionalLight()
+            key.light.intensity = 3200
+            key.shadow = DirectionalLightComponent.Shadow(maximumDistance: 60, depthBias: 2)
+            key.look(at: [0, 0, -12], from: [3, 20, 4], relativeTo: nil)
+            world.addChild(key)
             let fill = DirectionalLight()
-            fill.light.intensity = 900
-            fill.look(at: .zero, from: [-6, 6, 12], relativeTo: nil)
+            fill.light.intensity = 1400
+            fill.look(at: .zero, from: [-4, 8, 14], relativeTo: nil)
             world.addChild(fill)
 
+            // Low behind our car, looking down the road.
             let camera = PerspectiveCamera()
-            camera.camera.fieldOfViewInDegrees = 50
-            camera.look(at: [0, 0.4, -18], from: [0, 7.5, 14], relativeTo: nil)
+            camera.camera.fieldOfViewInDegrees = 52
+            camera.look(at: [0, 0, -20], from: [0, 5.2, 11.5], relativeTo: nil)
             world.addChild(camera)
             content.add(world)
         } update: { content in
             guard let world = content.entities.first(where: { $0.name == "world" }) else { return }
-            Road.move(world, travelled: Float(travelled ?? time * speed))
-            // Lean the road into the turn: a gentle swing of the whole scene ahead around our car.
-            if let road = world.findEntity(named: "road") {
-                road.orientation = simd_quatf(angle: Float(max(-0.35, min(0.35, turnRate * 0.6))), axis: [0, 1, 0])
-            }
-            // People walk in place (8 frames a second); everyone else just slides.
-            let walkFrame = Int(time * 8)
+            Road.move(world, travelled: Float(time * speed))
             Road.showTurn(world, turn: turn, distance: turnDistance)
             let live = Set(objects.map { "object-\($0.id)" })
             for child in world.children where child.name.hasPrefix("object-") && !live.contains(child.name) {
@@ -211,75 +195,57 @@ struct RoadScene: View {
             }
             for object in objects {
                 let name = "object-\(object.id)"
-                let target = SIMD3<Float>(Float(object.lateral), 0, -Float(object.distance))
+                let target = SIMD3<Float>(Float(object.lateral), 0, -Float(object.distance) - Self.clearance)
                 if let entity = world.children.first(where: { $0.name == name }) {
-                    // Glide towards each new measurement instead of jumping: detections are noisy frame to frame.
-                    entity.position += (target - entity.position) * 0.25
+                    // Glide towards each new measurement: detections are noisy from frame to frame.
+                    entity.position += (target - entity.position) * 0.2
                 } else {
-                    let made = ObjectModels.make(object.kind, id: object.id)
+                    let made = ObjectModels.make(object.kind)
                     made.name = name
                     made.position = target
                     world.addChild(made)
                 }
                 guard let entity = world.children.first(where: { $0.name == name }) else { continue }
                 ObjectModels.style(entity, for: object, danger: warning && abs(object.lateral) < 1.6)
-                if object.kind == .person {
-                    SceneModels.showFrame(of: entity, animation: "walk", frame: walkFrame + object.id)
-                }
             }
         }
+        .background(
+            // The horizon fades into a pale sky, as on Tesla's screen.
+            LinearGradient(colors: [Color(white: 0.97), Color(white: 0.9), Color(white: 0.86)],
+                           startPoint: .top, endPoint: .bottom)
+        )
     }
 }
 
-/// Dark asphalt with solid edge lines and soft lane dashes; three 3.5 m lanes.
+/// A light-grey ground with soft grey lane lines; three 3.5 m lanes.
 private enum Road {
+    static let ground = UIColor(white: 0.88, alpha: 1)
+
     static func make() -> Entity {
         let road = Entity()
-        var asphalt = PhysicallyBasedMaterial()
-        asphalt.baseColor = .init(tint: UIColor(red: 0.11, green: 0.12, blue: 0.14, alpha: 1))
-        if let grain = asphaltTexture {
-            // Fine grain repeated every couple of metres, so the road reads as asphalt rather than plastic.
-            asphalt.baseColor = .init(tint: UIColor(white: 0.32, alpha: 1), texture: grain)
-            asphalt.textureCoordinateTransform = .init(scale: [5, 32])
-        }
-        asphalt.roughness = 0.95
-        let surface = ModelEntity(mesh: .generatePlane(width: 11.5, depth: 75), materials: [asphalt])
-        surface.position = [0, 0, -30]
+        // Unlit so the ground is one even tone that melts into the sky at the horizon.
+        let surface = ModelEntity(mesh: .generatePlane(width: 160, depth: 220), materials: [UnlitMaterial(color: ground)])
+        surface.position = [0, 0, -80]
         road.addChild(surface)
 
-        var pavement = PhysicallyBasedMaterial()
-        pavement.baseColor = .init(tint: UIColor(red: 0.30, green: 0.31, blue: 0.33, alpha: 1))
-        pavement.roughness = 0.9
-        var kerb = PhysicallyBasedMaterial()
-        kerb.baseColor = .init(tint: UIColor(white: 0.72, alpha: 1))
-        kerb.roughness = 0.7
-        for side: Float in [-1, 1] {
-            let walk = ModelEntity(mesh: .generateBox(width: 2.4, height: 0.16, depth: 75), materials: [pavement])
-            walk.position = [side * 7.0, 0.08, -30]
-            road.addChild(walk)
-            let stone = ModelEntity(mesh: .generateBox(width: 0.22, height: 0.2, depth: 75), materials: [kerb])
-            stone.position = [side * 5.85, 0.1, -30]
-            road.addChild(stone)
-        }
-
-        let edge = UnlitMaterial(color: UIColor(white: 0.92, alpha: 0.9))
+        let edge = UnlitMaterial(color: UIColor(white: 0.66, alpha: 1))
         for x: Float in [-5.25, 5.25] {
-            let line = ModelEntity(mesh: .generateBox(width: 0.14, height: 0.005, depth: 75), materials: [edge])
-            line.position = [x, 0.006, -30]
+            let line = ModelEntity(mesh: .generateBox(width: 0.12, height: 0.004, depth: 120), materials: [edge])
+            line.position = [x, 0.005, -50]
             road.addChild(line)
         }
-        let dash = UnlitMaterial(color: UIColor(white: 0.85, alpha: 0.45))
+        let dash = UnlitMaterial(color: UIColor(white: 0.72, alpha: 1))
         for x: Float in [-1.75, 1.75] {
             for k in 0..<dashCount {
-                let piece = ModelEntity(mesh: .generateBox(width: 0.1, height: 0.005, depth: 3), materials: [dash])
+                let piece = ModelEntity(mesh: .generateBox(width: 0.1, height: 0.004, depth: 3), materials: [dash])
                 piece.name = "dash-\(k)"
-                piece.position = [x, 0.006, 6 - Float(k) * dashSpacing]
+                piece.position = [x, 0.005, 6 - Float(k) * dashSpacing]
                 road.addChild(piece)
             }
         }
 
-        // The next-turn arrow: a glowing shaft and head painted on the road, pointing along -z.
-        let glow = UnlitMaterial(color: (UIColor(named: "AccentColor") ?? .systemTeal).withAlphaComponent(0.9))
+        // The next turn: a blue arrow painted on the road, pointing along -z.
+        let glow = UnlitMaterial(color: UIColor(red: 0.20, green: 0.45, blue: 0.95, alpha: 0.85))
         let arrow = Entity()
         arrow.name = "turn-arrow"
         let shaft = ModelEntity(mesh: .generateBox(width: 0.7, height: 0.01, depth: 4.5, cornerRadius: 0.2), materials: [glow])
@@ -293,80 +259,12 @@ private enum Road {
         }
         arrow.isEnabled = false
         road.addChild(arrow)
-
-        // Street lamps on the right and date palms on the left, streaming past like the lane marks.
-        for k in 0..<roadsideCount {
-            let lamp = streetLamp()
-            lamp.name = "side-lamp-\(k)"
-            lamp.position = [6.6, 0.16, 6 - Float(k) * roadsideSpacing]
-            road.addChild(lamp)
-            let palm = SceneModels.datePalm(seed: k)
-            palm.name = "side-palm-\(k)"
-            palm.position = [-6.8, 0.16, 6 - Float(k) * roadsideSpacing - roadsideSpacing / 2]
-            road.addChild(palm)
-        }
         road.name = "road"
         return road
     }
 
-    static let dashCount = 9
+    static let dashCount = 12
     static let dashSpacing: Float = 9
-    static let roadsideCount = 5
-    static let roadsideSpacing: Float = 18
-
-    /// Speckled grey noise, tiled over the road surface.
-    private static let asphaltTexture: MaterialParameters.Texture? = {
-        let size = 128
-        var pixels = [UInt8](repeating: 0, count: size * size * 4)
-        var seed: UInt32 = 0x9E37_79B9
-        for i in 0..<(size * size) {
-            seed = seed &* 1_664_525 &+ 1_013_904_223
-            let noise = Int(seed >> 24)
-            let speck = noise > 246 ? 70 : (noise < 8 ? -40 : 0)
-            let value = UInt8(clamping: 150 + (noise - 128) / 4 + speck)
-            pixels[i * 4] = value
-            pixels[i * 4 + 1] = value
-            pixels[i * 4 + 2] = value
-            pixels[i * 4 + 3] = 255
-        }
-        guard let provider = CGDataProvider(data: Data(pixels) as CFData),
-              let image = CGImage(width: size, height: size, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: size * 4,
-                                  space: CGColorSpaceCreateDeviceRGB(),
-                                  bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
-                                  provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent),
-              let texture = try? TextureResource(image: image, options: .init(semantic: .color)) else { return nil }
-        let sampler = MTLSamplerDescriptor()
-        sampler.sAddressMode = .repeat
-        sampler.tAddressMode = .repeat
-        sampler.minFilter = .linear
-        sampler.magFilter = .linear
-        sampler.mipFilter = .linear
-        return MaterialParameters.Texture(texture, sampler: .init(sampler))
-    }()
-
-    private static func streetLamp() -> Entity {
-        var metal = PhysicallyBasedMaterial()
-        metal.baseColor = .init(tint: UIColor(white: 0.45, alpha: 1))
-        metal.roughness = 0.4
-        metal.metallic = 0.8
-        let lamp = Entity()
-        let pole = ModelEntity(mesh: .generateCylinder(height: 6.5, radius: 0.08), materials: [metal])
-        pole.position.y = 3.25
-        lamp.addChild(pole)
-        let arm = ModelEntity(mesh: .generateBox(width: 1.6, height: 0.08, depth: 0.08, cornerRadius: 0.03), materials: [metal])
-        arm.position = [-0.75, 6.45, 0]
-        lamp.addChild(arm)
-        let head = ModelEntity(mesh: .generateBox(width: 0.6, height: 0.14, depth: 0.28, cornerRadius: 0.06), materials: [metal])
-        head.position = [-1.5, 6.38, 0]
-        lamp.addChild(head)
-        let bulb = ModelEntity(mesh: .generateBox(width: 0.5, height: 0.03, depth: 0.2, cornerRadius: 0.01),
-                               materials: [UnlitMaterial(color: UIColor(red: 1, green: 0.93, blue: 0.75, alpha: 1))])
-        bulb.position = [-1.5, 6.3, 0]
-        lamp.addChild(bulb)
-        lamp.components.set(GroundingShadowComponent(castsShadow: true))
-        return lamp
-    }
-
 
     /// Streams the lane dashes towards the camera as the car moves.
     static func move(_ world: Entity, travelled: Float) {
@@ -375,12 +273,6 @@ private enum Road {
         for child in road.children where child.name.hasPrefix("dash-") {
             guard let k = Int(child.name.dropFirst(5)) else { continue }
             child.position.z = 6 - Float(k) * dashSpacing + offset
-        }
-        let sideOffset = travelled.truncatingRemainder(dividingBy: roadsideSpacing)
-        for child in road.children where child.name.hasPrefix("side-") {
-            guard let k = child.name.split(separator: "-").last.flatMap({ Int($0) }) else { continue }
-            let stagger: Float = child.name.hasPrefix("side-palm") ? roadsideSpacing / 2 : 0
-            child.position.z = 6 - Float(k) * roadsideSpacing - stagger + sideOffset
         }
     }
 
@@ -405,174 +297,137 @@ private enum Road {
     }
 }
 
-/// A car built from parts (body, cabin glass, wheels, lights), so it reads as a car at a glance.
-private enum CarModel {
-    static var pearl: PhysicallyBasedMaterial {
+/// Smooth, rounded vehicle shapes: a low body, a glass cabin set back, dark wheels. No logos, no colours.
+private enum Vehicles {
+    static var egoPaint: PhysicallyBasedMaterial {
         var m = PhysicallyBasedMaterial()
-        m.baseColor = .init(tint: UIColor(white: 0.96, alpha: 1))
-        m.roughness = 0.22
-        m.metallic = 0.35
+        m.baseColor = .init(tint: UIColor(white: 0.08, alpha: 1))
+        m.roughness = 0.18
+        m.metallic = 0.4
         m.clearcoat = .init(floatLiteral: 1)
-        m.clearcoatRoughness = .init(floatLiteral: 0.04)
+        m.clearcoatRoughness = .init(floatLiteral: 0.03)
         return m
     }
 
-    static var graphite: PhysicallyBasedMaterial {
+    static var otherPaint: PhysicallyBasedMaterial {
         var m = PhysicallyBasedMaterial()
-        m.baseColor = .init(tint: UIColor(white: 0.62, alpha: 1))
-        m.roughness = 0.45
-        m.metallic = 0.2
+        m.baseColor = .init(tint: UIColor(white: 0.80, alpha: 1))
+        m.roughness = 0.42
+        m.metallic = 0.0
+        m.clearcoat = .init(floatLiteral: 0.6)
+        m.clearcoatRoughness = .init(floatLiteral: 0.2)
         return m
     }
 
-    static func make(paint: PhysicallyBasedMaterial, lit: Bool, length: Float = 4.5, width: Float = 1.85, height: Float = 1.45) -> Entity {
+    static func car(paint: PhysicallyBasedMaterial, lit: Bool, length: Float = 4.6, width: Float = 1.9, height: Float = 1.45) -> Entity {
         let car = Entity()
-        let body = ModelEntity(mesh: .generateBox(width: width, height: height * 0.45, depth: length, cornerRadius: 0.28),
+        // Lower body, generously rounded, and a slightly narrower shoulder line on top of it.
+        let body = ModelEntity(mesh: .generateBox(width: width, height: height * 0.42, depth: length, cornerRadius: 0.34),
                                materials: [paint])
-        body.name = "body"
-        body.position.y = height * 0.38
+        body.position.y = height * 0.33
         car.addChild(body)
+        let shoulder = ModelEntity(mesh: .generateBox(width: width * 0.94, height: height * 0.14, depth: length * 0.9, cornerRadius: 0.12),
+                                   materials: [paint])
+        shoulder.position.y = height * 0.56
+        car.addChild(shoulder)
 
         var glass = PhysicallyBasedMaterial()
-        glass.baseColor = .init(tint: UIColor(red: 0.05, green: 0.08, blue: 0.12, alpha: 1))
-        glass.roughness = 0.05
-        glass.metallic = 0.6
-        glass.blending = .transparent(opacity: .init(floatLiteral: 0.85))
-        let cabin = ModelEntity(mesh: .generateBox(width: width * 0.86, height: height * 0.4, depth: length * 0.5, cornerRadius: 0.3),
+        glass.baseColor = .init(tint: UIColor(white: lit ? 0.04 : 0.55, alpha: 1))
+        glass.roughness = 0.08
+        glass.metallic = 0.2
+        let cabin = ModelEntity(mesh: .generateBox(width: width * 0.82, height: height * 0.36, depth: length * 0.48, cornerRadius: 0.32),
                                 materials: [glass])
-        cabin.position = [0, height * 0.78, length * 0.06]
+        cabin.position = [0, height * 0.78, length * 0.04]
         car.addChild(cabin)
 
         var rubber = PhysicallyBasedMaterial()
-        rubber.baseColor = .init(tint: UIColor(white: 0.06, alpha: 1))
+        rubber.baseColor = .init(tint: UIColor(white: lit ? 0.05 : 0.45, alpha: 1))
         rubber.roughness = 0.9
         for (x, z) in [(-1, -1), (1, -1), (-1, 1), (1, 1)] as [(Float, Float)] {
-            let wheel = ModelEntity(mesh: .generateCylinder(height: 0.24, radius: 0.34), materials: [rubber])
+            let wheel = ModelEntity(mesh: .generateCylinder(height: 0.22, radius: 0.33), materials: [rubber])
             wheel.orientation = simd_quatf(angle: .pi / 2, axis: [0, 0, 1])
-            wheel.position = [x * (width / 2 - 0.08), 0.34, z * length * 0.32]
+            wheel.position = [x * (width / 2 - 0.1), 0.33, z * length * 0.32]
             car.addChild(wheel)
         }
 
         if lit {
-            for x: Float in [-0.6, 0.6] {
-                let head = ModelEntity(mesh: .generateBox(width: 0.38, height: 0.08, depth: 0.04, cornerRadius: 0.03),
-                                       materials: [UnlitMaterial(color: UIColor(white: 1, alpha: 1))])
-                head.position = [x, height * 0.45, -length / 2]
-                car.addChild(head)
-                let tail = ModelEntity(mesh: .generateBox(width: 0.42, height: 0.07, depth: 0.04, cornerRadius: 0.03),
-                                       materials: [UnlitMaterial(color: UIColor(red: 0.95, green: 0.1, blue: 0.12, alpha: 1))])
-                tail.position = [x, height * 0.5, length / 2]
-                car.addChild(tail)
-            }
+            // Our car, seen from behind: a thin red light bar across the tail.
+            let bar = ModelEntity(mesh: .generateBox(width: width * 0.86, height: 0.05, depth: 0.03, cornerRadius: 0.02),
+                                  materials: [UnlitMaterial(color: UIColor(red: 0.95, green: 0.12, blue: 0.14, alpha: 1))])
+            bar.position = [0, height * 0.5, length / 2 + 0.005]
+            car.addChild(bar)
         }
         car.components.set(GroundingShadowComponent(castsShadow: true))
         for child in car.children { child.components.set(GroundingShadowComponent(castsShadow: true)) }
         return car
     }
-}
 
-/// A person: head, body, arms and legs, in a bright hi-vis orange so pedestrians always stand out.
-private enum PersonModel {
-    static func make() -> Entity {
-        var cloth = PhysicallyBasedMaterial()
-        cloth.baseColor = .init(tint: UIColor(red: 1, green: 0.58, blue: 0.16, alpha: 1))
-        cloth.roughness = 0.6
-        var skin = PhysicallyBasedMaterial()
-        skin.baseColor = .init(tint: UIColor(red: 0.86, green: 0.70, blue: 0.56, alpha: 1))
-        skin.roughness = 0.5
+    /// A white figure, like Tesla's pedestrians: rounded body, head, legs; no faces or clothes.
+    static func person() -> Entity {
+        var white = PhysicallyBasedMaterial()
+        white.baseColor = .init(tint: UIColor(white: 0.97, alpha: 1))
+        white.roughness = 0.5
         let person = Entity()
-        let torso = ModelEntity(mesh: .generateBox(width: 0.42, height: 0.62, depth: 0.24, cornerRadius: 0.1), materials: [cloth])
-        torso.position.y = 1.22
+        let torso = ModelEntity(mesh: .generateBox(width: 0.44, height: 0.66, depth: 0.26, cornerRadius: 0.13), materials: [white])
+        torso.position.y = 1.2
         person.addChild(torso)
-        let head = ModelEntity(mesh: .generateSphere(radius: 0.13), materials: [skin])
-        head.position.y = 1.68
+        let head = ModelEntity(mesh: .generateSphere(radius: 0.13), materials: [white])
+        head.position.y = 1.67
         person.addChild(head)
         for side: Float in [-1, 1] {
-            let arm = ModelEntity(mesh: .generateBox(width: 0.1, height: 0.58, depth: 0.1, cornerRadius: 0.05), materials: [cloth])
-            arm.position = [side * 0.28, 1.2, 0]
-            arm.orientation = simd_quatf(angle: side * 0.12, axis: [0, 0, 1])
-            person.addChild(arm)
-            let leg = ModelEntity(mesh: .generateBox(width: 0.15, height: 0.86, depth: 0.15, cornerRadius: 0.06),
-                                  materials: [SimpleMaterial(color: UIColor(white: 0.18, alpha: 1), isMetallic: false)])
-            leg.position = [side * 0.11, 0.45, 0]
+            let leg = ModelEntity(mesh: .generateBox(width: 0.16, height: 0.86, depth: 0.17, cornerRadius: 0.07), materials: [white])
+            leg.position = [side * 0.11, 0.44, 0]
             person.addChild(leg)
+            let arm = ModelEntity(mesh: .generateBox(width: 0.1, height: 0.6, depth: 0.11, cornerRadius: 0.05), materials: [white])
+            arm.position = [side * 0.28, 1.18, 0]
+            arm.orientation = simd_quatf(angle: side * 0.1, axis: [0, 0, 1])
+            person.addChild(arm)
         }
         person.components.set(GroundingShadowComponent(castsShadow: true))
         return person
     }
 }
 
-/// Readable shapes for each kind of road user.
+/// Shapes for each kind of road user, all in the same calm grey and white.
 private enum ObjectModels {
-    static func make(_ kind: ScannedObject.Kind, id: Int) -> Entity {
+    static func make(_ kind: ScannedObject.Kind) -> Entity {
         let root = Entity()
-        let library = SceneModels.shared
+        let grey = Vehicles.otherPaint
         switch kind {
         case .car:
-            root.addChild(library.instance(SceneModels.variant(SceneModels.cars, for: id), fit: 4.5, along: .length, turned: true)
-                ?? CarModel.make(paint: CarModel.graphite, lit: false))
+            root.addChild(Vehicles.car(paint: grey, lit: false))
         case .truck:
-            root.addChild(library.instance(SceneModels.variant(SceneModels.trucks, for: id), fit: 8, along: .length, turned: true)
-                ?? CarModel.make(paint: CarModel.graphite, lit: false, length: 8, width: 2.5, height: 3.3))
+            root.addChild(Vehicles.car(paint: grey, lit: false, length: 8, width: 2.5, height: 3.2))
         case .bus:
-            // A box van stretched to bus length: right width and height, eleven metres long.
-            if let bus = library.instance("delivery", fit: 2.55, along: .width, turned: true) {
-                let length = bus.visualBounds(relativeTo: nil).extents.z
-                bus.scale = [1, 1, 11 / max(length, 0.1)]
-                root.addChild(bus)
-            } else {
-                root.addChild(CarModel.make(paint: CarModel.graphite, lit: false, length: 11, width: 2.55, height: 3.2))
-            }
-        case .motorbike, .bicycle:
-            let frame = ModelEntity(mesh: .generateBox(width: 0.35, height: 0.9, depth: 1.9, cornerRadius: 0.15),
-                                    materials: [CarModel.graphite])
-            frame.name = "body"
-            frame.position.y = 0.55
-            root.addChild(frame)
-            let rider = ModelEntity(mesh: .generateSphere(radius: 0.18), materials: [UnlitMaterial(color: .systemOrange)])
-            rider.position = [0, 1.45, 0.1]
-            root.addChild(rider)
-        case .person:
-            if let person = library.instance(SceneModels.variant(SceneModels.people, for: id), fit: 1.75) {
-                // Crossing or walking along the kerb, depending on the person.
-                person.orientation = simd_quatf(angle: [Float.pi / 2, -Float.pi / 2, 0, .pi][abs(id) % 4], axis: [0, 1, 0])
-                root.addChild(person)
-            } else {
-                root.addChild(PersonModel.make())
-            }
-        case .animal:
-            var hide = PhysicallyBasedMaterial()
-            hide.baseColor = .init(tint: UIColor(red: 0.62, green: 0.50, blue: 0.38, alpha: 1))
-            hide.roughness = 0.85
-            let body = ModelEntity(mesh: .generateBox(width: 0.5, height: 0.55, depth: 1.3, cornerRadius: 0.22), materials: [hide])
-            body.position.y = 0.85
-            root.addChild(body)
-            let head = ModelEntity(mesh: .generateBox(width: 0.3, height: 0.3, depth: 0.42, cornerRadius: 0.12), materials: [hide])
-            head.position = [0, 1.1, -0.78]
-            root.addChild(head)
-            for (x, z) in [(-0.18, -0.48), (0.18, -0.48), (-0.18, 0.48), (0.18, 0.48)] as [(Float, Float)] {
-                let leg = ModelEntity(mesh: .generateCylinder(height: 0.6, radius: 0.06), materials: [hide])
-                leg.position = [x, 0.3, z]
-                root.addChild(leg)
-            }
+            root.addChild(Vehicles.car(paint: grey, lit: false, length: 11, width: 2.55, height: 3.2))
         case .train:
-            root.addChild(CarModel.make(paint: CarModel.graphite, lit: false, length: 20, width: 3, height: 3.8))
+            root.addChild(Vehicles.car(paint: grey, lit: false, length: 20, width: 3, height: 3.8))
+        case .motorbike, .bicycle:
+            let frame = ModelEntity(mesh: .generateBox(width: 0.35, height: 0.85, depth: 1.9, cornerRadius: 0.17), materials: [grey])
+            frame.position.y = 0.5
+            root.addChild(frame)
+            let rider = Vehicles.person()
+            rider.scale = SIMD3(repeating: 0.85)
+            rider.position = [0, 0.35, 0.1]
+            root.addChild(rider)
+        case .person, .animal:
+            root.addChild(Vehicles.person())
         case .trafficLight:
-            let pole = ModelEntity(mesh: .generateCylinder(height: 4.6, radius: 0.07), materials: [CarModel.graphite])
+            let pole = ModelEntity(mesh: .generateCylinder(height: 4.6, radius: 0.07), materials: [grey])
             pole.position.y = 2.3
             root.addChild(pole)
             let housing = ModelEntity(mesh: .generateBox(width: 0.42, height: 1.2, depth: 0.32, cornerRadius: 0.08),
-                                      materials: [SimpleMaterial(color: UIColor(white: 0.08, alpha: 1), isMetallic: false)])
+                                      materials: [SimpleMaterial(color: UIColor(white: 0.3, alpha: 1), isMetallic: false)])
             housing.position.y = 5.0
             root.addChild(housing)
             for (index, name) in ["lamp-red", "lamp-yellow", "lamp-green"].enumerated() {
-                let lamp = ModelEntity(mesh: .generateSphere(radius: 0.13), materials: [UnlitMaterial(color: UIColor(white: 0.18, alpha: 1))])
+                let lamp = ModelEntity(mesh: .generateSphere(radius: 0.13), materials: [UnlitMaterial(color: UIColor(white: 0.5, alpha: 1))])
                 lamp.name = name
                 lamp.position = [0, 5.37 - Float(index) * 0.37, 0.17]
                 root.addChild(lamp)
             }
         case .stopSign:
-            let pole = ModelEntity(mesh: .generateCylinder(height: 2.2, radius: 0.05), materials: [CarModel.graphite])
+            let pole = ModelEntity(mesh: .generateCylinder(height: 2.2, radius: 0.05), materials: [grey])
             pole.position.y = 1.1
             root.addChild(pole)
             let sign = ModelEntity(mesh: .generateBox(width: 0.75, height: 0.75, depth: 0.04, cornerRadius: 0.22),
@@ -580,15 +435,9 @@ private enum ObjectModels {
             sign.position.y = 2.45
             root.addChild(sign)
         }
-        // One calm matte colour per kind of road user; signs and signals keep their own colours.
-        switch kind {
-        case .car, .truck, .bus, .train, .motorbike, .bicycle: SceneModels.clay(root, SceneModels.clayVehicle)
-        case .person, .animal: SceneModels.clay(root, SceneModels.clayPerson)
-        case .trafficLight, .stopSign: break
-        }
-        // A red glow under anything that triggers the collision warning.
+        // A soft red pool under anything that triggers the collision warning.
         let ring = ModelEntity(mesh: .generateBox(width: 2.6, height: 0.01, depth: 5.4, cornerRadius: 1.2),
-                               materials: [UnlitMaterial(color: UIColor(red: 1, green: 0.15, blue: 0.15, alpha: 0.45))])
+                               materials: [UnlitMaterial(color: UIColor(red: 1, green: 0.2, blue: 0.2, alpha: 0.35))])
         ring.name = "danger"
         ring.position.y = 0.012
         ring.isEnabled = false
@@ -609,7 +458,7 @@ private enum ObjectModels {
         for name in colors.keys {
             let on = name == lit
             (entity.findEntity(named: name) as? ModelEntity)?.model?.materials =
-                [UnlitMaterial(color: on ? colors[name]! : UIColor(white: 0.18, alpha: 1))]
+                [UnlitMaterial(color: on ? colors[name]! : UIColor(white: 0.5, alpha: 1))]
         }
     }
 }

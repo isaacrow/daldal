@@ -138,8 +138,6 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.daldal.ios.share
         TARGETED_DEVICE_FAMILY: "1"
-        # Lets the extension hand the location to Daldal itself (opening the app) after reading it.
-        APPLICATION_EXTENSION_API_ONLY: NO
 
   DaldalTests:
     type: bundle.unit-test
