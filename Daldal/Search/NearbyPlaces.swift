@@ -109,7 +109,7 @@ enum Overpass {
     static func run(_ query: String) async throws -> [Element] {
         var request = URLRequest(url: endpoint, timeoutInterval: 25)
         request.httpMethod = "POST"
-        request.setValue(AppConfig.userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(SearchConfig.userAgent, forHTTPHeaderField: "User-Agent")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         let body = "data=" + (query.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? "")
         request.httpBody = Data(body.utf8)

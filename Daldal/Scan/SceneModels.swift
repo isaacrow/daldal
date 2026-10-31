@@ -96,7 +96,7 @@ final class SceneModels {
         var material = PhysicallyBasedMaterial()
         material.baseColor = .init(tint: color)
         material.roughness = .init(floatLiteral: roughness)
-        material.metallic = 0
+        material.metallic = 0.0
         if clearcoat > 0 {
             material.clearcoat = .init(floatLiteral: clearcoat)
             material.clearcoatRoughness = 0.1

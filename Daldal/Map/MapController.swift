@@ -211,7 +211,7 @@ final class MapController {
         if !roadFeatures.isEmpty { RoadFeatureStore.draw(roadFeatures, in: style) }
         let features = pins.map { place in
             let name = "pin-\(place.category.rawValue)"
-            if style.image(forName: name) == nil { style.setImage(PinImage.make(place.category.icon), forName: name) }
+            if style.image(forName: name) == nil { style.setImage(ResultPinImage.make(place.category.icon), forName: name) }
             let feature = MLNPointFeature()
             feature.coordinate = place.coordinate
             feature.attributes = ["pid": place.id, "icon": name, "name": place.name]

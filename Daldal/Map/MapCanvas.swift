@@ -234,7 +234,7 @@ enum HeritageMarkerImage {
 }
 
 /// A teardrop pin with a category glyph, for search and assistant results.
-enum PinImage {
+enum ResultPinImage {
     static func make(_ icon: DaldalIcon) -> UIImage {
         let size = CGSize(width: 32, height: 40)
         return UIGraphicsImageRenderer(size: size).image { _ in
