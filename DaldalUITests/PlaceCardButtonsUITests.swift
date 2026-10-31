@@ -50,6 +50,17 @@ final class PlaceCardButtonsUITests: XCTestCase {
         XCTAssertTrue(opened, "tapping View in AR didn't open the AR screen")
     }
 
+    func testPlaceCardShowsLandmarkModel() {
+        let app = launchWithCard()
+        // The shrine's generated model downloads from the landmarks release and appears on its card.
+        let viewer = app.otherElements["place.model3d"]
+        let shown = viewer.waitForExistence(timeout: 30)
+        if shown, !viewer.isHittable { app.swipeUp() }
+        sleep(4)
+        shot("landmark-model")
+        XCTAssertTrue(shown, "the Imam Husayn shrine card should show its 3D model")
+    }
+
     func testHistoryInAROpens() {
         let app = launchWithCard()
         let button = app.buttons["place.history"]

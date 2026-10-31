@@ -15,6 +15,15 @@ from PIL import Image
 
 UA = {"User-Agent": "Daldal/0.1 (https://github.com/isaacrow/daldal; 3D model builder)"}
 DEFAULT_HEIGHT = 20.0  # metres, when Wikidata doesn't say
+# Reviewed by eye (review/*-render.png): the place's photo is a map, a crowd, a flat landscape, an aerial view or a
+# museum object rather than the building, so the model would mislead. Leave them out.
+REJECTED = {
+    "Q1000577", "Q100329356", "Q10424690", "Q1136681", "Q132272", "Q133132919", "Q1372270", "Q1744863", "Q206236",
+    "Q2302612", "Q237614", "Q244746", "Q253208", "Q25933006", "Q28716288", "Q310799", "Q3818869", "Q346445",
+    "Q375685", "Q392725", "Q501259", "Q5680", "Q584605", "Q607583", "Q619707", "Q740952", "Q853946", "Q909799",
+    "Q98917963", "Q107423789", "Q1079803", "Q1193666", "Q19414891", "Q3462642", "Q5687554", "Q65151623", "Q672905",
+    "Q7697547",
+}
 ICON = 160
 
 
@@ -45,7 +54,7 @@ def heights(ids):
 
 def main(out_dir):
     out = Path(out_dir)
-    catalog = json.load(open(out / "models.json", encoding="utf-8"))
+    catalog = [e for e in json.load(open(out / "models.json", encoding="utf-8")) if e["id"] not in REJECTED]
     session = rembg.new_session()
     (out / "icons").mkdir(exist_ok=True)
     for entry in catalog:
