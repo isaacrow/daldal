@@ -27,7 +27,7 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
     var opened: String?
 
     @ObservationIgnored private var spots: [Spot] = []
-    @ObservationIgnored private var monitor: CLMonitor?
+    @ObservationIgnored private var monitorCreation: Task<CLMonitor, Never>?
     @ObservationIgnored private var watched: Set<String> = []
     @ObservationIgnored private var watchedAround: CLLocation?
     @ObservationIgnored private var askedPermission = false
@@ -101,11 +101,18 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
     // MARK: Watching
 
     private func watchNearest(to location: CLLocation) async {
-        if monitor == nil {
-            monitor = await CLMonitor("daldal.ar-places")
-            if let monitor { Task { await listen(to: monitor) } }
+        // Watching only helps when iOS may wake the app ("Always"); otherwise the in-app check covers it.
+        guard CLLocationManager().authorizationStatus == .authorizedAlways else { return }
+        // One monitor per name, ever: creating a second with the same name raises an exception that ends the app,
+        // and two location updates can arrive while the first creation is still awaiting.
+        if monitorCreation == nil {
+            monitorCreation = Task {
+                let monitor = await CLMonitor("daldal.ar-places")
+                Task { await self.listen(to: monitor) }
+                return monitor
+            }
         }
-        guard let monitor else { return }
+        guard let monitor = await monitorCreation?.value else { return }
         let nearest = spots.sorted { location.distance(from: CLLocation($0.coordinate)) < location.distance(from: CLLocation($1.coordinate)) }
             .prefix(20)
         let wanted = Set(nearest.map(\.id))
