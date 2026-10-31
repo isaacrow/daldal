@@ -71,7 +71,10 @@ class Gltf:
         pbr = material.get("pbrMetallicRoughness", {})
         if "baseColorTexture" not in pbr:
             return None, tuple(pbr.get("baseColorFactor", [0.8, 0.8, 0.8, 1])[:3])
-        image = self.json["images"][self.json["textures"][pbr["baseColorTexture"]["index"]]["source"]]
+        texture = self.json["textures"][pbr["baseColorTexture"]["index"]]
+        # WebP textures (EXT_texture_webp) name their image in the extension instead of "source".
+        source = texture.get("source", texture.get("extensions", {}).get("EXT_texture_webp", {}).get("source"))
+        image = self.json["images"][source]
         if "bufferView" in image:
             view = self.json["bufferViews"][image["bufferView"]]
             raw = self.bin[view.get("byteOffset", 0):view.get("byteOffset", 0) + view["byteLength"]]
