@@ -62,6 +62,8 @@ targets:
         product: ElevenLabs
       - package: ValhallaModels
         product: ValhallaConfigModels
+      # "Share -> Daldal" in other apps (WhatsApp, Uber, Google Maps, Safari...).
+      - target: DaldalShare
     info:
       path: Daldal/Info.plist
       properties:
@@ -109,6 +111,35 @@ targets:
         basedOnDependencyAnalysis: false
     scheme:
       testTargets: [DaldalTests, DaldalUITests]
+
+  DaldalShare:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: DaldalShare
+      # The same link reader the app uses, so both understand exactly the same links.
+      - path: Daldal/Search/LocationLink.swift
+      - path: Daldal/Resources/Localizable.xcstrings
+    info:
+      path: DaldalShare/Info.plist
+      properties:
+        CFBundleDisplayName: دلدل
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        CFBundleDevelopmentRegion: ar
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsText: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.daldal.ios.share
+        TARGETED_DEVICE_FAMILY: "1"
+        # Lets the extension hand the location to Daldal itself (opening the app) after reading it.
+        APPLICATION_EXTENSION_API_ONLY: NO
 
   DaldalTests:
     type: bundle.unit-test

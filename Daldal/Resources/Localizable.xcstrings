@@ -2539,6 +2539,56 @@
           }
         }
       }
+    },
+    "Daldal": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلدل"
+          }
+        }
+      }
+    },
+    "Finding the location…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ إيجاد الموقع…"
+          }
+        }
+      }
+    },
+    "Open in Daldal": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افتح في دلدل"
+          }
+        }
+      }
+    },
+    "No location in what was shared. Share a map link or coordinates.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يوجد موقع فيما تمت مشاركته. شارك رابط خريطة أو إحداثيات."
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إلغاء"
+          }
+        }
+      }
     }
   }
 }
