@@ -10,6 +10,7 @@ struct DaldalApp: App {
     @State private var heritage = HeritageStore()
     @State private var guide = CityGuideStore()
     @State private var history = HistoryStore()
+    @State private var landmarks = LandmarkModelStore()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -22,6 +23,7 @@ struct DaldalApp: App {
                 .environment(heritage)
                 .environment(guide)
                 .environment(history)
+                .environment(landmarks)
                 .environment(services.cities)
                 .environment(services.connectivity)
                 .environment(services.navigation)

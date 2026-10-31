@@ -22,7 +22,7 @@ KINDS = {
     "Q645883": "battle", "Q831663": "battle",  # military operation, military campaign
     "Q1190554": "event",  # occurrence: founding, treaties, ... (only well-covered ones survive the filter)
 }
-LIMIT = 220
+LIMIT = 600
 CUTOFF_YEAR = 1950
 
 
@@ -48,7 +48,7 @@ SELECT ?item ?kind ?coord ?date ?start ?ar ?en ?links ?arTitle ?enTitle WHERE {{
   }}
   VALUES ?kind {{ {kinds} }}
   ?item wdt:P31 ?kind; wikibase:sitelinks ?links.
-  FILTER(?links >= 3)
+  FILTER(?links >= 2)
   OPTIONAL {{ ?item wdt:P585 ?date }}
   OPTIONAL {{ ?item wdt:P580 ?start }}
   OPTIONAL {{ ?item rdfs:label ?ar FILTER(lang(?ar) = "ar") }}

@@ -9,11 +9,15 @@ import SwiftUI
 /// diorama of what happened. Tap a card to hear it.
 struct HeritageScanView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(LandmarkModelStore.self) private var landmarks
     @State private var model: HeritageScanModel
+    private let landmark: LandmarkModel?
 
-    init(title: String, summary: String?, events: [HistoryEvent], languageCode: String, voice: VoiceGuide) {
+    init(title: String, summary: String?, events: [HistoryEvent], languageCode: String, voice: VoiceGuide,
+         model landmark: LandmarkModel? = nil) {
         _model = State(initialValue: HeritageScanModel(title: title, summary: summary, events: events,
                                                        languageCode: languageCode, voice: voice))
+        self.landmark = landmark
     }
 
     var body: some View {
@@ -23,6 +27,12 @@ struct HeritageScanView: View {
         .overlay(alignment: .top) { header }
         .overlay(alignment: .bottom) { footer }
         .onDisappear { model.stop() }
+        .task {
+            // The monument itself, on a pedestal in front of you, once its model has downloaded.
+            guard let landmark, let url = try? await landmarks.localModel(landmark),
+                  let entity = try? await Entity(contentsOf: url) else { return }
+            model.showLandmark(entity)
+        }
         .statusBarHidden()
         .accessibilityIdentifier("history.screen")
     }
@@ -89,7 +99,11 @@ final class HeritageScanModel {
     /// Each army with where it stands and the way it charges.
     @ObservationIgnored private var armies: [(entity: Entity, base: SIMD3<Float>, phase: Float, charge: SIMD3<Float>)] = []
     @ObservationIgnored private var cards: [(entity: Entity, base: Float, phase: Float)] = []
+    /// Animated soldiers: which baked animation each plays, and its offset so they don't move in lockstep.
+    @ObservationIgnored private var fighters: [(entity: Entity, animation: String, offset: Int)] = []
     @ObservationIgnored private var update: (any Cancellable)?
+    /// The monument's 3D model, shown turning on a pedestal under its card.
+    @ObservationIgnored private var landmark: Entity?
     @ObservationIgnored private var clock: Float = 0
 
     init(title: String, summary: String?, events: [HistoryEvent], languageCode: String, voice: VoiceGuide) {
@@ -116,7 +130,9 @@ final class HeritageScanModel {
         }
         // Give tracking a moment to settle before building the ring around the camera.
         Task {
+            async let models: Void = SceneModels.shared.preload(SceneModels.history)
             try? await Task.sleep(for: .seconds(0.8))
+            await models
             placeInFront()
             isRunning = true
         }
@@ -162,6 +178,7 @@ final class HeritageScanModel {
         anchor.orientation = simd_quatf(angle: yaw, axis: [0, 1, 0])
         armies = []
         cards = []
+        fighters = []
 
         let siteCard = card(named: "card:site", image: Self.render(SiteCardFace(title: title, summary: summary,
                                                                                     languageCode: languageCode)),
@@ -194,6 +211,32 @@ final class HeritageScanModel {
         if let root { arView.scene.removeAnchor(root) }
         arView.scene.addAnchor(anchor)
         root = anchor
+        if let landmark { addLandmark(landmark, to: anchor) }
+    }
+
+    func showLandmark(_ entity: Entity) {
+        landmark = entity
+        if let root { addLandmark(entity, to: root) }
+    }
+
+    private func addLandmark(_ entity: Entity, to anchor: Entity) {
+        anchor.findEntity(named: "landmark")?.removeFromParent()
+        let holder = Entity()
+        holder.name = "landmark"
+        holder.position = [0, -0.95, -2.0]
+        let stone = SimpleMaterial(color: UIColor(white: 0.85, alpha: 1), roughness: 0.7, isMetallic: false)
+        let pedestal = ModelEntity(mesh: .generateCylinder(height: 0.05, radius: 0.4), materials: [stone])
+        holder.addChild(pedestal)
+        let copy = entity.clone(recursive: true)
+        let bounds = copy.visualBounds(relativeTo: nil)
+        let scale = 0.55 / max(bounds.extents.y, bounds.extents.x * 0.6, 0.001)
+        copy.scale = SIMD3(repeating: scale)
+        copy.position = [-bounds.center.x * scale, 0.025 - bounds.min.y * scale, -bounds.center.z * scale]
+        let turntable = Entity()
+        turntable.name = "landmark-turntable"
+        turntable.addChild(copy)
+        holder.addChild(turntable)
+        anchor.addChild(holder)
     }
 
     // MARK: Building blocks
@@ -211,29 +254,53 @@ final class HeritageScanModel {
         return entity
     }
 
-    /// A small table-top scene under each card: two armies facing off, or a walled city under siege.
+    /// A small table-top scene under each card: two armies fighting, or a walled city under siege, built from
+    /// the bundled models (soldiers with sword swings, siege towers, rams, trebuchets, castle walls).
     private func diorama(for event: HistoryEvent, phase: Float) -> Entity {
         let scene = Entity()
         let sand = SimpleMaterial(color: UIColor(red: 0.80, green: 0.68, blue: 0.48, alpha: 1), roughness: 0.95, isMetallic: false)
-        let ground = ModelEntity(mesh: .generateCylinder(height: 0.03, radius: 0.34), materials: [sand])
+        let ground = ModelEntity(mesh: .generateCylinder(height: 0.03, radius: 0.42), materials: [sand])
         scene.addChild(ground)
+        let library = SceneModels.shared
+        // A few rocks and a tree at the edge, so it reads as a landscape.
+        for (k, name) in ["rocks-large", "tree-large", "rocks-large"].enumerated() {
+            guard let prop = library.instance(name, fit: name == "tree-large" ? 0.16 : 0.05) else { continue }
+            let angle = Float(k) * 2.1 + phase
+            prop.position = [sin(angle) * 0.36, 0.015, cos(angle) * 0.36]
+            scene.addChild(prop)
+        }
 
-        let attackers = UIColor(red: 0.72, green: 0.16, blue: 0.14, alpha: 1)
-        let defenders = UIColor(red: 0.14, green: 0.36, blue: 0.72, alpha: 1)
+        let attackers = UIColor(red: 1.0, green: 0.55, blue: 0.5, alpha: 1)
+        let defenders = UIColor(red: 0.55, green: 0.68, blue: 1.0, alpha: 1)
         switch event.kind {
         case "siege":
             scene.addChild(walledCity(color: defenders))
-            let army = army(color: attackers, rows: 1, columns: 5)
-            army.position = [0, 0.015, 0.25]
-            scene.addChild(army)
-            armies.append((army, army.position, phase, [0, 0, -0.06]))
+            let troop = soldiers(color: attackers, rows: 2, columns: 5, animation: "attack_melee_right", phase: phase)
+                ?? army(color: attackers, rows: 1, columns: 5)
+            troop.position = [0, 0.015, 0.27]
+            scene.addChild(troop)
+            armies.append((troop, troop.position, phase, [0, 0, -0.05]))
+            let engines: [(String, Float, Float, Float)] = [("siege-tower", -0.2, 0.18, 0.2), ("siege-ram", 0, 0.14, 0.09),
+                                                            ("siege-trebuchet", 0.24, 0.3, 0.17)]
+            for (name, x, z, size) in engines {
+                guard let engine = library.instance(name, fit: size, turned: true) else { continue }
+                engine.position = [x, 0.015, z]
+                scene.addChild(engine)
+            }
         case "battle", "uprising":
+            let animation = event.kind == "battle" ? "attack_melee_right" : "walk"
             for (side, color) in [(Float(-1), attackers), (Float(1), defenders)] {
-                let army = army(color: color, rows: 2, columns: 4)
-                army.position = [side * 0.17, 0.015, 0]
-                army.orientation = simd_quatf(angle: side * .pi / 2, axis: [0, 1, 0])
-                scene.addChild(army)
-                armies.append((army, army.position, phase, [-side * 0.06, 0, 0]))
+                let troop = soldiers(color: color, rows: 2, columns: 4, animation: animation, phase: phase + side)
+                    ?? army(color: color, rows: 2, columns: 4)
+                troop.position = [side * 0.17, 0.015, 0]
+                troop.orientation = simd_quatf(angle: side * .pi / 2, axis: [0, 1, 0])
+                scene.addChild(troop)
+                armies.append((troop, troop.position, phase, [-side * 0.06, 0, 0]))
+                if event.kind == "battle", let engine = library.instance(side < 0 ? "siege-catapult" : "siege-ballista", fit: 0.09) {
+                    engine.position = [side * 0.33, 0.015, -0.12]
+                    engine.orientation = simd_quatf(angle: side * .pi / 2 + .pi, axis: [0, 1, 0])
+                    scene.addChild(engine)
+                }
             }
         default:
             // Remembrance, not re-enactment: a simple stone marker.
@@ -243,6 +310,31 @@ final class HeritageScanModel {
             scene.addChild(obelisk)
         }
         return scene
+    }
+
+    /// Ranks of soldiers in an army's colours, facing -z, each playing an animation slightly out of step.
+    private func soldiers(color: UIColor, rows: Int, columns: Int, animation: String, phase: Float) -> Entity? {
+        let library = SceneModels.shared
+        let army = Entity()
+        for row in 0..<rows {
+            for column in 0..<columns {
+                let index = row * columns + column + Int(phase * 3)
+                guard let soldier = library.instance(SceneModels.people[abs(index) % SceneModels.people.count], fit: 0.1) else {
+                    return nil
+                }
+                SceneModels.tint(soldier, color)
+                soldier.orientation = simd_quatf(angle: .pi, axis: [0, 1, 0]) // The models face +z.
+                soldier.position = [(Float(column) - Float(columns - 1) / 2) * 0.06, 0, Float(row) * 0.065]
+                army.addChild(soldier)
+                fighters.append((soldier, animation, index * 3))
+            }
+        }
+        if let banner = library.instance("flag-banner-long", fit: 0.18) {
+            SceneModels.tint(banner, color)
+            banner.position = [0, 0, Float(rows) * 0.065]
+            army.addChild(banner)
+        }
+        return army
     }
 
     private func army(color: UIColor, rows: Int, columns: Int) -> Entity {
@@ -282,29 +374,55 @@ final class HeritageScanModel {
     }
 
     private func walledCity(color: UIColor) -> Entity {
+        let library = SceneModels.shared
         let city = Entity()
-        let mud = SimpleMaterial(color: UIColor(red: 0.70, green: 0.56, blue: 0.38, alpha: 1), roughness: 0.9, isMetallic: false)
         let size: Float = 0.3
-        for (x, z, w, d) in [(Float(0), -size / 2, size, Float(0.02)), (0, size / 2, size, 0.02),
-                             (-size / 2, 0, 0.02, size), (size / 2, 0, 0.02, size)] {
-            let wall = ModelEntity(mesh: .generateBox(width: w, height: 0.07, depth: d), materials: [mud])
-            wall.position = [x, 0.05, z - 0.06]
-            city.addChild(wall)
+        let module: Float = 0.075
+        let modules = Int(size / module)
+        var built = true
+        // Four walls of castle-kit modules (a gate facing the attackers), towers at the corners.
+        for side in 0..<4 {
+            let yaw = Float(side) * .pi / 2
+            for k in 0..<modules {
+                let name = side == 0 && k == modules / 2 ? "gate" : "wall"
+                guard let piece = library.instance(name, fit: module, along: .width) else { built = false; break }
+                let along = (Float(k) - Float(modules - 1) / 2) * module
+                let local = SIMD3<Float>(along, 0.015, size / 2)
+                piece.position = simd_quatf(angle: yaw, axis: [0, 1, 0]).act(local) + [0, 0, -0.06]
+                piece.orientation = simd_quatf(angle: yaw, axis: [0, 1, 0])
+                city.addChild(piece)
+            }
         }
         for x in [-size / 2, size / 2] {
             for z in [-size / 2, size / 2] {
-                let tower = ModelEntity(mesh: .generateCylinder(height: 0.11, radius: 0.025), materials: [mud])
-                tower.position = [x, 0.07, z - 0.06]
+                guard let tower = library.instance("tower-square", fit: module * 1.3, along: .width) else { built = false; continue }
+                tower.position = [x, 0.015, z - 0.06]
                 city.addChild(tower)
+                if let roof = library.instance("tower-hexagon-roof", fit: module * 1.1, along: .width) {
+                    roof.position = [x, 0.015 + tower.visualBounds(relativeTo: city).extents.y, z - 0.06]
+                    city.addChild(roof)
+                }
             }
         }
-        // A dome in the middle and the defenders' flag.
-        let dome = ModelEntity(mesh: .generateSphere(radius: 0.05), materials: [SimpleMaterial(color: UIColor(red: 0.20, green: 0.55, blue: 0.62, alpha: 1), roughness: 0.4, isMetallic: false)])
-        dome.position = [0, 0.03, -0.06]
+        if !built {
+            city.children.removeAll()
+            let mud = SimpleMaterial(color: UIColor(red: 0.70, green: 0.56, blue: 0.38, alpha: 1), roughness: 0.9, isMetallic: false)
+            for (x, z, w, d) in [(Float(0), -size / 2, size, Float(0.02)), (0, size / 2, size, 0.02),
+                                 (-size / 2, 0, 0.02, size), (size / 2, 0, 0.02, size)] {
+                let wall = ModelEntity(mesh: .generateBox(width: w, height: 0.07, depth: d), materials: [mud])
+                wall.position = [x, 0.05, z - 0.06]
+                city.addChild(wall)
+            }
+        }
+        // A turquoise dome in the middle, like Iraq's old mosques, and the defenders' flag.
+        let dome = ModelEntity(mesh: .generateSphere(radius: 0.06), materials: [SimpleMaterial(color: UIColor(red: 0.20, green: 0.55, blue: 0.62, alpha: 1), roughness: 0.4, isMetallic: false)])
+        dome.position = [0, 0.04, -0.06]
         city.addChild(dome)
-        let flag = ModelEntity(mesh: .generateBox(width: 0.05, height: 0.03, depth: 0.002), materials: [SimpleMaterial(color: color, roughness: 0.6, isMetallic: false)])
-        flag.position = [0.03, 0.16, -0.06]
-        city.addChild(flag)
+        if let flag = library.instance("flag-pennant", fit: 0.14) {
+            SceneModels.tint(flag, color)
+            flag.position = [0.04, 0.05, -0.06]
+            city.addChild(flag)
+        }
         return city
     }
 
@@ -319,6 +437,13 @@ final class HeritageScanModel {
         }
         for card in cards {
             card.entity.position.y = card.base + sin(clock * 0.9 + card.phase) * 0.015
+        }
+        if let turntable = root?.findEntity(named: "landmark-turntable") {
+            turntable.orientation = simd_quatf(angle: clock * 0.3, axis: [0, 1, 0])
+        }
+        let frame = Int(clock * 9)
+        for fighter in fighters {
+            SceneModels.showFrame(of: fighter.entity, animation: fighter.animation, frame: frame + fighter.offset)
         }
     }
 

@@ -15,6 +15,7 @@ struct PlaceCard: View {
     @Environment(CityGuideStore.self) private var guide
     @Environment(NavigationModel.self) private var nav
     @Environment(HistoryStore.self) private var history
+    @Environment(LandmarkModelStore.self) private var landmarks
     @State private var copied = false
 
     private var site: HeritageSite? { place.heritageID.flatMap(heritage.site(id:)) }
@@ -25,6 +26,9 @@ struct PlaceCard: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
                 header
                 actions
+                if let model = landmarks.model(for: place.guideID ?? place.heritageID) {
+                    Landmark3DView(model: model)
+                }
                 if let guidePlace {
                     GuideDetails(place: guidePlace, voice: nav.voice)
                 } else if let site {

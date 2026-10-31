@@ -15,6 +15,7 @@ struct ExploreView: View {
     @Environment(CityGuideStore.self) private var guide
     @Environment(DriverStats.self) private var stats
     @Environment(HistoryStore.self) private var history
+    @Environment(LandmarkModelStore.self) private var landmarks
 
     /// What the bottom panel shows. One sheet whose content changes, like Apple Maps: switching content
     /// never closes and reopens a sheet, which iOS ignores when it happens mid-animation.
@@ -96,7 +97,7 @@ struct ExploreView: View {
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                 .presentationDragIndicator(.visible)
                 .fullScreenCover(item: $arSite) { site in
-                    GeoARView(site: site, languageCode: languageCode)
+                    GeoARView(site: withModel(site), languageCode: languageCode)
                 }
                 .fullScreenCover(isPresented: scanBinding(whenPanelOpen: true)) {
                     DriveScanView(voice: nav.voice)
@@ -107,8 +108,10 @@ struct ExploreView: View {
                         summary: place.guideID.flatMap(guide.place(id:))?.summary(languageCode: languageCode),
                         events: history.events(near: place.coordinate, languageCode: languageCode),
                         languageCode: languageCode,
-                        voice: nav.voice
+                        voice: nav.voice,
+                        model: landmarks.model(for: place.guideID ?? place.heritageID)
                     )
+                    .environment(landmarks)
                 }
                 .fullScreenCover(item: $walkDestination) { place in
                     WalkARView(destination: place,
@@ -117,12 +120,25 @@ struct ExploreView: View {
                 }
         }
         .fullScreenCover(item: $bannerARSite) { site in
-            GeoARView(site: site, languageCode: languageCode)
+            GeoARView(site: withModel(site), languageCode: languageCode)
         }
         .fullScreenCover(isPresented: scanBinding(whenPanelOpen: false)) {
             DriveScanView(voice: nav.voice)
         }
         .task { openPlaceForUITest() }
+        .task {
+            // Monuments with a 3D model stand on the map as pictures of their model.
+            await landmarks.load()
+            map.showLandmarkIcons(landmarks.icons.compactMap { id, image in
+                if let place = guide.place(id: id) {
+                    return MapController.LandmarkIcon(id: id, coordinate: place.coordinate, image: image, isGuide: true)
+                }
+                if let site = heritage.site(id: id) {
+                    return MapController.LandmarkIcon(id: id, coordinate: site.coordinate, image: image, isGuide: false)
+                }
+                return nil
+            })
+        }
         .onChange(of: nav.routes) { showRoutePreview(fit: true) }
         .onChange(of: live.reports) { map.showLive(traffic: live.traffic, reports: live.reports) }
         .onChange(of: live.traffic) { map.showLive(traffic: live.traffic, reports: live.reports) }
@@ -167,6 +183,15 @@ struct ExploreView: View {
         guard let i = args.firstIndex(of: "-uitest-heritage"), args.indices.contains(i + 1),
               let site = heritage.sites.first(where: { $0.nameEn == args[i + 1] }) else { return }
         select(site.place(languageCode: languageCode), record: false)
+    }
+
+    /// A heritage site with its generated 3D model attached (shown at real height in geographic AR).
+    private func withModel(_ site: HeritageSite) -> HeritageSite {
+        guard site.modelURL == nil, let model = landmarks.model(for: site.id) else { return site }
+        var site = site
+        site.modelURL = LandmarkModelStore.base.appending(path: model.file)
+        site.modelHeight = model.height ?? 20
+        return site
     }
 
     private func scanBinding(whenPanelOpen: Bool) -> Binding<Bool> {

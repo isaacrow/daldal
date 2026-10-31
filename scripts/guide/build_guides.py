@@ -15,7 +15,7 @@ import urllib.parse
 import urllib.request
 
 UA = {"User-Agent": "Daldal/0.1 (https://github.com/isaacrow/daldal; city guide builder)"}
-PER_CITY = 12
+PER_CITY = 20
 
 # What counts as a place to visit.
 CLASSES = {

@@ -1,0 +1,2 @@
+Vehicles, people and castle/siege models from Kenney (https://kenney.nl): Car Kit, Mini Characters and Castle Kit,
+Creative Commons Zero (CC0). Converted to USDZ (animations baked into frames) by scripts/models/kenney_to_usdz.py.

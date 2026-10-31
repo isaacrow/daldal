@@ -101,6 +101,16 @@ struct MapCanvas: UIViewRepresentable {
             guard let mapView = gesture.view as? MLNMapView else { return }
             let point = gesture.location(in: mapView)
             let hitArea = CGRect(x: point.x - 22, y: point.y - 22, width: 44, height: 44)
+            // A landmark's 3D model on the map opens its card.
+            let models = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.landmarkModelLayer])
+            if let id = models.first?.attribute(forKey: "gid") as? String {
+                parent.onSelectGuide(id)
+                return
+            }
+            if let id = models.first?.attribute(forKey: "hid") as? String {
+                parent.onSelectHeritage(id)
+                return
+            }
             let features = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.heritageLayer])
             if let id = features.first?.attribute(forKey: "id") as? String {
                 parent.onSelectHeritage(id)
@@ -125,6 +135,7 @@ struct MapCanvas: UIViewRepresentable {
             parent.controller.applyBuildingMode()
             parent.controller.installHeritageLayer(sites: parent.heritageSites, isDark: isDark, languageCode: parent.languageCode)
             parent.controller.installGuideLayer(places: parent.guidePlaces, isDark: isDark, languageCode: parent.languageCode)
+            parent.controller.installLandmarkIcons()
             parent.controller.reinstallRoutes()
             parent.controller.reinstallLive()
             if parent.controller.is3D, mapView.camera.pitch < 1 {

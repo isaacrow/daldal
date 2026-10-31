@@ -177,6 +177,60 @@ final class MapController {
         names.minimumZoomLevel = 12
         style.addLayer(names)
     }
+
+    static let landmarkModelLayer = "landmark-models"
+
+    /// A monument's 3D model drawn on the map as a picture of the model standing at its place.
+    struct LandmarkIcon {
+        let id: String
+        let coordinate: CLLocationCoordinate2D
+        let image: UIImage
+        /// A city-guide place (else a heritage site): decides which card a tap opens.
+        let isGuide: Bool
+    }
+
+    @ObservationIgnored private var landmarkIcons: [LandmarkIcon] = []
+
+    func showLandmarkIcons(_ icons: [LandmarkIcon]) {
+        landmarkIcons = icons
+        installLandmarkIcons()
+    }
+
+    /// Draws (or redraws after a style reload) the landmark pictures, growing with zoom, and hides the
+    /// placeholder ziggurat of every guide place that has a real model.
+    func installLandmarkIcons() {
+        guard let style = mapView?.style, !landmarkIcons.isEmpty else { return }
+        let features = landmarkIcons.map { icon in
+            style.setImage(icon.image, forName: "landmark-\(icon.id)")
+            let feature = MLNPointFeature()
+            feature.coordinate = icon.coordinate
+            feature.attributes = ["icon": "landmark-\(icon.id)", icon.isGuide ? "gid" : "hid": icon.id]
+            return feature
+        }
+        let shape = MLNShapeCollectionFeature(shapes: features)
+        if let source = style.source(withIdentifier: Self.landmarkModelLayer) as? MLNShapeSource {
+            source.shape = shape
+        } else {
+            let source = MLNShapeSource(identifier: Self.landmarkModelLayer, shape: shape, options: nil)
+            style.addSource(source)
+            let layer = MLNSymbolStyleLayer(identifier: Self.landmarkModelLayer, source: source)
+            layer.iconImageName = NSExpression(forKeyPath: "icon")
+            layer.iconAnchor = NSExpression(forConstantValue: "bottom")
+            layer.iconAllowsOverlap = NSExpression(forConstantValue: true)
+            layer.iconScale = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
+                                           [11: 0.35, 14: 0.7, 17: 1.3])
+            layer.minimumZoomLevel = 11
+            if let names = style.layer(withIdentifier: Self.guideLabelLayer) {
+                style.insertLayer(layer, below: names)
+            } else {
+                style.addLayer(layer)
+            }
+        }
+        let modelled = landmarkIcons.filter(\.isGuide).map(\.id)
+        if let ziggurats = style.layer(withIdentifier: Self.guideLayer) as? MLNFillExtrusionStyleLayer {
+            ziggurats.predicate = NSPredicate(format: "NOT (gid IN %@)", modelled)
+        }
+    }
     static let routeLayer = "route-preview"
 
     @ObservationIgnored private var previewRoutes: (routes: [[CLLocationCoordinate2D]], selected: Int)?

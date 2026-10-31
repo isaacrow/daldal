@@ -14,6 +14,8 @@ struct HeritageSite: Identifiable, Hashable, Codable, Sendable {
     let imageURL: URL?
     let isWorldHeritage: Bool
     var modelURL: URL?
+    /// Real height in metres for `modelURL` when the model is 1 unit tall (generated models).
+    var modelHeight: Double?
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)

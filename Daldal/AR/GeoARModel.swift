@@ -236,9 +236,10 @@ final class GeoARModel {
         do {
             let local = try await ModelCache.localURL(for: remote, id: site.id)
             let model = try await Entity(contentsOf: local)
-            // USDZ models are authored in metres; stand the model on the ground.
-            let bounds = model.visualBounds(relativeTo: model)
-            model.position.y = -bounds.min.y
+            // USDZ models are authored in metres; generated ones are 1 unit tall and scaled to the real height.
+            if let height = site.modelHeight { model.scale = SIMD3(repeating: Float(height)) }
+            let bounds = model.visualBounds(relativeTo: modelHolder)
+            model.position.y -= bounds.min.y
             modelHolder.children.removeAll()
             modelHolder.addChild(model)
             marker.isEnabled = false

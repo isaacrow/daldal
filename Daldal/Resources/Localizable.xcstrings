@@ -2089,6 +2089,36 @@
           }
         }
       }
+    },
+    "The 3D model needs an internet connection the first time.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يحتاج النموذج ثلاثي الأبعاد إلى اتصال بالإنترنت في المرة الأولى."
+          }
+        }
+      }
+    },
+    "AI model from one photo; hidden sides are estimated.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نموذج مولَّد بالذكاء الاصطناعي من صورة واحدة؛ الجوانب غير الظاهرة تقديرية."
+          }
+        }
+      }
+    },
+    "Photo credit": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مصدر الصورة"
+          }
+        }
+      }
     }
   }
 }

@@ -128,6 +128,17 @@
   "summary_en": "The Battle of Uxian Defile was fought by Alexander the Great against the Uxian tribe of the Persian Empire. The battle raged on the mountain range between the key Persian cities of Susa and Persepolis. Persepolis was the ancient capital of the Persian Empire and held a symbolic value among the native Persian population."
  },
  {
+  "id": "Q85745961",
+  "lat": 32.0,
+  "lon": 46.0,
+  "kind": "battle",
+  "year": -308,
+  "name_en": "Battle of the 25 of Abu",
+  "wiki_en": "Battle of the 25 of Abu",
+  "summary_ar": null,
+  "summary_en": "The battle of the 25 of Abu of 309 B.C. in an unknown location between Babylon and Susa, was the decisive and final clash of the Babylonian war. It ended in a Seleucid victory, and the establishment of the Seleucid kingdom."
+ },
+ {
   "id": "Q205887",
   "lat": 36.86667,
   "lon": 39.03333,
@@ -139,6 +150,17 @@
   "wiki_en": "Battle of Carrhae",
   "summary_ar": "معركة كارهاي أو موقعة حَرّان كانت في 53 قبل الميلاد بين الجمهورية الرومانية والإمبراطورية الفرثية بالقرب من بلدة كارهاي القديمة. هزم قائد الفرثيين سورينا الرومانيين - الأكثر عدداً - هزيمةً نكراء وقائد الروم أنذاك ماركوس ليسينيوس كراسوس. يُنظر إلى هذه المعركة عادةً على أنها واحدة من أقدم وأهم المعارك بين الإمبراطوريتين الرومية والأشكانية وأشنع الهزائم في تاريخ الروم قاطبةً.",
   "summary_en": "The Battle of Carrhae was fought in 53 BC between the Roman Republic and the Parthian Empire near the ancient town of Carrhae. An invading force of seven legions of Roman heavy infantry under Marcus Licinius Crassus was lured into the desert and decisively defeated by a mixed cavalry of armoured cataphracts and light horse archers led by the Parthian general Surena."
+ },
+ {
+  "id": "Q65081364",
+  "lat": 37.15,
+  "lon": 38.8,
+  "kind": "siege",
+  "year": 163,
+  "name_en": "Siege of Edessa",
+  "wiki_en": "Siege of Edessa (163)",
+  "summary_ar": null,
+  "summary_en": "The siege of Edessa took place in 163 when the Parthian Empire, under Vologases IV, besieged the city of Edessa, held by the Roman Empire."
  },
  {
   "id": "Q4870814",
@@ -154,6 +176,17 @@
   "summary_en": "The Battle of Ctesiphon in 165 AD was part of the wider Roman-Parthian War. The Parthians had tried but failed to take Armenia in the previous years, but a Roman counter-attack saw them lay a successful siege and capture of Ctesiphon."
  },
  {
+  "id": "Q65081356",
+  "lat": 37.1457,
+  "lon": 38.784,
+  "kind": "siege",
+  "year": 165,
+  "name_en": "Siege of Edessa",
+  "wiki_en": "Siege of Edessa (165)",
+  "summary_ar": null,
+  "summary_en": "The siege of Edessa took place in 165 when the Roman Empire, under Emperor Lucius Verus, besieged the city of Edessa, held by the Parthian Empire."
+ },
+ {
   "id": "Q2588587",
   "lat": 37.0667,
   "lon": 41.2167,
@@ -165,6 +198,17 @@
   "wiki_en": "Battle of Nisibis (217)",
   "summary_ar": "حدثت معركة نصيبين في صيف 217 بين جيوش الإمبراطورية الرومانية بقيادة الإمبراطور الصاعد حديثًا ماكرينوس والجيش الفرثي للملك أرتابانوس الخامس. لقد استمرت ثلاثة أيام، وانتهت بانتصار فرثي دموي، مع خسائر كبيرة في الجانبين. ونتيجة للمعركة، اضطر ماكرينوس إلى البحث عن السلام، ودفع للفرثيين مبلغًا كبيرًا وتخلى عن غزو بلاد ما بين النهرين الذي بدأه كاراكلا قبل عام.",
   "summary_en": "The Battle of Nisibis was fought in the summer of 217 between the armies of the Roman Empire under the newly ascended emperor Macrinus and the Parthian army of King Artabanus IV. It lasted for three days, and ended with a bloody Parthian victory, with both sides suffering large casualties."
+ },
+ {
+  "id": "Q132645295",
+  "lat": 35.58806,
+  "lon": 42.71833,
+  "kind": "siege",
+  "year": 229,
+  "name_en": "Ardashir I's Siege of Hatra",
+  "wiki_en": "Ardashir I's siege of Hatra",
+  "summary_ar": null,
+  "summary_en": "The First siege of Hatra by Ardashir I was an attempt at gaining the fortress of Hatra, which is about 290 km (180 mi) north-west of Baghdad."
  },
  {
   "id": "Q3625503",
@@ -342,6 +386,17 @@
   "summary_en": "The Battle of Callinicum took place on Easter Saturday, 19 April 531, between the Byzantine Empire and Sasanian Empire during the Iberian War."
  },
  {
+  "id": "Q86750828",
+  "lat": 37.0753,
+  "lon": 41.2157,
+  "kind": "battle",
+  "year": 541,
+  "name_en": "Battle of Nisibis",
+  "wiki_en": "Battle of Nisibis (541)",
+  "summary_ar": null,
+  "summary_en": "The Battle of Nisibis was fought between Byzantine forces under Belisarius and Peter and the Sassanian garrison of the frontier fortress of Nisibis that was under Nabedes. It took place while the Sassanian king Khosrow I was invading the Roman base in Lazica. It was part of a Byzantine offensive led by Belisarius into Persian land."
+ },
+ {
   "id": "Q65007372",
   "lat": 37.14566,
   "lon": 38.78396,
@@ -401,6 +456,17 @@
   "summary_en": "The Battle of Dhu Qar, also known as the War of the Camel's Udder, was a pre-Islamic battle fought between Arab tribes and the Persian Sasanian Empire in Southern Iraq between 604 and 611 AD. The battle is remembered as a turning point in Arab-Persian relations, and a blow to Persian control over Eastern Arabia, though the battle may have been no more than a skirmish."
  },
  {
+  "id": "Q134291524",
+  "lat": 37.15,
+  "lon": 38.8,
+  "kind": "siege",
+  "year": 610,
+  "name_en": "Siege of Edessa",
+  "wiki_en": "Siege of Edessa (610)",
+  "summary_ar": null,
+  "summary_en": "The Byzantine–Sasanian War of 602–628, also called the Last Great War of Antiquity, was fought between the Byzantine Empire and the Sasanian Empire. It was the final and most devastating conflict of the Roman–Persian wars. The previous war between the two powers had ended in 591 after the emperor Maurice helped the Sasanian king Khosrow II regain his throne. In 602, Maurice was murdered by his political rival Phocas."
+ },
+ {
   "id": "Q755966",
   "lat": 36.35944,
   "lon": 43.15278,
@@ -454,8 +520,8 @@
  },
  {
   "id": "Q2576269",
-  "lat": 32.56611,
-  "lon": 43.49039,
+  "lat": 32.55736,
+  "lon": 43.48022,
   "kind": "battle",
   "year": 633,
   "name_ar": "معركة عين التمر",
@@ -713,6 +779,17 @@
   "summary_en": "The Battle of Dayr al-Aqul was fought on 8 April 876, between forces of the Saffarid ruler Ya'qub ibn Laith and the Abbasid Caliphate. Taking place some 80 km southeast (downstream) of Baghdad, the battle ended in a decisive victory for the Abbasids, forcing Ya'qub to halt his advance into Iraq."
  },
  {
+  "id": "Q141576096",
+  "lat": 35.416,
+  "lon": 44.157,
+  "kind": "battle",
+  "year": 1048,
+  "name_en": "Battle of the Stragna River",
+  "wiki_en": "Battle of the Stragna River",
+  "summary_ar": null,
+  "summary_en": "The Battle of the Stragna River or the Battle of Great Zab, was fought in 1048 between the forces of the Byzantine Empire and the Seljuk Empire near the Stragna River on the eastern Byzantine frontier. The Byzantine army, commanded by Katakalon Kekaumenos and Aaron, confronted a large Seljuk raiding force led by Hasan ibn Musa, known as \"the Deaf\"."
+ },
+ {
   "id": "Q122853739",
   "lat": 36.34,
   "lon": 43.13,
@@ -824,6 +901,18 @@
   "wiki_en": "Battle of Hamadan (1503)",
   "summary_ar": "كانت معركة همدان التي وقعت عام 1503 صراعًا بين الدولة الصفوية، بقيادة الشاه إسماعيل الأول، والآق قويونلو، بقيادة جوزيل أحمد. وقعت المعركة بالقرب من مدينة همدان في غرب بلاد فارس. كانت قوات الشاه إسماعيل، التي تتكون بشكل رئيسي من محاربين القزلباش، قد استخدمت بشكل فعال تكتيكات وأسلحة نارية متفوقة لهزيمة فرسان الآق قويونلو. فر السلطان مراد من ساحة المعركة، مما أدى إلى زيادة تراجع قوة الآق قويونلو في المنطقة.",
   "summary_en": "The Battle of Hamadan or Alma Bulaghı in 1503 was a conflict between the Safavid Empire, led by Shah Ismail I and the Aq Qoyunlu, commanded by Güzel Ahmad. The battle occurred near the city of Hamadan in Western Persia. Shah Ismail's forces, consisting primarily of Qizilbash warriors, effectively employed superior tactics and firearms to defeat the Aq Qoyunlu cavalry."
+ },
+ {
+  "id": "Q12216247",
+  "lat": 33.31528,
+  "lon": 44.36611,
+  "kind": "battle",
+  "year": 1508,
+  "name_ar": "سقوط بغداد",
+  "name_en": "Capture of Baghdad",
+  "wiki_ar": "سقوط بغداد (1508)",
+  "summary_ar": "سقطت بغداد بايدي الفرس الصفوين عام 914هـ، 1508م حيث استولى الشاه إسماعيل الصفوي على بغداد وصار بداية الدور الأول للصفويون في بغداد، حيث كانت بغداد تحت سيطرة قبيلة الخروف الأبيض فالخروف الأسود التركمانيتين. قام الصفويون بقتل الآلاف من أهل بغداد وتخريب مساجدها ومن أهمها مسجد الإمام الأعظم وتحطيم مدرسته، وكذلك جامع الشيخ عبد القادر الكيلاني.",
+  "summary_en": null
  },
  {
   "id": "Q5960821",
@@ -966,6 +1055,18 @@
   "wiki_en": "Battle of Mulayda",
   "summary_ar": "معركة المليداء هي معركة وقعت يوم السبت 13 من جمادى الآخرة عام 1308 هـ بين الأمير محمد بن عبد الله الرشيد أمير حائل ومعه أهل حائل وبعض من قبيلة شمر وقبيلة الظفير وعنزة ضد الأمير حسن آل مهنا أبا الخيل أمير بريدة ومعه البرزان من مطير والشيابين من عتيبة وبعض من الدهامشه من قبيلة عنزة الموجودين في أطراف شمال القصيم وزامل بن سليم أمير عنيزة ومعه أهالي عنيزة.",
   "summary_en": "The Battle of Mulayda was the last major battle during the period of the Second Saudi State which occurred on 21 January 1891 over issues regarding zakat and the arrest of the Rashidi leader. The Rashidis plotted to end the Saudi state and conquer both the Qassim region and Riyadh."
+ },
+ {
+  "id": "Q12244114",
+  "lat": 29.24776,
+  "lon": 45.58861,
+  "kind": "battle",
+  "year": 1900,
+  "name_ar": "معركة الرخيمة",
+  "name_en": "Battle of Al-Rakhima",
+  "wiki_ar": "معركة الرخيمة",
+  "summary_ar": "معركة الرخيمة أو معركة الرخيمية هي غارة شنتها القوات الكويتية سنة 1900 على أرض الرخيمية غرب إمارة الكويت، وجنوب لواء المنتفق وشرق إمارة آل رشيد، ويسكنها ابن طوالة وعشيرته من قبيلة شمر وفيها ترك ابن رشيد ثقله وحلاله ولم يكن بها العديد من الرجال، فأغارا عليها وأخذا الكثير من الأموال والحلال.",
+  "summary_en": null
  },
  {
   "id": "Q1327145",
@@ -1138,8 +1239,8 @@
  },
  {
   "id": "Q3636594",
-  "lat": 33.25,
-  "lon": 43.18,
+  "lat": 33.41667,
+  "lon": 43.3,
   "kind": "battle",
   "year": 1917,
   "name_ar": "معارك الرمادي (1917)",
