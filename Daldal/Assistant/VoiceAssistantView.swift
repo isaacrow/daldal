@@ -26,7 +26,7 @@ struct VoiceAssistantView: View {
         NavigationStack {
             Group {
                 if agentID == nil {
-                    if let onDevice { OnDeviceConversation(assistant: onDevice) }
+                    if let onDevice { OnDeviceConversation(assistant: onDevice) } else { ProgressView() }
                 } else if let conversation {
                     LiveConversation(conversation: conversation) {
                         Task { await conversation.endConversation() }
