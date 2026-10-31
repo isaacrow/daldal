@@ -164,3 +164,14 @@ final class SceneModels {
         return palm
     }
 }
+
+/// Starts RealityKit's shared engine once, on the main thread, after launch (see ExploreView).
+enum RealityKitWarmUp {
+    private static var done = false
+
+    static func run() {
+        guard !done else { return }
+        done = true
+        _ = ModelEntity(mesh: .generateBox(size: 0.01), materials: [SimpleMaterial()])
+    }
+}

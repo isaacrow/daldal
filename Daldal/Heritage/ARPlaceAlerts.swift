@@ -31,7 +31,7 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
     @ObservationIgnored private var watched: Set<String> = []
     @ObservationIgnored private var watchedAround: CLLocation?
     @ObservationIgnored private var askedPermission = false
-    @ObservationIgnored private var alwaysSession: CLServiceSession?
+    @ObservationIgnored private let locationManager = CLLocationManager()
 
     override init() {
         super.init()
@@ -49,7 +49,11 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
         // UI tests drive the map; a permission prompt mid-test would cover it.
         if !askedPermission, !ProcessInfo.processInfo.arguments.contains("-uitest-heritage") {
             askedPermission = true
-            Task { await askPermission() }
+            Task {
+                // Not in the first seconds of launch: let the map and location settle first.
+                try? await Task.sleep(for: .seconds(8))
+                await askPermission()
+            }
         }
         if let spot = spots.first(where: { location.distance(from: CLLocation($0.coordinate)) < Self.arrivalRadius }) {
             notify(spot)
@@ -65,7 +69,10 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
     private func askPermission() async {
         let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
         // Arrival alerts with the app closed need "Always" location; iOS offers the upgrade on its own schedule.
-        if granted { alwaysSession = CLServiceSession(authorization: .always) }
+        // Arrival alerts with the app closed need "Always"; iOS shows the upgrade prompt when it chooses.
+        if granted, locationManager.authorizationStatus == .authorizedWhenInUse {
+            locationManager.requestAlwaysAuthorization()
+        }
     }
 
     private func notify(_ spot: Spot) {
@@ -102,7 +109,7 @@ final class ARPlaceAlerts: NSObject, UNUserNotificationCenterDelegate {
 
     private func watchNearest(to location: CLLocation) async {
         // Watching only helps when iOS may wake the app ("Always"); otherwise the in-app check covers it.
-        guard CLLocationManager().authorizationStatus == .authorizedAlways else { return }
+        guard locationManager.authorizationStatus == .authorizedAlways else { return }
         // One monitor per name, ever: creating a second with the same name raises an exception that ends the app,
         // and two location updates can arrive while the first creation is still awaiting.
         if monitorCreation == nil {

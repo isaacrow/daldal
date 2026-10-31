@@ -145,7 +145,12 @@ struct ExploreView: View {
         .fullScreenCover(isPresented: scanBinding(whenPanelOpen: false)) {
             DriveScanView(voice: nav.voice)
         }
-        .task { openPlaceForUITest() }
+        .task {
+            // Start RealityKit's engine on the main thread once the map is up, before any 3D view or model load
+            // needs it: if its first use is a background model load racing a 3D view, both wait forever.
+            RealityKitWarmUp.run()
+            openPlaceForUITest()
+        }
         .task {
             // Monuments with a 3D model stand on the map as pictures of their model.
             await landmarks.load()

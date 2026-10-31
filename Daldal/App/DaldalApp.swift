@@ -1,4 +1,3 @@
-import RealityKit
 import SwiftUI
 
 @main
@@ -16,14 +15,7 @@ struct DaldalApp: App {
     @State private var arAlerts = ARPlaceAlerts()
     @Environment(\.scenePhase) private var scenePhase
 
-    init() {
-        // Start RealityKit's engine here, on the main thread, before any screen needs it. If its first use is a
-        // model loading in the background (a place card's 3D model) while a 3D view starts on the main thread,
-        // the two wait on each other's one-time setup and every 3D view stays blank.
-        _ = ModelEntity(mesh: .generateBox(size: 0.01), materials: [SimpleMaterial()])
-    }
-
-    var body: some SwiftUI.Scene {
+    var body: some Scene {
         WindowGroup {
             ExploreView()
                 .environment(location)
