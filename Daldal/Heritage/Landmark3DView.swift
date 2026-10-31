@@ -75,7 +75,8 @@ struct Landmark3DView: View {
         let stage = Entity()
         let copy = model.clone(recursive: true)
         let bounds = copy.visualBounds(relativeTo: nil)
-        let scale = 1 / max(bounds.extents.x, bounds.extents.y, bounds.extents.z, 0.001)
+        // Big enough to fill the frame from the orbit camera's default distance.
+        let scale = 3.4 / max(bounds.extents.x, bounds.extents.y, bounds.extents.z, 0.001)
         copy.scale = SIMD3(repeating: scale)
         copy.position = -bounds.center * scale
         let turntable = Entity()
