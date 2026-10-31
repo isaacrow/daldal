@@ -226,7 +226,7 @@ final class BattleSceneModel {
         // Desert: a wide sand table with low dunes.
         var sand = PhysicallyBasedMaterial()
         sand.baseColor = .init(tint: UIColor(red: 0.84, green: 0.72, blue: 0.52, alpha: 1))
-        sand.roughness = 1
+        sand.roughness = 1.0
         let ground = ModelEntity(mesh: .generateBox(width: 3.0, height: 0.04, depth: 2.3, cornerRadius: 0.02), materials: [sand])
         ground.position.y = -0.02
         field.addChild(ground)
