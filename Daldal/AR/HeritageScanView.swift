@@ -203,7 +203,7 @@ final class HeritageScanModel {
         var material = UnlitMaterial(color: .white)
         if let image, let texture = try? TextureResource(image: image, options: .init(semantic: .color)) {
             material.color = .init(tint: .white, texture: .init(texture))
-            material.blending = .transparent(opacity: 1)
+            material.blending = .transparent(opacity: .init(floatLiteral: 1))
         }
         let entity = ModelEntity(mesh: .generatePlane(width: width, height: width * aspect), materials: [material])
         entity.name = name
