@@ -3039,6 +3039,26 @@
           }
         }
       }
+    },
+    "Slow down, the limit here is %lld": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خفف السرعة، الحد هنا %lld"
+          }
+        }
+      }
+    },
+    "Spoken directions in Iraqi dialect": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الإرشادات الصوتية باللهجة العراقية"
+          }
+        }
+      }
     }
   }
 }

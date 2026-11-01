@@ -12,6 +12,7 @@ struct DriveModeView: View {
     @Environment(LiveStore.self) private var live
     @Environment(RoadFeatureStore.self) private var roadFeatures
     @Environment(LocationService.self) private var location
+    @State private var osmLimit = SpeedLimitLookup()
     @Environment(\.colorScheme) private var colorScheme
     @State private var camera: MapViewCamera = .automotiveNavigation(zoom: 17, pitch: 55)
     @State private var confirmingEnd = false
@@ -123,7 +124,7 @@ struct DriveModeView: View {
             if nav.phase == .navigating {
                 VStack(alignment: .leading, spacing: Theme.Spacing.m) {
                     HStack(alignment: .bottom) {
-                        SpeedPanel(speed: currentSpeed, limit: nav.speedLimit)
+                        SpeedPanel(speed: currentSpeed, limit: speedLimit)
                         Spacer()
                         controls
                     }
@@ -188,7 +189,17 @@ struct DriveModeView: View {
     }
 
     /// Speed cameras and stop signs on the route ahead: fetched around the car, announced once each.
+    /// The route's own limit when it has one, else OpenStreetMap's for the road we're on.
+    private var speedLimit: Measurement<UnitSpeed>? {
+        nav.speedLimit ?? osmLimit.limitKmh.map { Measurement(value: Double($0), unit: UnitSpeed.kilometersPerHour) }
+    }
+
     private func warnAboutRoadFeatures() {
+        if let here = location.location {
+            Task { await osmLimit.update(at: here) }
+        }
+        let limitKmh = speedLimit.map { Int($0.converted(to: .kilometersPerHour).value.rounded()) }
+        osmLimit.warnIfSpeeding(speed: currentSpeed, limit: limitKmh, voice: nav.voice)
         guard let here = nav.state?.preferredUserLocation?.coordinates.coordinate2D else { return }
         Task { await roadFeatures.refresh(around: here) }
         let route = nav.selectedRoute?.geometry.map(\.coordinate2D) ?? []

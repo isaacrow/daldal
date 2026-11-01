@@ -17,7 +17,13 @@ struct Maneuver: Equatable, Sendable {
 /// Phrases are short, imperative and end with the road name, so a driver gets the action first.
 struct ManeuverPhraser {
     let languageCode: String
+    /// Everyday Iraqi driving words ("لف يمين", "خليك سيده", "الفلكة") instead of formal Arabic. Set on the profile screen.
+    var iraqi = UserDefaults.standard.bool(forKey: Self.iraqiKey)
+    static let iraqiKey = "voice.iraqi"
     private var arabic: Bool { languageCode == "ar" }
+
+    /// Formal Arabic, or its Iraqi spoken form when the dialect is on.
+    private func say(_ formal: String, _ dialect: String) -> String { iraqi ? dialect : formal }
 
     /// The action alone, for the banner: "انعطف يميناً".
     func action(_ m: Maneuver) -> String {
@@ -42,19 +48,20 @@ struct ManeuverPhraser {
     }
 
     func continueFor(_ distance: Double) -> String {
-        arabic ? "استمر لمسافة \(spokenDistance(distance))" : "Continue for \(spokenDistance(distance))"
+        arabic ? say("استمر لمسافة \(spokenDistance(distance))", "خليك سيده \(spokenDistance(distance))")
+            : "Continue for \(spokenDistance(distance))"
     }
 
     func arrived(at name: String?) -> String {
         switch (arabic, name) {
-        case (true, let name?): "وصلت إلى \(name)"
-        case (true, nil): "وصلت إلى وجهتك"
+        case (true, let name?): say("وصلت إلى \(name)", "وصلنا \(name)")
+        case (true, nil): say("وصلت إلى وجهتك", "وصلنا")
         case (false, let name?): "You've arrived at \(name)"
         case (false, nil): "You've arrived"
         }
     }
 
-    var rerouting: String { arabic ? "جارٍ تعديل المسار" : "Finding a new route" }
+    var rerouting: String { arabic ? say("جارٍ تعديل المسار", "دا أدوّر طريق ثاني") : "Finding a new route" }
 
     /// "انتبه، حادث بعد 500 متر" — said once when a report on the route comes into range.
     func reportAhead(_ type: ReportType, distance: Double) -> String {
@@ -71,7 +78,7 @@ struct ManeuverPhraser {
             case .roadwork: "أعمال طريق"
             case .brokenLight: "إشارة ضوئية معطلة"
             }
-            return "انتبه، \(name) بعد \(d)"
+            return say("انتبه، \(name) بعد \(d)", "دير بالك، \(name) بعد \(d)")
         }
         let name = switch type {
         case .jam: "Traffic jam"
@@ -90,7 +97,7 @@ struct ManeuverPhraser {
     func fasterRoute(saving seconds: Double) -> String {
         let minutes = max(1, Int((seconds / 60).rounded()))
         return arabic
-            ? "وجدت طريقاً أسرع يوفّر \(arabicMinutes(minutes))"
+            ? say("وجدت طريقاً أسرع يوفّر \(arabicMinutes(minutes))", "لكيت طريق أسرع يوفّر \(arabicMinutes(minutes))")
             : "Found a faster route that saves \(minutes) \(minutes == 1 ? "minute" : "minutes")"
     }
 
@@ -106,8 +113,8 @@ struct ManeuverPhraser {
 
     func starting(to name: String?) -> String {
         switch (arabic, name) {
-        case (true, let name?): "لنبدأ. الطريق إلى \(name)"
-        case (true, nil): "لنبدأ"
+        case (true, let name?): say("لنبدأ. الطريق إلى \(name)", "يلّا، الطريق إلى \(name)")
+        case (true, nil): say("لنبدأ", "يلّا نمشي")
         case (false, let name?): "Starting route to \(name)"
         case (false, nil): "Starting route"
         }
@@ -134,41 +141,41 @@ struct ManeuverPhraser {
 
     private func arabicAction(_ m: Maneuver) -> String {
         switch m.kind {
-        case .depart: return "انطلق"
+        case .depart: return say("انطلق", "يلّا امشي")
         case .arrive: return arabicArrival(m.direction)
         case .roundabout:
-            guard let exit = m.roundaboutExit else { return "ادخل الدوّار" }
-            return "عند الدوّار، اسلك المخرج \(arabicOrdinal(exit))"
+            guard let exit = m.roundaboutExit else { return say("ادخل الدوّار", "ادخل بالفلكة") }
+            return say("عند الدوّار، اسلك المخرج \(arabicOrdinal(exit))", "بالفلكة، اطلع من الطلعة \(arabicOrdinalFeminine(exit))")
         case .merge: return "اندمج في الطريق" + arabicSide(m.direction, prefix: " من ")
         case .onRamp: return "اسلك المدخل" + arabicSide(m.direction, prefix: " على ")
         case .offRamp: return "اسلك المخرج" + arabicSide(m.direction, prefix: " على ")
         case .fork: return arabicKeep(m.direction)
-        case .endOfRoad: return "في نهاية الطريق، " + arabicTurn(m.direction ?? .straight)
+        case .endOfRoad: return say("في نهاية الطريق، ", "بآخر الشارع، ") + arabicTurn(m.direction ?? .straight)
         case .continue, .newName:
             if let d = m.direction, d != .straight { return arabicTurn(d) }
-            return "استمر مباشرة"
+            return say("استمر مباشرة", "خليك سيده")
         case .turn: return arabicTurn(m.direction ?? .straight)
         }
     }
 
     private func arabicTurn(_ d: Maneuver.Direction) -> String {
         switch d {
-        case .uTurn: "استدر للخلف"
-        case .sharpRight: "انعطف بحدة إلى اليمين"
-        case .right: "انعطف يميناً"
-        case .slightRight: "انحرف قليلاً إلى اليمين"
-        case .straight: "استمر مباشرة"
-        case .slightLeft: "انحرف قليلاً إلى اليسار"
-        case .left: "انعطف يساراً"
-        case .sharpLeft: "انعطف بحدة إلى اليسار"
+        case .uTurn: say("استدر للخلف", "ارجع يوتيرن")
+        case .sharpRight: say("انعطف بحدة إلى اليمين", "اكسر يمين")
+        case .right: say("انعطف يميناً", "لف يمين")
+        case .slightRight: say("انحرف قليلاً إلى اليمين", "ميّل شوية يمين")
+        case .straight: say("استمر مباشرة", "خليك سيده")
+        case .slightLeft: say("انحرف قليلاً إلى اليسار", "ميّل شوية يسار")
+        case .left: say("انعطف يساراً", "لف يسار")
+        case .sharpLeft: say("انعطف بحدة إلى اليسار", "اكسر يسار")
         }
     }
 
     private func arabicKeep(_ d: Maneuver.Direction?) -> String {
         switch d {
-        case .left, .slightLeft, .sharpLeft: "التزم المسار الأيسر"
-        case .right, .slightRight, .sharpRight: "التزم المسار الأيمن"
-        default: "استمر مباشرة"
+        case .left, .slightLeft, .sharpLeft: say("التزم المسار الأيسر", "خليك عالسايد اليسار")
+        case .right, .slightRight, .sharpRight: say("التزم المسار الأيمن", "خليك عالسايد اليمين")
+        default: say("استمر مباشرة", "خليك سيده")
         }
     }
 
@@ -182,10 +189,16 @@ struct ManeuverPhraser {
 
     private func arabicArrival(_ d: Maneuver.Direction?) -> String {
         switch d {
-        case .left, .slightLeft, .sharpLeft: "وجهتك على اليسار"
-        case .right, .slightRight, .sharpRight: "وجهتك على اليمين"
-        default: "وجهتك أمامك"
+        case .left, .slightLeft, .sharpLeft: say("وجهتك على اليسار", "وصلنا، المكان على يسارك")
+        case .right, .slightRight, .sharpRight: say("وجهتك على اليمين", "وصلنا، المكان على يمينك")
+        default: say("وجهتك أمامك", "وصلنا، المكان كدامك")
         }
+    }
+
+    /// "الطلعة الأولى، الثانية…" (exit is feminine in the dialect's الطلعة).
+    private func arabicOrdinalFeminine(_ n: Int) -> String {
+        let words = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة", "الثامنة"]
+        return (1...words.count).contains(n) ? words[n - 1] : "رقم \(n)"
     }
 
     private func arabicOrdinal(_ n: Int) -> String {

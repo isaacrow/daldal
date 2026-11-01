@@ -149,3 +149,48 @@ final class RoadFeatureStore {
         }
     }
 }
+
+/// The speed limit of the road the car is on, from OpenStreetMap's maxspeed tags, for when the route itself
+/// carries none. Looked up at most every 150 m of driving.
+@Observable
+final class SpeedLimitLookup {
+    private(set) var limitKmh: Int?
+
+    @ObservationIgnored private var lookedUpAt: CLLocation?
+    @ObservationIgnored private var busy = false
+    @ObservationIgnored private var warnedOver: Int?
+
+    /// Road classes from most to least important: where several roads meet, the main road's limit wins.
+    private static let rank = ["motorway", "trunk", "primary", "secondary", "tertiary", "unclassified", "residential",
+                               "motorway_link", "trunk_link", "primary_link", "secondary_link", "service", "living_street"]
+
+    func update(at location: CLLocation) async {
+        if let lookedUpAt, lookedUpAt.distance(from: location) < 150 { return }
+        guard !busy, Region.contains(location.coordinate) else { return }
+        busy = true
+        defer { busy = false }
+        lookedUpAt = location
+        let c = location.coordinate
+        guard let ways = try? await Overpass.run("[out:json][timeout:8];way(around:25,\(c.latitude),\(c.longitude))[highway][maxspeed];out tags 8;")
+        else { return }
+        let best = ways.compactMap { way -> (Int, Int)? in
+            guard let tags = way.tags, let text = tags["maxspeed"],
+                  let value = Int(text.filter(\.isNumber).prefix(3)) else { return nil }
+            let kmh = text.contains("mph") ? Int((Double(value) * 1.609).rounded()) : value
+            return (Self.rank.firstIndex(of: tags["highway"] ?? "") ?? 99, kmh)
+        }.min { $0.0 < $1.0 }
+        limitKmh = best?.1
+    }
+
+    /// Says once per limit when the driver is more than 10 km/h over it.
+    func warnIfSpeeding(speed: Double?, limit: Int?, voice: VoiceGuide) {
+        guard let speed, let limit else { return }
+        let kmh = Int((speed * 3.6).rounded())
+        if kmh > limit + 10, warnedOver != limit {
+            warnedOver = limit
+            voice.announce(String(localized: "Slow down, the limit here is \(limit)"))
+        } else if kmh <= limit {
+            warnedOver = nil
+        }
+    }
+}

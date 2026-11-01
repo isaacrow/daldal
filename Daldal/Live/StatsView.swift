@@ -124,6 +124,7 @@ struct AppCredit: View {
 struct LanguageSwitch: View {
     @State private var chosen = AppLanguage.code
     @State private var askReopen = false
+    @AppStorage(ManeuverPhraser.iraqiKey) private var iraqi = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
@@ -134,6 +135,11 @@ struct LanguageSwitch: View {
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier("settings.language")
+            if chosen == "ar" {
+                Toggle("Spoken directions in Iraqi dialect", isOn: $iraqi)
+                    .font(.subheadline)
+                    .accessibilityIdentifier("settings.iraqi")
+            }
         }
         .padding(Theme.Spacing.l)
         .background(Color.secondary.opacity(0.08), in: .rect(cornerRadius: Theme.cornerRadius))
