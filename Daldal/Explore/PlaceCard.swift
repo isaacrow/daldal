@@ -33,7 +33,9 @@ struct PlaceCard: View {
                     Text("Place data © Foursquare").font(.caption).foregroundStyle(.secondary)
                 }
                 if let model = landmarks.model(for: place.guideID ?? place.heritageID) {
-                    if LandmarkModelStore.isUnlocked(place.coordinate, from: location.location) {
+                    // The two Karbala shrines open anywhere (to show them to people far away); the rest on site.
+                    if Self.karbalaShrines.contains(model.id)
+                        || LandmarkModelStore.isUnlocked(place.coordinate, from: location.location) {
                         Landmark3DView(model: model)
                     } else {
                         LockedModelCard(icon: landmarks.icons[model.id], distance: place.distance(from: location.location))
@@ -92,16 +94,12 @@ struct PlaceCard: View {
                 if site != nil {
                     actionButton("View in AR", icon: .arView, id: "place.ar") { onOpenAR(place) }
                 }
-                // History and the battle belong to the two holy shrines of Karbala, and open only on site.
+                // History and the battle belong to the two holy shrines of Karbala only. They open anywhere: the
+                // scene is set up in front of you, on site or far away.
                 if let id = place.guideID ?? place.heritageID, Self.karbalaShrines.contains(id) {
-                    let onSite = LandmarkModelStore.isUnlocked(place.coordinate, from: location.location)
-                    actionButton(onSite ? "History in AR" : "History in AR: unlocks on site",
-                                 icon: .history, id: "place.history") { onHistory(place) }
-                        .disabled(!onSite)
+                    actionButton("History in AR", icon: .history, id: "place.history") { onHistory(place) }
                     if BattleSceneModel.isNear(place.coordinate) {
-                        actionButton(onSite ? "Battle of Karbala in AR" : "Battle of Karbala: unlocks on site",
-                                     icon: .history, id: "place.battle") { onBattle() }
-                            .disabled(!onSite)
+                        actionButton("Battle of Karbala in AR", icon: .history, id: "place.battle") { onBattle() }
                     }
                 }
                 ShareLink(item: shareURL, subject: Text(place.name)) {
