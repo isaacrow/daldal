@@ -2859,6 +2859,186 @@
           }
         }
       }
+    },
+    "Drinking water": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مياه الشرب"
+          }
+        }
+      }
+    },
+    "Pilgrim walk": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طريق الزائرين"
+          }
+        }
+      }
+    },
+    "Najaf to Karbala": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "من النجف إلى كربلاء"
+          }
+        }
+      }
+    },
+    "About pole %lld": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قرب العمود %lld"
+          }
+        }
+      }
+    },
+    "of %lld": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "من %lld"
+          }
+        }
+      }
+    },
+    "%@ to the shrine of Imam Husayn, about %lld h walking.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ إلى مرقد الإمام الحسين، نحو %lld ساعة سيراً."
+          }
+        }
+      }
+    },
+    "You're not on the Najaf–Karbala road. The walk starts at the shrine of Imam Ali in Najaf.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لست على طريق النجف–كربلاء. يبدأ المسير من مرقد الإمام علي في النجف."
+          }
+        }
+      }
+    },
+    "Walk to the shrine of Imam Husayn": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امشِ إلى مرقد الإمام الحسين"
+          }
+        }
+      }
+    },
+    "Near you": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قريب منك"
+          }
+        }
+      }
+    },
+    "Your group": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجموعتك"
+          }
+        }
+      }
+    },
+    "Send your position so your group can find you, even in the crowd.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أرسل موقعك ليجدك أفراد مجموعتك حتى في الزحام."
+          }
+        }
+      }
+    },
+    "I'm here on the pilgrim walk": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنا هنا على طريق الزائرين"
+          }
+        }
+      }
+    },
+    "Send my location": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أرسل موقعي"
+          }
+        }
+      }
+    },
+    "Arbaeen": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأربعين"
+          }
+        }
+      }
+    },
+    "Ashura": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عاشوراء"
+          }
+        }
+      }
+    },
+    "Dates by the Umm al-Qura calendar; in Iraq they follow the moon sighting and may differ by a day.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التواريخ حسب تقويم أم القرى؛ وفي العراق تتبع رؤية الهلال وقد تختلف بيوم."
+          }
+        }
+      }
+    },
+    "Imam Husayn Mausoleum": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرقد الإمام الحسين"
+          }
+        }
+      }
+    },
+    "Karbala": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كربلاء"
+          }
+        }
+      }
     }
   }
 }

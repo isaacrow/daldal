@@ -3,7 +3,7 @@ import Foundation
 
 /// Kinds of everyday places people look for around them, matched to OpenStreetMap tags.
 enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
-    case toilets, restaurant, cafe, fuel, pharmacy, hospital, atm, mosque, parking, hotel, supermarket
+    case toilets, restaurant, cafe, fuel, pharmacy, hospital, atm, mosque, parking, hotel, supermarket, water
 
     var id: String { rawValue }
 
@@ -20,6 +20,7 @@ enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
         case .parking: "Parking"
         case .hotel: "Hotel"
         case .supermarket: "Supermarket"
+        case .water: "Drinking water"
         }
     }
 
@@ -32,7 +33,7 @@ enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
         case .mosque: .worship
         case .parking: .parking
         case .supermarket, .atm: .shop
-        case .toilets, .hotel: .other
+        case .toilets, .hotel, .water: .other
         }
     }
 
@@ -41,6 +42,7 @@ enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
         case .toilets: .toilet
         case .hotel: .hotel
         case .atm: .atm
+        case .water: .water
         default: category.icon
         }
     }
@@ -59,6 +61,7 @@ enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
         case .parking: ["[amenity=parking]"]
         case .hotel: ["[tourism=hotel]", "[tourism=guest_house]"]
         case .supermarket: ["[shop=supermarket]", "[shop=convenience]"]
+        case .water: ["[amenity=drinking_water]", "[amenity=water_point]"]
         }
     }
 
@@ -76,6 +79,7 @@ enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
             (.mosque, ["mosque", "pray", "جامع", "مسجد", "صلاة"]),
             (.parking, ["parking", "park the car", "موقف", "كراج", "باركنك"]),
             (.hotel, ["hotel", "stay", "فندق", "نزل"]),
+            (.water, ["water", "drink", "ماء", "مي"]),
             (.supermarket, ["supermarket", "grocery", "market", "سوبر", "ماركت", "اسواق", "أسواق"]),
         ]
         guard let match = words.first(where: { $0.1.contains { t.contains($0) } }) else { return nil }

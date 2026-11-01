@@ -34,6 +34,7 @@ struct ExploreView: View {
         case stats
         case assistant
         case prayer
+        case pilgrim
     }
 
     @State private var panel: Panel?
@@ -106,8 +107,11 @@ struct ExploreView: View {
         .overlay(alignment: .top) {
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                 SearchBarButton { show(.search, at: .large) }
-                NextPrayerChip { show(.prayer, at: .large) }
-                    .padding(.leading, Theme.Spacing.l)
+                HStack(spacing: Theme.Spacing.s) {
+                    NextPrayerChip { show(.prayer, at: .large) }
+                    PilgrimChip { show(.pilgrim, at: .large) }
+                }
+                .padding(.leading, Theme.Spacing.l)
             }
         }
         .overlay(alignment: .topTrailing) { controls.padding(.top, 72) }
@@ -234,6 +238,19 @@ struct ExploreView: View {
             StatsView()
         case .prayer:
             PrayerView()
+        case .pilgrim:
+            PilgrimView(
+                onFind: { category in
+                    search.search(category: category)
+                    show(.search, at: .medium)
+                },
+                onWalkToKarbala: {
+                    walkDestination = Place(id: "pilgrim:karbala", name: String(localized: "Imam Husayn Mausoleum"),
+                                            subtitle: String(localized: "Karbala"),
+                                            latitude: PilgrimRoute.karbala.latitude, longitude: PilgrimRoute.karbala.longitude,
+                                            category: .worship)
+                }
+            )
         case .assistant:
             VoiceAssistantView(
                 onShow: { places in search.pinned = places },
