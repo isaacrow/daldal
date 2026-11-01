@@ -14,6 +14,8 @@ struct MapCanvas: UIViewRepresentable {
     var onSelectRoute: (Int) -> Void = { _ in }
     /// A search or assistant result pinned on the map.
     var onSelectPin: (String) -> Void = { _ in }
+    /// A shop, restaurant, mosque... drawn on the map.
+    var onSelectPlace: (Place) -> Void = { _ in }
     var onCameraIdle: (CLLocationCoordinate2D, Double) -> Void = { _, _ in }
 
     @Environment(\.colorScheme) private var colorScheme
@@ -130,6 +132,20 @@ struct MapCanvas: UIViewRepresentable {
                 parent.onSelectGuide(id)
                 return
             }
+            // A place drawn on the map (shop, restaurant, clinic...).
+            let poiLayers = Set(mapView.style?.layers.map(\.identifier).filter { $0.hasPrefix(PoiIcons.layer) } ?? [])
+            if let poi = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: poiLayers).first,
+               let name = poi.attribute(forKey: "name") as? String {
+                let localized = poi.attribute(forKey: "name:\(parent.languageCode)") as? String
+                let kind = poi.attribute(forKey: "class") as? String
+                let c = poi.coordinate
+                parent.onSelectPlace(Place(id: "poi:\(c.latitude),\(c.longitude)", name: localized ?? name,
+                                           subtitle: (poi.attribute(forKey: "subclass") as? String)?
+                                               .replacingOccurrences(of: "_", with: " ").capitalized ?? "",
+                                           latitude: c.latitude, longitude: c.longitude,
+                                           category: PoiIcons.category(forClass: kind)))
+                return
+            }
             // Tapping an alternative route selects it, as in every navigation app.
             let routes = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.routeLayer])
             if let index = (routes.first?.attribute(forKey: "index") as? NSNumber)?.intValue {
@@ -143,6 +159,7 @@ struct MapCanvas: UIViewRepresentable {
             parent.controller.applyBuildingMode()
             parent.controller.installHeritageLayer(sites: parent.heritageSites, isDark: isDark, languageCode: parent.languageCode)
             parent.controller.installGuideLayer(places: parent.guidePlaces, isDark: isDark, languageCode: parent.languageCode)
+            PoiIcons.install(in: style)
             parent.controller.installLandmarkIcons()
             parent.controller.reinstallPins()
             parent.controller.reinstallRoutes()

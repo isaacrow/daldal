@@ -97,6 +97,10 @@ struct ExploreView: View {
                 guard panel != .routes, let place = search.pinned.first(where: { $0.id == id }) else { return }
                 select(place, record: false)
             },
+            onSelectPlace: { place in
+                guard panel != .routes else { return }
+                select(place, record: false)
+            },
             onCameraIdle: { center, zoom in
                 // Live data only makes sense at street level; it's also what keeps requests small.
                 guard zoom >= 11 else { return }
@@ -108,11 +112,8 @@ struct ExploreView: View {
         .overlay(alignment: .top) {
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                 SearchBarButton { show(.search, at: .large) }
-                HStack(spacing: Theme.Spacing.s) {
-                    NextPrayerChip { show(.prayer, at: .large) }
-                    PilgrimChip { show(.pilgrim, at: .large) }
-                }
-                .padding(.leading, Theme.Spacing.l)
+                PilgrimChip { show(.pilgrim, at: .large) }
+                    .padding(.leading, Theme.Spacing.l)
             }
         }
         .overlay(alignment: .topTrailing) { controls.padding(.top, 72) }

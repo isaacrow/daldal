@@ -27,6 +27,7 @@ struct StatsView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                    PrayerRow()
                     LanguageSwitch()
                     RoughRoadSettings()
                     AppCredit()
@@ -181,5 +182,26 @@ struct RoughRoadSettings: View {
         }
         .padding(Theme.Spacing.l)
         .background(Color.secondary.opacity(0.08), in: .rect(cornerRadius: Theme.cornerRadius))
+    }
+}
+
+/// Prayer times and qibla, opened from the profile.
+struct PrayerRow: View {
+    @State private var open = false
+
+    var body: some View {
+        Button { open = true } label: {
+            HStack {
+                Icon(.mosque, size: 20).foregroundStyle(Theme.accent)
+                Text("Prayer times and qibla").font(.headline)
+                Spacer()
+                Icon(.chevron, size: 14).foregroundStyle(.secondary)
+            }
+            .padding(Theme.Spacing.l)
+            .background(Color.secondary.opacity(0.08), in: .rect(cornerRadius: Theme.cornerRadius))
+        }
+        .buttonStyle(.plain)
+        .sheet(isPresented: $open) { PrayerView() }
+        .accessibilityIdentifier("profile.prayer")
     }
 }

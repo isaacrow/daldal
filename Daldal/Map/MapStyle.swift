@@ -1,3 +1,5 @@
+import UIKit
+import MapLibre
 import Foundation
 
 /// Which colour scheme the map uses. `.auto` follows the system.
@@ -282,6 +284,20 @@ enum MapStyleBuilder {
                 "paint": ["text-color": satellite ? "#CFE8FF" : p.waterLabel, "text-halo-color": halo, "text-halo-width": 1],
             ],
             [
+                // Shops, restaurants, clinics, mosques, fuel...: a round icon by kind, with its name, from street zoom.
+                "id": PoiIcons.layer + suffix, "type": "symbol", "source": source, "source-layer": "poi",
+                "minzoom": 15,
+                "filter": ["match", ["get", "class"], Array(PoiIcons.classes.keys), true, false],
+                "layout": [
+                    "icon-image": ["concat", "poi-", (["match", ["get", "class"]] as [Any]) + PoiIcons.matchPairs + ["other"]],
+                    "icon-size": 0.85,
+                    "text-field": name, "text-font": ["NotoSansRegular"], "text-size": 11,
+                    "text-anchor": "top", "text-offset": [0, 1.1], "text-optional": true, "text-max-width": 7,
+                    "symbol-sort-key": ["get", "rank"],
+                ],
+                "paint": ["text-color": text, "text-halo-color": halo, "text-halo-width": 1.2],
+            ],
+            [
                 "id": "place-label" + suffix, "type": "symbol", "source": source, "source-layer": "place",
                 "layout": [
                     "text-field": name, "text-font": ["NotoSansBold"],
@@ -304,5 +320,75 @@ enum MapStyleBuilder {
         let url = dir.appending(path: name)
         try data.write(to: url, options: .atomic)
         return url
+    }
+}
+
+/// Round icons for the map's places (OpenMapTiles' `poi` layer), by kind.
+enum PoiIcons {
+    static let layer = "poi"
+
+    /// OpenMapTiles class -> icon kind. Only these classes are drawn, to keep the map calm.
+    static let classes: [String: String] = [
+        "restaurant": "food", "fast_food": "food", "bakery": "food", "ice_cream": "food",
+        "cafe": "cafe", "fuel": "fuel",
+        "shop": "shop", "grocery": "shop", "clothing_store": "shop", "mall": "shop", "furniture": "shop",
+        "pharmacy": "health", "hospital": "health", "doctors": "health", "dentist": "health",
+        "place_of_worship": "mosque", "parking": "parking", "lodging": "hotel",
+        "bank": "atm", "atm": "atm", "toilets": "toilet",
+        "attraction": "heritage", "museum": "heritage", "monument": "heritage",
+    ]
+
+    /// ["restaurant", "food", "fast_food", "food", ...] for a style `match` expression.
+    static var matchPairs: [Any] { classes.sorted { $0.key < $1.key }.flatMap { [$0.key, $0.value] } }
+
+    private static let kinds: [String: (DaldalIcon, UIColor)] = [
+        "food": (.food, UIColor(red: 0.93, green: 0.45, blue: 0.20, alpha: 1)),
+        "cafe": (.cafe, UIColor(red: 0.62, green: 0.42, blue: 0.28, alpha: 1)),
+        "fuel": (.fuel, UIColor(red: 0.20, green: 0.45, blue: 0.85, alpha: 1)),
+        "shop": (.shop, UIColor(red: 0.55, green: 0.35, blue: 0.80, alpha: 1)),
+        "health": (.health, UIColor(red: 0.85, green: 0.22, blue: 0.28, alpha: 1)),
+        "mosque": (.mosque, UIColor(red: 0.10, green: 0.60, blue: 0.45, alpha: 1)),
+        "parking": (.parking, UIColor(red: 0.25, green: 0.40, blue: 0.70, alpha: 1)),
+        "hotel": (.hotel, UIColor(red: 0.80, green: 0.30, blue: 0.55, alpha: 1)),
+        "atm": (.atm, UIColor(red: 0.20, green: 0.55, blue: 0.35, alpha: 1)),
+        "toilet": (.toilet, UIColor(red: 0.35, green: 0.50, blue: 0.60, alpha: 1)),
+        "heritage": (.heritage, UIColor(red: 0.72, green: 0.49, blue: 0.24, alpha: 1)),
+        "other": (.pin, UIColor(white: 0.45, alpha: 1)),
+    ]
+
+    /// Adds the icon images to a freshly loaded style.
+    static func install(in style: MLNStyle) {
+        for (kind, (icon, colour)) in kinds where style.image(forName: "poi-\(kind)") == nil {
+            style.setImage(image(icon, colour), forName: "poi-\(kind)")
+        }
+    }
+
+    private static func image(_ icon: DaldalIcon, _ colour: UIColor) -> UIImage {
+        let size: CGFloat = 26
+        return UIGraphicsImageRenderer(size: CGSize(width: size, height: size)).image { _ in
+            let disc = CGRect(x: 1, y: 1, width: size - 2, height: size - 2)
+            colour.setFill()
+            UIBezierPath(ovalIn: disc).fill()
+            UIColor.white.setStroke()
+            let ring = UIBezierPath(ovalIn: disc)
+            ring.lineWidth = 1.5
+            ring.stroke()
+            UIImage(named: icon.assetName)?.withTintColor(.white).draw(in: disc.insetBy(dx: 6, dy: 6))
+        }
+    }
+
+    /// The category for a tapped place.
+    static func category(forClass value: String?) -> PlaceCategory {
+        switch classes[value ?? ""] {
+        case "food": .food
+        case "cafe": .cafe
+        case "fuel": .fuel
+        case "shop", "atm": .shop
+        case "health": .health
+        case "mosque": .worship
+        case "parking": .parking
+        case "heritage": .heritage
+        default: .other
+        }
     }
 }

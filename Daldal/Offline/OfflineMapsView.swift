@@ -20,7 +20,10 @@ struct OfflineMapsView: View {
                 } header: {
                     Text("City maps")
                 } footer: {
-                    Text("A downloaded city's map, search and directions work without internet. Trips between cities use the internet when there is signal.")
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("A downloaded city's map, search and directions work without internet. Trips between cities use the internet when there is signal.")
+                        Text("Places: © OpenStreetMap contributors, © Foursquare (Foursquare Open Source Places, Apache 2.0).")
+                    }
                 }
 
                 if live.isAvailable {

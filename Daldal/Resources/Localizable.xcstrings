@@ -3109,6 +3109,36 @@
           }
         }
       }
+    },
+    "Prayer times and qibla": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أوقات الصلاة والقبلة"
+          }
+        }
+      }
+    },
+    "Place data © Foursquare": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بيانات المكان © Foursquare"
+          }
+        }
+      }
+    },
+    "Places: © OpenStreetMap contributors, © Foursquare (Foursquare Open Source Places, Apache 2.0).": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأماكن: © مساهمو OpenStreetMap، © Foursquare (Foursquare Open Source Places، رخصة Apache 2.0)."
+          }
+        }
+      }
     }
   }
 }

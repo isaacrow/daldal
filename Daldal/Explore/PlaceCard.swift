@@ -28,6 +28,10 @@ struct PlaceCard: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
                 header
                 actions
+                if place.id.hasPrefix("fsq:") {
+                    // Required by Foursquare Open Source Places (Apache 2.0) for places it supplied.
+                    Text("Place data © Foursquare").font(.caption).foregroundStyle(.secondary)
+                }
                 if let model = landmarks.model(for: place.guideID ?? place.heritageID) {
                     if LandmarkModelStore.isUnlocked(place.coordinate, from: location.location) {
                         Landmark3DView(model: model)
@@ -88,9 +92,8 @@ struct PlaceCard: View {
                 if site != nil {
                     actionButton("View in AR", icon: .arView, id: "place.ar") { onOpenAR(place) }
                 }
-                // History and the battle are for monuments and places to visit (not a café or a toilet nearby),
-                // and like the 3D models they open only on site.
-                if site != nil || guidePlace != nil {
+                // History and the battle belong to the two holy shrines of Karbala, and open only on site.
+                if let id = place.guideID ?? place.heritageID, Self.karbalaShrines.contains(id) {
                     let onSite = LandmarkModelStore.isUnlocked(place.coordinate, from: location.location)
                     actionButton(onSite ? "History in AR" : "History in AR: unlocks on site",
                                  icon: .history, id: "place.history") { onHistory(place) }
@@ -126,6 +129,9 @@ struct PlaceCard: View {
         }
         .font(.subheadline.weight(.semibold))
     }
+
+    /// The Imam Husayn and Al-Abbas shrines (Wikidata), the only places with History in AR and the battle scene.
+    static let karbalaShrines: Set<String> = ["Q773704", "Q3250647"]
 
     private func actionButton(_ title: LocalizedStringKey, icon: DaldalIcon, id: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
