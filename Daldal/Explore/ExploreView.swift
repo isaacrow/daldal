@@ -33,6 +33,7 @@ struct ExploreView: View {
         case discover
         case stats
         case assistant
+        case prayer
     }
 
     @State private var panel: Panel?
@@ -102,7 +103,13 @@ struct ExploreView: View {
             }
         )
         .ignoresSafeArea()
-        .overlay(alignment: .top) { SearchBarButton { show(.search, at: .large) } }
+        .overlay(alignment: .top) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                SearchBarButton { show(.search, at: .large) }
+                NextPrayerChip { show(.prayer, at: .large) }
+                    .padding(.leading, Theme.Spacing.l)
+            }
+        }
         .overlay(alignment: .topTrailing) { controls.padding(.top, 72) }
         .overlay(alignment: .bottom) { arrivalBanner }
         .sheet(isPresented: panelPresented) {
@@ -225,6 +232,8 @@ struct ExploreView: View {
             OfflineMapsView()
         case .stats:
             StatsView()
+        case .prayer:
+            PrayerView()
         case .assistant:
             VoiceAssistantView(
                 onShow: { places in search.pinned = places },
