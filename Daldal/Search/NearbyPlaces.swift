@@ -65,6 +65,13 @@ enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    /// The OpenStreetMap values this category covers ("[amenity=toilets]" -> "toilets"), for the offline index.
+    var osmValues: [String] {
+        filters.compactMap { filter in
+            filter.split(separator: "]").first?.split(separator: "=").last.map(String.init)
+        }
+    }
+
     /// Matches what someone typed or said ("wc", "toilet", "حمام", "مطعم") to a category.
     init?(spoken text: String) {
         let t = text.lowercased()

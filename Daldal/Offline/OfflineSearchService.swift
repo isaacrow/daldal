@@ -58,6 +58,45 @@ final class OfflineSearchService: PlaceSearchService {
         nil // The text index has no spatial index; reverse geocoding stays online.
     }
 
+    /// Places of the given OpenStreetMap kinds (e.g. "toilets", "restaurant") within `radius` metres, nearest first.
+    /// Includes the Foursquare places the map packs add. Instant and offline.
+    func nearby(osmValues: [String], near: CLLocationCoordinate2D, radius: Double) -> [Place] {
+        guard !osmValues.isEmpty else { return [] }
+        let dLat = radius / 111_320, dLon = radius / (111_320 * cos(near.latitude * .pi / 180))
+        let marks = osmValues.map { _ in "?" }.joined(separator: ",")
+        let sql = """
+            SELECT id, name, name_ar, name_en, subtitle, lat, lon, osm_key, osm_value FROM places
+            WHERE osm_value IN (\(marks)) AND lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?
+            """
+        var statement: OpaquePointer?
+        guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else { return [] }
+        defer { sqlite3_finalize(statement) }
+        for (index, value) in osmValues.enumerated() {
+            sqlite3_bind_text(statement, Int32(index + 1), value, -1, Self.transient)
+        }
+        let n = Int32(osmValues.count)
+        sqlite3_bind_double(statement, n + 1, near.latitude - dLat)
+        sqlite3_bind_double(statement, n + 2, near.latitude + dLat)
+        sqlite3_bind_double(statement, n + 3, near.longitude - dLon)
+        sqlite3_bind_double(statement, n + 4, near.longitude + dLon)
+        let origin = CLLocation(latitude: near.latitude, longitude: near.longitude)
+        var places: [Place] = []
+        while sqlite3_step(statement) == SQLITE_ROW {
+            let name = Self.text(statement, 1) ?? ""
+            let localized = languageCode == "ar" ? Self.text(statement, 2) : Self.text(statement, 3)
+            places.append(Place(
+                id: Self.text(statement, 0) ?? UUID().uuidString,
+                name: localized.flatMap { $0.isEmpty ? nil : $0 } ?? name,
+                subtitle: Self.text(statement, 4) ?? "",
+                latitude: sqlite3_column_double(statement, 5),
+                longitude: sqlite3_column_double(statement, 6),
+                category: PlaceCategory(osmKey: Self.text(statement, 7), osmValue: Self.text(statement, 8))
+            ))
+        }
+        return places.filter { ($0.distance(from: origin) ?? .infinity) <= radius }
+            .sorted { ($0.distance(from: origin) ?? 0) < ($1.distance(from: origin) ?? 0) }
+    }
+
     /// Turns what the user typed into an FTS5 query: every word must match, the last one as a prefix.
     static func ftsQuery(_ text: String) -> String? {
         let words = ArabicSearchNormalizer.normalize(text)
@@ -102,6 +141,16 @@ final class HybridSearchService: PlaceSearchService {
 
     func reverse(_ coordinate: CLLocationCoordinate2D) async throws -> Place? {
         try await online.reverse(coordinate)
+    }
+
+    /// Nearby places of some kinds from the downloaded cities, nearest first (empty when none are downloaded).
+    func nearby(osmValues: [String], near: CLLocationCoordinate2D, radius: Double) -> [Place] {
+        var seen = Set<String>()
+        let origin = CLLocation(latitude: near.latitude, longitude: near.longitude)
+        return offline().compactMap { $0 as? OfflineSearchService }
+            .flatMap { $0.nearby(osmValues: osmValues, near: near, radius: radius) }
+            .filter { seen.insert($0.id).inserted }
+            .sorted { ($0.distance(from: origin) ?? 0) < ($1.distance(from: origin) ?? 0) }
     }
 }
 

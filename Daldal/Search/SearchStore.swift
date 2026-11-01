@@ -54,6 +54,18 @@ final class SearchStore {
         results = []
         task = Task {
             let here = currentLocation()?.coordinate ?? Region.defaultCenter
+            // Downloaded cities first: instant and offline, and they include Foursquare's places.
+            if let hybrid = service as? HybridSearchService {
+                for radius in [2_000.0, 8_000] {
+                    let local = hybrid.nearby(osmValues: category.osmValues, near: here, radius: radius)
+                    if !local.isEmpty {
+                        results = Array(local.prefix(30))
+                        pinned = results
+                        isSearching = false
+                        return
+                    }
+                }
+            }
             do {
                 let places = try await Overpass.nearby(category, around: here, languageCode: AppLanguage.code)
                 guard !Task.isCancelled else { return }
