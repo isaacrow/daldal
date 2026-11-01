@@ -89,7 +89,8 @@ def summary(lang, title):
     if not title:
         return None
     data = get(f"https://{lang}.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(title.replace(" ", "_")))
-    text = (data or {}).get("extract", "").strip()
+    # No joiners or pictographs: the app's no-emoji check would reject them (e.g. the Hijri "هـ" written with U+200D).
+    text = re.sub("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D\u20E3]", "", (data or {}).get("extract", "")).strip()
     if not text:
         return None
     # Spoken aloud: keep it to a few sentences.
