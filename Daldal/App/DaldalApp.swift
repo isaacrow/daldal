@@ -13,6 +13,7 @@ struct DaldalApp: App {
     @State private var landmarks = LandmarkModelStore()
     @State private var roadFeatures = RoadFeatureStore()
     @State private var arAlerts = ARPlaceAlerts()
+    @State private var roughRoads = RoughRoadStore()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -28,6 +29,7 @@ struct DaldalApp: App {
                 .environment(landmarks)
                 .environment(roadFeatures)
                 .environment(arAlerts)
+                .environment(roughRoads)
                 .environment(services.cities)
                 .environment(services.connectivity)
                 .environment(services.navigation)

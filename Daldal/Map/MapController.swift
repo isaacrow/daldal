@@ -224,6 +224,14 @@ final class MapController {
 
     @ObservationIgnored private var pins: [Place] = []
     @ObservationIgnored private var roadFeatures: [RoadFeature] = []
+    @ObservationIgnored private var roughSpots: [RoughSpot] = []
+
+    /// The automatic pothole map: rough spots felt while driving.
+    func showRoughSpots(_ spots: [RoughSpot]) {
+        roughSpots = spots
+        guard let style = mapView?.style else { return }
+        RoughRoadStore.draw(spots, in: style)
+    }
 
     /// Speed cameras and stop signs, as small road signs from street zoom.
     func showRoadFeatures(_ features: [RoadFeature]) {
@@ -250,6 +258,7 @@ final class MapController {
     func reinstallPins() {
         guard let style = mapView?.style else { return }
         if !roadFeatures.isEmpty { RoadFeatureStore.draw(roadFeatures, in: style) }
+        if !roughSpots.isEmpty { RoughRoadStore.draw(roughSpots, in: style) }
         let features = pins.map { place in
             let name = "pin-\(place.category.rawValue)"
             if style.image(forName: name) == nil { style.setImage(ResultPinImage.make(place.category.icon), forName: name) }

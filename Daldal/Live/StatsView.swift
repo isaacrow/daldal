@@ -28,6 +28,7 @@ struct StatsView: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                     LanguageSwitch()
+                    RoughRoadSettings()
                     AppCredit()
                         .padding(.top, Theme.Spacing.xl)
                 }
@@ -154,5 +155,31 @@ struct LanguageSwitch: View {
             Text(verbatim: chosen == "ar" ? "سيظهر التطبيق بالعربية عند فتحه مجدداً."
                                           : "The app will be in English the next time it opens.")
         }
+    }
+}
+
+/// The automatic pothole map: on/off, how many rough spots were found, and clearing them.
+struct RoughRoadSettings: View {
+    @Environment(RoughRoadStore.self) private var roughRoads
+    @AppStorage("potholes.detect") private var detect = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            Toggle("Find potholes while driving", isOn: $detect)
+                .font(.headline)
+                .accessibilityIdentifier("settings.potholes")
+            Text("Your phone feels sharp jolts while you navigate and marks rough spots on your map. Spots felt twice are shared as pothole reports when live reports are on.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            if !roughRoads.spots.isEmpty {
+                HStack {
+                    Text("\(roughRoads.spots.count) rough spots on your map").font(.subheadline)
+                    Spacer()
+                    Button("Clear", role: .destructive) { roughRoads.clear() }.font(.subheadline)
+                }
+            }
+        }
+        .padding(Theme.Spacing.l)
+        .background(Color.secondary.opacity(0.08), in: .rect(cornerRadius: Theme.cornerRadius))
     }
 }

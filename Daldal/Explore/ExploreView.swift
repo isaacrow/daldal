@@ -18,6 +18,7 @@ struct ExploreView: View {
     @Environment(LandmarkModelStore.self) private var landmarks
     @Environment(RoadFeatureStore.self) private var roadFeatures
     @Environment(ARPlaceAlerts.self) private var arAlerts
+    @Environment(RoughRoadStore.self) private var roughRoads
     @Environment(\.scenePhase) private var scenePhase
     /// Something location-like was copied in another app (e.g. a pickup point in a driver app).
     @State private var clipboardOffer = false
@@ -187,6 +188,7 @@ struct ExploreView: View {
         .onChange(of: nav.routes) { showRoutePreview(fit: true) }
         .onChange(of: search.pinned) { map.showPins(search.pinned, fit: true) }
         .onChange(of: roadFeatures.features) { map.showRoadFeatures(roadFeatures.features) }
+        .onChange(of: roughRoads.spots, initial: true) { map.showRoughSpots(roughRoads.spots) }
         .onChange(of: search.incoming) {
             guard let place = search.incoming else { return }
             search.incoming = nil

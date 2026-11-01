@@ -3069,6 +3069,46 @@
           }
         }
       }
+    },
+    "Find potholes while driving": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اكتشف الحفر أثناء القيادة"
+          }
+        }
+      }
+    },
+    "Your phone feels sharp jolts while you navigate and marks rough spots on your map. Spots felt twice are shared as pothole reports when live reports are on.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يشعر هاتفك بالارتجاجات الحادة أثناء التنقل ويضع علامات الأماكن الوعرة على خريطتك. وتُشارك الأماكن المرصودة مرتين كبلاغات حفر عند تفعيل البلاغات المباشرة."
+          }
+        }
+      }
+    },
+    "%lld rough spots on your map": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مكاناً وعراً على خريطتك"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مسح"
+          }
+        }
+      }
     }
   }
 }

@@ -14,6 +14,9 @@ struct DriveModeView: View {
     @Environment(LocationService.self) private var location
     @State private var osmLimit = SpeedLimitLookup()
     @State private var liveActivity = NavigationActivity()
+    @Environment(RoughRoadStore.self) private var roughRoads
+    @State private var potholes = PotholeDetector()
+    @AppStorage("potholes.detect") private var detectPotholes = true
     @Environment(\.colorScheme) private var colorScheme
     @State private var camera: MapViewCamera = .automotiveNavigation(zoom: 17, pitch: 55)
     @State private var confirmingEnd = false
@@ -83,7 +86,10 @@ struct DriveModeView: View {
         .onDisappear {
             scanner?.stop()
             liveActivity.end()
+            potholes.stop()
         }
+        .onAppear { startPotholeDetection() }
+        .onChange(of: roughRoads.spots) { overlay.showRoughSpots(roughRoads.spots) }
         .task {
             // The trip on the lock screen while driving.
             try? await Task.sleep(for: .seconds(2))
@@ -205,6 +211,20 @@ struct DriveModeView: View {
 
     /// Speed cameras and stop signs on the route ahead: fetched around the car, announced once each.
     /// The route's own limit when it has one, else OpenStreetMap's for the road we're on.
+    /// Feels for potholes while driving, pins them to the map, and (with the live server) shares spots felt twice.
+    private func startPotholeDetection() {
+        guard detectPotholes else { return }
+        potholes.start(location: { [nav, location] in nav.state?.preferredUserLocation?.clLocation ?? location.location }) { here, strength in
+            let spot = roughRoads.record(at: here, strength: strength)
+            guard spot.hits >= 2, !spot.shared, LiveConfig.baseURL != nil else { return }
+            Task {
+                if await live.send(.pothole, at: CLLocation(latitude: spot.latitude, longitude: spot.longitude)) {
+                    roughRoads.markShared(spot.id)
+                }
+            }
+        }
+    }
+
     /// The trip for the lock screen and Dynamic Island.
     private var activityState: NavigationActivityAttributes.ContentState? {
         guard let progress = nav.state?.currentProgress else { return nil }
