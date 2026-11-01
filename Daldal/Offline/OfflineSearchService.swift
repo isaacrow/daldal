@@ -126,6 +126,23 @@ final class HybridSearchService: PlaceSearchService {
         self.offline = offline
     }
 
+    /// Downloaded cities only: instant and offline.
+    func offlineSearch(_ query: String, near: CLLocationCoordinate2D?) async -> [Place] {
+        var found: [Place] = []
+        var seen = Set<String>()
+        for index in offline() {
+            for place in (try? await index.search(query, near: near)) ?? [] where seen.insert(place.id).inserted {
+                found.append(place)
+            }
+        }
+        return Array(found.prefix(20))
+    }
+
+    /// The online geocoder only.
+    func onlineSearch(_ query: String, near: CLLocationCoordinate2D?) async throws -> [Place] {
+        try await online.search(query, near: near)
+    }
+
     /// Offline first when cities are downloaded (instant, free, works in dead zones), online otherwise.
     func search(_ query: String, near: CLLocationCoordinate2D?) async throws -> [Place] {
         var found: [Place] = []

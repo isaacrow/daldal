@@ -38,7 +38,7 @@ struct PhotonSearchService: PlaceSearchService {
     private func fetch(path: String, items: [URLQueryItem]) async throws -> [Place] {
         var request = URLRequest(url: baseURL.appending(path: path).appending(queryItems: items))
         request.setValue(SearchConfig.userAgent, forHTTPHeaderField: "User-Agent")
-        request.timeoutInterval = 10
+        request.timeoutInterval = 6
         let (data, response) = try await session.data(for: request)
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
             throw URLError(.badServerResponse)
