@@ -67,8 +67,12 @@ nonisolated final class ModelLayer: MLNCustomStyleLayer {
     // MARK: MapLibre
 
     override func didMove(to mapView: MLNMapView) {
-        let resource = mapView.backendResource()
-        guard let device = resource.device else { return }
+        // MapLibre calls this on the main thread; take only the GPU and pixel format out of its resources.
+        let (gpu, colorFormat) = MainActor.assumeIsolated { () -> ((any MTLDevice)?, MTLPixelFormat) in
+            let resource = mapView.backendResource()
+            return (resource.device, resource.mtkView.colorPixelFormat)
+        }
+        guard let device = gpu else { return }
         self.device = device
         do {
             let library = try device.makeLibrary(source: Self.shaders, options: nil)
@@ -76,7 +80,7 @@ nonisolated final class ModelLayer: MLNCustomStyleLayer {
             descriptor.vertexFunction = library.makeFunction(name: "modelVertex")
             descriptor.fragmentFunction = library.makeFunction(name: "modelFragment")
             descriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(Self.vertexDescriptor)
-            descriptor.colorAttachments[0].pixelFormat = resource.mtkView.colorPixelFormat
+            descriptor.colorAttachments[0].pixelFormat = colorFormat
             descriptor.depthAttachmentPixelFormat = .depth32Float_stencil8
             descriptor.stencilAttachmentPixelFormat = .depth32Float_stencil8
             pipeline = try device.makeRenderPipelineState(descriptor: descriptor)
