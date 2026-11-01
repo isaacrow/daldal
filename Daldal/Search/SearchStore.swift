@@ -131,8 +131,12 @@ final class SearchStore {
                 }
             }
             do {
-                let online = try await ((service as? HybridSearchService)?.onlineSearch(text, near: near)
-                                        ?? service.search(text, near: near))
+                let online: [Place]
+                if let hybrid = service as? HybridSearchService {
+                    online = try await hybrid.onlineSearch(text, near: near)
+                } else {
+                    online = try await service.search(text, near: near)
+                }
                 guard !Task.isCancelled else { return }
                 let localIDs = Set(local.map(\.name))
                 let merged = local + online.filter { !localIDs.contains($0.name) }

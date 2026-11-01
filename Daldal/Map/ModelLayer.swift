@@ -10,7 +10,7 @@ import simd
 /// MapLibre's custom layers draw in "tile units": Web Mercator 0...1 scaled by 512 * 2^zoom, with heights in metres.
 /// Each model's placement is combined with the map's projection in double precision on the CPU, so nothing jitters
 /// when zoomed right in.
-final class ModelLayer: MLNCustomStyleLayer {
+nonisolated final class ModelLayer: MLNCustomStyleLayer {
     /// A model on the map: where, which way it faces, and how big.
     struct Placement {
         var coordinate: CLLocationCoordinate2D
@@ -24,6 +24,8 @@ final class ModelLayer: MLNCustomStyleLayer {
 
     /// Meshes ready on the GPU, by id.
     private var models: [String: GPUModel] = [:]
+    /// Models added before MapLibre handed the layer its GPU.
+    private var pending: [String: (MTLDevice) -> [MDLMesh]] = [:]
     private var placements: [String: Placement] = [:]
 
     private var device: MTLDevice?
@@ -50,10 +52,16 @@ final class ModelLayer: MLNCustomStyleLayer {
     }
 
     /// Adds a model built in code (the car), with the layer's own GPU.
-    func add(_ id: String, build: (MTLDevice) -> [MDLMesh]) {
-        guard models[id] == nil, let device, let model = GPUModel(meshes: build(device), device: device) else { return }
-        models[id] = model
-        setNeedsDisplay()
+    func add(_ id: String, build: @escaping (MTLDevice) -> [MDLMesh]) {
+        guard models[id] == nil else { return }
+        guard let device else {
+            pending[id] = build
+            return
+        }
+        if let model = GPUModel(meshes: build(device), device: device) {
+            models[id] = model
+            setNeedsDisplay()
+        }
     }
 
     // MARK: MapLibre
@@ -84,6 +92,10 @@ final class ModelLayer: MLNCustomStyleLayer {
         whiteTexture = device.makeTexture(descriptor: texture)
         var white: [UInt8] = [255, 255, 255, 255]
         whiteTexture?.replace(region: MTLRegionMake2D(0, 0, 1, 1), mipmapLevel: 0, withBytes: &white, bytesPerRow: 4)
+
+        let waiting = pending
+        pending = [:]
+        for (id, build) in waiting { add(id, build: build) }
     }
 
     override func draw(in mapView: MLNMapView, with context: MLNStyleLayerDrawingContext) {
@@ -114,7 +126,10 @@ final class ModelLayer: MLNCustomStyleLayer {
                 SIMD4(0, 0, metres, 0),
                 SIMD4(-sin(yaw) * s, cos(yaw) * s, 0, 0),
                 SIMD4(mercatorX * worldSize, mercatorY * worldSize, 0, 1)))
-            var uniforms = Uniforms(matrix: simd_float4x4(projection * place),
+            let m = projection * place
+            let matrix = simd_float4x4(columns: (SIMD4<Float>(m.columns.0), SIMD4<Float>(m.columns.1),
+                                                 SIMD4<Float>(m.columns.2), SIMD4<Float>(m.columns.3)))
+            var uniforms = Uniforms(matrix: matrix,
                                     light: simd_normalize(SIMD3<Float>(-0.4, 0.85, -0.35)))
             encoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
             for mesh in model.meshes {
@@ -140,7 +155,7 @@ final class ModelLayer: MLNCustomStyleLayer {
         var light: SIMD3<Float>
     }
 
-    static let vertexDescriptor: MDLVertexDescriptor = {
+    nonisolated(unsafe) static let vertexDescriptor: MDLVertexDescriptor = {
         let d = MDLVertexDescriptor()
         d.attributes[0] = MDLVertexAttribute(name: MDLVertexAttributePosition, format: .float3, offset: 0, bufferIndex: 0)
         d.attributes[1] = MDLVertexAttribute(name: MDLVertexAttributeNormal, format: .float3, offset: 12, bufferIndex: 0)
@@ -185,7 +200,7 @@ final class ModelLayer: MLNCustomStyleLayer {
 }
 
 /// A model's meshes uploaded to the GPU, each part with its colour or texture.
-private struct GPUModel {
+nonisolated private struct GPUModel {
     struct Part {
         let submesh: MTKSubmesh
         let colour: SIMD4<Float>
@@ -204,6 +219,14 @@ private struct GPUModel {
         let asset = MDLAsset(url: url, vertexDescriptor: ModelLayer.vertexDescriptor, bufferAllocator: allocator)
         asset.loadTextures()
         guard let meshes = asset.childObjects(of: MDLMesh.self) as? [MDLMesh], !meshes.isEmpty else { return nil }
+        // Scene-node transforms into the vertices, then stand the model on the ground, centred, 1 unit tall.
+        for mesh in meshes {
+            let global = MDLTransform.globalTransform(with: mesh, atTime: 0)
+            mesh.vertexDescriptor = ModelLayer.vertexDescriptor
+            CarMesh.transform(mesh, by: global)
+            mesh.transform = nil
+        }
+        CarMesh.normalise(meshes)
         self.init(meshes: meshes, device: device)
     }
 
@@ -244,7 +267,7 @@ private struct GPUModel {
 
 /// A smooth, Tesla-style car built from rounded shapes: a low pearl-white body, a dark glass canopy, dark wheels.
 /// 1 unit = its height (1.45 m); it faces north (-z) before the heading turns it.
-enum CarMesh {
+nonisolated enum CarMesh {
     static func meshes(device: MTLDevice) -> [MDLMesh] {
         let allocator = MTKMeshBufferAllocator(device: device)
         func material(_ r: Float, _ g: Float, _ b: Float) -> MDLMaterial {
@@ -281,15 +304,42 @@ enum CarMesh {
             parts.append(wheel)
         }
         // Bake transforms into vertices (MTKMesh ignores node transforms).
-        return parts.map { bake($0, allocator: allocator) }
+        for part in parts {
+            part.vertexDescriptor = ModelLayer.vertexDescriptor
+            if let matrix = part.transform?.matrix { transform(part, by: matrix) }
+            part.transform = nil
+        }
+        normalise(parts)
+        return parts
     }
 
-    /// Applies a mesh's transform to its positions and normals.
-    private static func bake(_ mesh: MDLMesh, allocator: MTKMeshBufferAllocator) -> MDLMesh {
-        guard let transform = mesh.transform?.matrix else { return mesh }
-        mesh.vertexDescriptor = ModelLayer.vertexDescriptor
+    /// Moves meshes together so they stand on y = 0, centred on x/z, exactly 1 unit tall.
+    static func normalise(_ meshes: [MDLMesh]) {
+        var low = SIMD3<Float>(repeating: .greatestFiniteMagnitude), high = -low
+        for mesh in meshes {
+            guard let positions = mesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributePosition, as: .float3) else { continue }
+            for i in 0..<mesh.vertexCount {
+                let p = positions.dataStart.advanced(by: i * positions.stride).assumingMemoryBound(to: Float.self)
+                let v = SIMD3(p[0], p[1], p[2])
+                low = simd_min(low, v)
+                high = simd_max(high, v)
+            }
+        }
+        let height = high.y - low.y
+        guard height > 0 else { return }
+        let scale = 1 / height
+        var matrix = matrix_identity_float4x4
+        matrix.columns.0.x = scale
+        matrix.columns.1.y = scale
+        matrix.columns.2.z = scale
+        matrix.columns.3 = SIMD4(-(low.x + high.x) / 2 * scale, -low.y * scale, -(low.z + high.z) / 2 * scale, 1)
+        for mesh in meshes { transform(mesh, by: matrix) }
+    }
+
+    /// Applies a matrix to a mesh's positions and normals, in place.
+    static func transform(_ mesh: MDLMesh, by transform: simd_float4x4) {
         guard let positions = mesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributePosition, as: .float3),
-              let normals = mesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributeNormal, as: .float3) else { return mesh }
+              let normals = mesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributeNormal, as: .float3) else { return }
         let normalMatrix = simd_float3x3(SIMD3(transform.columns.0.x, transform.columns.0.y, transform.columns.0.z),
                                          SIMD3(transform.columns.1.x, transform.columns.1.y, transform.columns.1.z),
                                          SIMD3(transform.columns.2.x, transform.columns.2.y, transform.columns.2.z))
@@ -302,7 +352,5 @@ enum CarMesh {
             let turned = simd_normalize(normalMatrix * SIMD3(n[0], n[1], n[2]))
             n[0] = turned.x; n[1] = turned.y; n[2] = turned.z
         }
-        mesh.transform = nil
-        return mesh
     }
 }
