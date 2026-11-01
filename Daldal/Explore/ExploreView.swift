@@ -53,6 +53,8 @@ struct ExploreView: View {
     @State private var scanning = false
     /// The Daldal menu (offline maps, Drive Scan, satellite, theme, 3D) is open.
     @State private var menuOpen = false
+    /// The Daldal button is being held (two seconds opens the pilgrim walk).
+    @State private var holdingMenu = false
     /// Heritage AR opened from the "You're at" banner (no panel showing).
     @State private var bannerARSite: HeritageSite?
     @Namespace private var glass
@@ -109,6 +111,11 @@ struct ExploreView: View {
                 Task { await live.refresh(around: center) }
                 if zoom >= 13 { Task { await roadFeatures.refresh(around: center) } }
                 if zoom >= 14.5 { Task { await map.updateLandmarkModels(center: center, zoom: zoom, store: landmarks) } }
+                if zoom >= 14, let index = search.service as? HybridSearchService {
+                    // Up to 250 places in about the visible area: wider when zoomed out.
+                    let radius = min(1_500, 600 * pow(2, 16 - zoom))
+                    map.showIndexPlaces(index.mapPlaces(near: center, radius: radius, limit: 250))
+                }
             }
         )
         .ignoresSafeArea()
@@ -143,6 +150,7 @@ struct ExploreView: View {
         .overlay(alignment: .topTrailing) { controls.padding(.top, 118) }
         .overlay(alignment: .bottomTrailing) { if panel == nil { assistantButton } }
         .overlay(alignment: .bottomLeading) { if panel == nil { locateButton } }
+        .overlay(alignment: .bottom) { if panel == nil && heritage.nearby == nil { menuButton } }
         .overlay(alignment: .bottom) { arrivalBanner }
         .sheet(isPresented: panelPresented) {
             panelContent
@@ -364,33 +372,25 @@ struct ExploreView: View {
 
     /// The Daldal menu (logo, top right): offline maps, Drive Scan, satellite, theme and 3D, folded into one button
     /// that turns into an X while open.
+    /// Top right: the compass, only while the map is turned.
     private var controls: some View {
         GlassEffectContainer(spacing: Theme.Spacing.s) {
-            VStack(spacing: Theme.Spacing.s) {
-                Button {
-                    withAnimation(.smooth(duration: 0.3)) { menuOpen.toggle() }
-                } label: {
-                    ZStack {
-                        if menuOpen {
-                            Icon(.close, size: 18)
-                        } else {
-                            Image("LaunchLogo")
-                                .renderingMode(.template)
-                                .resizable()
-                                .scaledToFit()
-                                .padding(9)
-                        }
-                    }
-                    .foregroundStyle(.primary)
-                    .frame(width: 48, height: 48)
-                    .contentShape(.circle)
-                }
-                .buttonStyle(.plain)
-                .glassEffect(.regular.interactive(), in: .circle)
-                .glassEffectID("menu", in: glass)
-                .accessibilityLabel(menuOpen ? Text("Close menu") : Text("Menu"))
-                .accessibilityIdentifier("map.menu")
+            if map.isRotated {
+                GlassIconButton(icon: .compass, label: "Point north") { map.resetNorth() }
+                    .rotationEffect(.degrees(-map.heading))
+                    .glassEffectID("compass", in: glass)
+                    .glassEffectTransition(.matchedGeometry)
+            }
+        }
+        .padding(.trailing, Theme.Spacing.l)
+        .animation(.smooth, value: map.isRotated)
+    }
 
+    /// Bottom middle: the big Daldal button. A tap opens the menu (offline maps, Drive Scan, satellite, theme, 3D)
+    /// above it and turns it into an X; holding it for two seconds starts the pilgrim walk.
+    private var menuButton: some View {
+        GlassEffectContainer(spacing: Theme.Spacing.s) {
+            VStack(spacing: Theme.Spacing.s) {
                 if menuOpen {
                     GlassIconButton(icon: .download, label: "Offline maps",
                                     isActive: !cities.installedCities.isEmpty) {
@@ -426,16 +426,50 @@ struct ExploreView: View {
                     .glassEffectID("dimension", in: glass)
                 }
 
-                if map.isRotated {
-                    GlassIconButton(icon: .compass, label: "Point north") { map.resetNorth() }
-                        .rotationEffect(.degrees(-map.heading))
-                        .glassEffectID("compass", in: glass)
-                        .glassEffectTransition(.matchedGeometry)
+                ZStack {
+                    if menuOpen {
+                        Icon(.close, size: 24)
+                    } else {
+                        Image("LaunchLogo")
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .padding(13)
+                    }
+                    // Fills while the button is held: full after two seconds, when the pilgrim walk opens.
+                    Circle()
+                        .trim(from: 0, to: holdingMenu ? 1 : 0)
+                        .stroke(Theme.accent, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .padding(2)
+                        .animation(holdingMenu ? .linear(duration: 2) : .easeOut(duration: 0.2), value: holdingMenu)
                 }
+                .foregroundStyle(.primary)
+                .frame(width: 72, height: 72)
+                .contentShape(.circle)
+                .glassEffect(.regular.interactive(), in: .circle)
+                .glassEffectID("menu", in: glass)
+                .onTapGesture {
+                    withAnimation(.smooth(duration: 0.3)) { menuOpen.toggle() }
+                }
+                .onLongPressGesture(minimumDuration: 2) {
+                    UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                    holdingMenu = false
+                    menuOpen = false
+                    show(.pilgrim, at: .large)
+                } onPressingChanged: { pressing in
+                    holdingMenu = pressing
+                }
+                .accessibilityElement()
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel(menuOpen ? Text("Close menu") : Text("Menu"))
+                .accessibilityHint(Text("Hold for two seconds for the pilgrim walk"))
+                .accessibilityAction { withAnimation(.smooth(duration: 0.3)) { menuOpen.toggle() } }
+                .accessibilityAction(named: Text("Pilgrim walk")) { show(.pilgrim, at: .large) }
+                .accessibilityIdentifier("map.menu")
             }
         }
-        .padding(.trailing, Theme.Spacing.l)
-        .animation(.smooth, value: map.isRotated)
+        .padding(.bottom, Theme.Spacing.l)
     }
 
     /// Bottom right: talk to the assistant.

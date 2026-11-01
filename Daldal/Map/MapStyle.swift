@@ -286,7 +286,7 @@ enum MapStyleBuilder {
             [
                 // Shops, restaurants, clinics, mosques, fuel...: a round icon by kind, with its name, from street zoom.
                 "id": PoiIcons.layer + suffix, "type": "symbol", "source": source, "source-layer": "poi",
-                "minzoom": 15,
+                "minzoom": 14,
                 "filter": ["match", ["get", "class"], Array(PoiIcons.classes.keys), true, false],
                 "layout": [
                     "icon-image": ["concat", "poi-", (["match", ["get", "class"]] as [Any]) + PoiIcons.matchPairs + ["other"]],
@@ -374,6 +374,36 @@ enum PoiIcons {
             ring.lineWidth = 1.5
             ring.stroke()
             UIImage(named: icon.assetName)?.withTintColor(.white).draw(in: disc.insetBy(dx: 6, dy: 6))
+        }
+    }
+
+    /// The icon kind for a place from the search index.
+    static func kind(for category: PlaceCategory) -> String {
+        switch category {
+        case .food: "food"
+        case .cafe: "cafe"
+        case .fuel: "fuel"
+        case .shop: "shop"
+        case .health: "health"
+        case .worship: "mosque"
+        case .parking: "parking"
+        case .heritage: "heritage"
+        default: "other"
+        }
+    }
+
+    /// A map class standing for a category, so a tapped index place opens with the right category.
+    static func mapClass(for category: PlaceCategory) -> String {
+        switch category {
+        case .food: "restaurant"
+        case .cafe: "cafe"
+        case .fuel: "fuel"
+        case .shop: "shop"
+        case .health: "hospital"
+        case .worship: "place_of_worship"
+        case .parking: "parking"
+        case .heritage: "attraction"
+        default: "other"
         }
     }
 

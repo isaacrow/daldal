@@ -31,6 +31,10 @@ nonisolated final class ModelLayer: MLNCustomStyleLayer {
     private var device: MTLDevice?
     private var pipeline: MTLRenderPipelineState?
     private var depthState: MTLDepthStencilState?
+    /// First pass: the model's silhouette resets the depth behind it, so the map's own block of the same building
+    /// can't poke through the real model.
+    private var clearPipeline: MTLRenderPipelineState?
+    private var clearDepthState: MTLDepthStencilState?
     private var whiteTexture: MTLTexture?
 
     // MARK: Public
@@ -84,13 +88,21 @@ nonisolated final class ModelLayer: MLNCustomStyleLayer {
             descriptor.depthAttachmentPixelFormat = .depth32Float_stencil8
             descriptor.stencilAttachmentPixelFormat = .depth32Float_stencil8
             pipeline = try device.makeRenderPipelineState(descriptor: descriptor)
+            descriptor.fragmentFunction = library.makeFunction(name: "modelClearDepth")
+            descriptor.colorAttachments[0].writeMask = []
+            clearPipeline = try device.makeRenderPipelineState(descriptor: descriptor)
         } catch {
             pipeline = nil
+            clearPipeline = nil
         }
         let depth = MTLDepthStencilDescriptor()
         depth.depthCompareFunction = .lessEqual
         depth.isDepthWriteEnabled = true
         depthState = device.makeDepthStencilState(descriptor: depth)
+        let clear = MTLDepthStencilDescriptor()
+        clear.depthCompareFunction = .always
+        clear.isDepthWriteEnabled = true
+        clearDepthState = device.makeDepthStencilState(descriptor: clear)
 
         let texture = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 1, height: 1, mipmapped: false)
         whiteTexture = device.makeTexture(descriptor: texture)
@@ -106,10 +118,9 @@ nonisolated final class ModelLayer: MLNCustomStyleLayer {
         guard let encoder = renderEncoder, let pipeline, let depthState else { return }
         let worldSize = 512.0 * pow(2.0, context.zoomLevel)
         let projection = Self.matrix(context.projectionMatrix)
-        encoder.setRenderPipelineState(pipeline)
-        encoder.setDepthStencilState(depthState)
         encoder.setCullMode(.none)
 
+        var visible: [(GPUModel, Uniforms)] = []
         for (id, placement) in placements {
             guard let model = models[id] else { continue }
             let c = placement.coordinate
@@ -133,21 +144,32 @@ nonisolated final class ModelLayer: MLNCustomStyleLayer {
             let m = projection * place
             let matrix = simd_float4x4(columns: (SIMD4<Float>(m.columns.0), SIMD4<Float>(m.columns.1),
                                                  SIMD4<Float>(m.columns.2), SIMD4<Float>(m.columns.3)))
-            var uniforms = Uniforms(matrix: matrix,
-                                    light: simd_normalize(SIMD3<Float>(-0.4, 0.85, -0.35)))
-            encoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
-            for mesh in model.meshes {
-                for (index, buffer) in mesh.vertexBuffers.enumerated() {
-                    encoder.setVertexBuffer(buffer.buffer, offset: buffer.offset, index: index == 0 ? 0 : 2 + index)
-                }
-                for part in mesh.parts {
-                    var colour = part.colour
-                    encoder.setFragmentBytes(&colour, length: MemoryLayout<SIMD4<Float>>.stride, index: 0)
-                    encoder.setFragmentTexture(part.texture ?? whiteTexture, index: 0)
-                    encoder.drawIndexedPrimitives(type: part.submesh.primitiveType, indexCount: part.submesh.indexCount,
-                                                  indexType: part.submesh.indexType, indexBuffer: part.submesh.indexBuffer.buffer,
-                                                  indexBufferOffset: part.submesh.indexBuffer.offset)
-                }
+            visible.append((model, Uniforms(matrix: matrix, light: simd_normalize(SIMD3<Float>(-0.4, 0.85, -0.35)))))
+        }
+        if let clearPipeline, let clearDepthState {
+            encoder.setRenderPipelineState(clearPipeline)
+            encoder.setDepthStencilState(clearDepthState)
+            for (model, uniforms) in visible { drawMeshes(model, uniforms, encoder) }
+        }
+        encoder.setRenderPipelineState(pipeline)
+        encoder.setDepthStencilState(depthState)
+        for (model, uniforms) in visible { drawMeshes(model, uniforms, encoder) }
+    }
+
+    private func drawMeshes(_ model: GPUModel, _ uniforms: Uniforms, _ encoder: MTLRenderCommandEncoder) {
+        var uniforms = uniforms
+        encoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
+        for mesh in model.meshes {
+            for (index, buffer) in mesh.vertexBuffers.enumerated() {
+                encoder.setVertexBuffer(buffer.buffer, offset: buffer.offset, index: index == 0 ? 0 : 2 + index)
+            }
+            for part in mesh.parts {
+                var colour = part.colour
+                encoder.setFragmentBytes(&colour, length: MemoryLayout<SIMD4<Float>>.stride, index: 0)
+                encoder.setFragmentTexture(part.texture ?? whiteTexture, index: 0)
+                encoder.drawIndexedPrimitives(type: part.submesh.primitiveType, indexCount: part.submesh.indexCount,
+                                              indexType: part.submesh.indexType, indexBuffer: part.submesh.indexBuffer.buffer,
+                                              indexBufferOffset: part.submesh.indexBuffer.offset)
             }
         }
     }
@@ -191,6 +213,14 @@ nonisolated final class ModelLayer: MLNCustomStyleLayer {
         out.uv = in.uv;
         // Soft daylight: a sun from the south-west plus sky light, so domes and walls read in any camera angle.
         out.shade = 0.55 + 0.45 * abs(dot(normalize(in.normal), u.light));
+        return out;
+    }
+
+    struct DepthOut { float depth [[depth(any)]]; };
+
+    fragment DepthOut modelClearDepth(VertexOut in [[stage_in]]) {
+        DepthOut out;
+        out.depth = 1.0;
         return out;
     }
 

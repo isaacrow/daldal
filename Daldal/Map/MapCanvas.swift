@@ -110,6 +110,11 @@ struct MapCanvas: UIViewRepresentable {
                 parent.onSelectPin(id)
                 return
             }
+            // A landmark's real 3D model, drawn with Metal.
+            if let icon = parent.controller.landmark(at: point) {
+                if icon.isGuide { parent.onSelectGuide(icon.id) } else { parent.onSelectHeritage(icon.id) }
+                return
+            }
             // A landmark's 3D model on the map opens its card.
             let models = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.landmarkModelLayer,
                                                                                       MapController.landmarkGroundLayer])
@@ -139,8 +144,11 @@ struct MapCanvas: UIViewRepresentable {
                 let localized = poi.attribute(forKey: "name:\(parent.languageCode)") as? String
                 let kind = poi.attribute(forKey: "class") as? String
                 let c = poi.coordinate
-                parent.onSelectPlace(Place(id: "poi:\(c.latitude),\(c.longitude)", name: localized ?? name,
-                                           subtitle: (poi.attribute(forKey: "subclass") as? String)?
+                // Index places carry their own id (a Foursquare place keeps its "fsq:" id for the credit).
+                parent.onSelectPlace(Place(id: poi.attribute(forKey: "id") as? String ?? "poi:\(c.latitude),\(c.longitude)",
+                                           name: localized ?? name,
+                                           subtitle: poi.attribute(forKey: "subtitle") as? String
+                                               ?? (poi.attribute(forKey: "subclass") as? String)?
                                                .replacingOccurrences(of: "_", with: " ").capitalized ?? "",
                                            latitude: c.latitude, longitude: c.longitude,
                                            category: PoiIcons.category(forClass: kind)))
@@ -162,6 +170,7 @@ struct MapCanvas: UIViewRepresentable {
             PoiIcons.install(in: style)
             parent.controller.installLandmarkIcons()
             parent.controller.reinstallPins()
+            parent.controller.installIndexPlaces()
             parent.controller.reinstallRoutes()
             parent.controller.reinstallLive()
             if parent.controller.is3D, mapView.camera.pitch < 1 {

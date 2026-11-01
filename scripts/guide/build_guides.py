@@ -15,7 +15,7 @@ import urllib.parse
 import urllib.request
 
 UA = {"User-Agent": "Daldal/0.1 (https://github.com/isaacrow/daldal; city guide builder)"}
-PER_CITY = 20
+PER_CITY = 40
 
 # What counts as a place to visit.
 CLASSES = {
@@ -27,6 +27,11 @@ CLASSES = {
     "Q22698": "park", "Q43501": "park",
     "Q12280": "bridge", "Q4989906": "monument", "Q570116": "attraction",
     "Q16970": "church", "Q2977": "church", "Q44613": "church",
+    # Husseiniyas, tombs and mausoleums, squares, zoos and amusement parks, lakes and waterfalls, stadiums, towers.
+    "Q2617011": "shrine", "Q173387": "shrine", "Q5003624": "shrine", "Q1081138": "monument",
+    "Q174782": "attraction", "Q43501": "park", "Q194195": "park", "Q23397": "park", "Q34038": "park",
+    "Q483110": "attraction", "Q12518": "monument", "Q11303": "attraction", "Q1497375": "archaeological",
+    "Q35112127": "monument", "Q24398318": "mosque", "Q860861": "monument",
 }
 
 
@@ -52,7 +57,7 @@ SELECT ?item ?class ?coord ?ar ?en ?image ?links ?arTitle ?enTitle WHERE {{
   }}
   VALUES ?class {{ {classes} }}
   ?item wdt:P31 ?class; wikibase:sitelinks ?links.
-  FILTER(?links >= 2)
+  FILTER(?links >= 1)
   OPTIONAL {{ ?item rdfs:label ?ar FILTER(lang(?ar) = "ar") }}
   OPTIONAL {{ ?item rdfs:label ?en FILTER(lang(?en) = "en") }}
   OPTIONAL {{ ?item wdt:P18 ?image }}

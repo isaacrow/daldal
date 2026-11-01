@@ -373,7 +373,7 @@ final class MapController {
             layer.iconScale = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
                                            [11: 0.35, 14: 0.7, 17: 1.3])
             layer.minimumZoomLevel = 11
-            layer.maximumZoomLevel = 15
+            layer.maximumZoomLevel = 14.5 // From here the real 3D model stands in its place.
             if let names = style.layer(withIdentifier: Self.guideLabelLayer) {
                 style.insertLayer(layer, below: names)
             } else {
@@ -386,6 +386,77 @@ final class MapController {
             ziggurats.predicate = NSPredicate(format: "NOT (gid IN %@)", modelled)
         }
     }
+    /// The landmark whose 3D model is under a tap, if any (the model is drawn with Metal, so MapLibre can't hit-test it).
+    func landmark(at point: CGPoint) -> LandmarkIcon? {
+        guard let mapView, mapView.zoomLevel >= 14.5 else { return nil }
+        let metresPerPoint = mapView.metersPerPoint(atLatitude: mapView.centerCoordinate.latitude)
+        return landmarkIcons
+            .filter { modelPlacements[$0.id] != nil }
+            .map { icon -> (LandmarkIcon, CGFloat, CGFloat) in
+                let centre = mapView.convert(icon.coordinate, toPointTo: mapView)
+                // Half the footprint on screen, never less than a finger.
+                let radius = max(44, CGFloat((icon.footprintWidth ?? 120) / 2 / metresPerPoint))
+                // The model rises above its base, so its middle on screen sits a little higher.
+                let distance = hypot(point.x - centre.x, point.y - (centre.y - radius * 0.3))
+                return (icon, distance, radius)
+            }
+            .filter { $0.1 <= $0.2 }
+            .min { $0.1 < $1.1 }?.0
+    }
+
+    // MARK: Places on the map from the search index
+
+    static let placesLayer = PoiIcons.layer + "-index"
+    @ObservationIgnored private var indexPlaces: [Place] = []
+
+    /// Shops, restaurants, clinics, mosques... from the built-in Iraq search index (OpenStreetMap and Foursquare),
+    /// drawn with the same round icons as the map's own places, so streets look as full as they are.
+    func showIndexPlaces(_ places: [Place]) {
+        indexPlaces = places
+        installIndexPlaces()
+    }
+
+    func installIndexPlaces() {
+        guard let style = mapView?.style else { return }
+        PoiIcons.install(in: style)
+        let features = indexPlaces.map { place in
+            let feature = MLNPointFeature()
+            feature.coordinate = place.coordinate
+            feature.attributes = ["id": place.id, "name": place.name, "subtitle": place.subtitle,
+                                  "class": PoiIcons.mapClass(for: place.category),
+                                  "icon": "poi-" + PoiIcons.kind(for: place.category)]
+            return feature
+        }
+        let shape = MLNShapeCollectionFeature(shapes: features)
+        if let source = style.source(withIdentifier: Self.placesLayer) as? MLNShapeSource {
+            source.shape = shape
+            return
+        }
+        let source = MLNShapeSource(identifier: Self.placesLayer, shape: shape, options: nil)
+        style.addSource(source)
+        let layer = MLNSymbolStyleLayer(identifier: Self.placesLayer, source: source)
+        layer.iconImageName = NSExpression(forKeyPath: "icon")
+        layer.iconScale = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
+                                       [14: 0.7, 16: 0.95])
+        layer.text = NSExpression(forKeyPath: "name")
+        layer.textFontNames = NSExpression(forConstantValue: ["NotoSansRegular"])
+        layer.textFontSize = NSExpression(forConstantValue: 11)
+        layer.textAnchor = NSExpression(forConstantValue: "top")
+        layer.textOffset = NSExpression(forConstantValue: NSValue(cgVector: CGVector(dx: 0, dy: 1.1)))
+        layer.textOptional = NSExpression(forConstantValue: true)
+        layer.maximumTextWidth = NSExpression(forConstantValue: 7)
+        let dark = mapView?.traitCollection.userInterfaceStyle == .dark
+        layer.textColor = NSExpression(forConstantValue: dark ? UIColor(white: 0.88, alpha: 1) : UIColor(white: 0.25, alpha: 1))
+        layer.textHaloColor = NSExpression(forConstantValue: dark ? UIColor.black : UIColor.white)
+        layer.textHaloWidth = NSExpression(forConstantValue: 1.2)
+        layer.minimumZoomLevel = 14
+        if let names = style.layer(withIdentifier: Self.guideLabelLayer) {
+            style.insertLayer(layer, below: names)
+        } else {
+            style.addLayer(layer)
+        }
+    }
+
     static let routeLayer = "route-preview"
 
     @ObservationIgnored private var previewRoutes: (routes: [[CLLocationCoordinate2D]], selected: Int)?

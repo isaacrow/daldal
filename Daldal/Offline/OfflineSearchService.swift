@@ -97,6 +97,41 @@ final class OfflineSearchService: PlaceSearchService {
             .sorted { ($0.distance(from: origin) ?? 0) < ($1.distance(from: origin) ?? 0) }
     }
 
+    /// Every place within `radius` metres that the map can draw with an icon, nearest first, at most `limit`.
+    func mapPlaces(near: CLLocationCoordinate2D, radius: Double, limit: Int) -> [Place] {
+        let dLat = radius / 111_320, dLon = radius / (111_320 * cos(near.latitude * .pi / 180))
+        let sql = """
+            SELECT id, name, name_ar, name_en, subtitle, lat, lon, osm_key, osm_value FROM places
+            WHERE lat BETWEEN ? AND ? AND lon BETWEEN ? AND ? LIMIT 3000
+            """
+        var statement: OpaquePointer?
+        guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else { return [] }
+        defer { sqlite3_finalize(statement) }
+        sqlite3_bind_double(statement, 1, near.latitude - dLat)
+        sqlite3_bind_double(statement, 2, near.latitude + dLat)
+        sqlite3_bind_double(statement, 3, near.longitude - dLon)
+        sqlite3_bind_double(statement, 4, near.longitude + dLon)
+        let drawn: Set<PlaceCategory> = [.food, .cafe, .fuel, .shop, .health, .worship, .parking, .heritage]
+        var places: [Place] = []
+        while sqlite3_step(statement) == SQLITE_ROW {
+            let category = PlaceCategory(osmKey: Self.text(statement, 7), osmValue: Self.text(statement, 8))
+            guard drawn.contains(category) else { continue }
+            let name = Self.text(statement, 1) ?? ""
+            guard !name.isEmpty else { continue }
+            let localized = languageCode == "ar" ? Self.text(statement, 2) : Self.text(statement, 3)
+            places.append(Place(
+                id: Self.text(statement, 0) ?? UUID().uuidString,
+                name: localized.flatMap { $0.isEmpty ? nil : $0 } ?? name,
+                subtitle: Self.text(statement, 4) ?? "",
+                latitude: sqlite3_column_double(statement, 5),
+                longitude: sqlite3_column_double(statement, 6),
+                category: category
+            ))
+        }
+        let origin = CLLocation(latitude: near.latitude, longitude: near.longitude)
+        return Array(places.sorted { ($0.distance(from: origin) ?? 0) < ($1.distance(from: origin) ?? 0) }.prefix(limit))
+    }
+
     /// Turns what the user typed into an FTS5 query: every word must match, the last one as a prefix.
     static func ftsQuery(_ text: String) -> String? {
         let words = ArabicSearchNormalizer.normalize(text)
@@ -158,6 +193,15 @@ final class HybridSearchService: PlaceSearchService {
 
     func reverse(_ coordinate: CLLocationCoordinate2D) async throws -> Place? {
         try await online.reverse(coordinate)
+    }
+
+    /// Places for the map around a point, from every index (the built-in Iraq one included), without duplicates.
+    func mapPlaces(near: CLLocationCoordinate2D, radius: Double, limit: Int) -> [Place] {
+        var seen = Set<String>()
+        let found = offline().compactMap { $0 as? OfflineSearchService }
+            .flatMap { $0.mapPlaces(near: near, radius: radius, limit: limit) }
+            .filter { seen.insert($0.id).inserted }
+        return Array(found.prefix(limit))
     }
 
     /// Nearby places of some kinds from the downloaded cities, nearest first (empty when none are downloaded).
