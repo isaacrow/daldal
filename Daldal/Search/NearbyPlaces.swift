@@ -175,7 +175,7 @@ enum Overpass {
                                      URLQueryItem(name: "limit", value: "30")]
             guard let url = components.url else { continue }
             guard let (data, _) = try? await URLSession.shared.data(from: url) else { continue }
-            places += (try? PhotonSearchService.places(from: data)) ?? []
+            places += (try? PhotonResponse.places(from: data)) ?? []
         }
         guard !places.isEmpty else { throw URLError(.cannotConnectToHost) }
         return places.filter { ($0.distance(from: origin) ?? .infinity) < 20_000 }

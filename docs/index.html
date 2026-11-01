@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دلدل · Daldal</title>
+<meta name="description" content="موقع مُشارك من دلدل — A place shared from Daldal, the map of Iraq.">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+  :root { --bg: #f3f1ec; --card: #ffffff; --ink: #1d1f22; --muted: #6b6f76; --accent: #0e9a8c; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #14181d; --card: #1f252b; --ink: #f1f2f3; --muted: #9aa1a9; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "SF Pro Text", "Segoe UI", Tahoma, sans-serif; }
+  #map { position: fixed; inset: 0; }
+  .card { position: fixed; left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom));
+    max-width: 520px; margin: 0 auto; background: var(--card); border-radius: 24px; padding: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.18); }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .coords { color: var(--muted); font-size: 14px; direction: ltr; text-align: right; }
+  .buttons { display: grid; gap: 10px; margin-top: 16px; }
+  a.button { display: block; text-align: center; padding: 14px; border-radius: 16px; font-weight: 600;
+    text-decoration: none; font-size: 17px; }
+  a.primary { background: var(--accent); color: #fff; }
+  a.secondary { background: rgba(127,127,127,.14); color: var(--ink); }
+  .brand { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  .brand b { color: var(--ink); font-size: 15px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="card">
+  <div class="brand"><b>دلدل</b> خريطة العراق · Daldal, the map of Iraq</div>
+  <h1 id="name">موقع مُشارك</h1>
+  <div class="coords" id="coords"></div>
+  <div class="buttons">
+    <a class="button primary" id="open">افتح في دلدل · Open in Daldal</a>
+    <a class="button secondary" id="google">خرائط Google · Google Maps</a>
+  </div>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+  // A place shared from Daldal: ?lat=..&lon=..&name=..  Opens the app if it's installed, Google Maps otherwise.
+  const q = new URLSearchParams(location.search);
+  const lat = parseFloat(q.get("lat")), lon = parseFloat(q.get("lon"));
+  const name = q.get("name");
+  const valid = isFinite(lat) && isFinite(lon);
+  if (name) { document.getElementById("name").textContent = name; document.title = name + " · دلدل"; }
+  if (valid) {
+    document.getElementById("coords").textContent = lat.toFixed(5) + ", " + lon.toFixed(5);
+    const app = "daldal://place?lat=" + lat + "&lon=" + lon + (name ? "&name=" + encodeURIComponent(name) : "");
+    document.getElementById("open").href = app;
+    document.getElementById("google").href = "https://maps.google.com/?q=" + lat + "," + lon;
+    const map = new maplibregl.Map({ container: "map", style: "https://tiles.openfreemap.org/styles/liberty",
+      center: [lon, lat], zoom: 15, attributionControl: { compact: true } });
+    new maplibregl.Marker({ color: "#0e9a8c" }).setLngLat([lon, lat]).addTo(map);
+  } else {
+    document.getElementById("coords").textContent = "لا يوجد موقع في هذا الرابط · No location in this link";
+    document.querySelector(".buttons").style.display = "none";
+  }
+</script>
+</body>
+</html>

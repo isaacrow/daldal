@@ -32,6 +32,13 @@ struct LocationLinkTests {
         #expect(found.name == "Al Mansour Mall")
     }
 
+    @Test func daldalWebLinks() throws {
+        let url = LocationLink.shareURL(for: CLLocationCoordinate2D(latitude: 32.6164, longitude: 44.0324), name: "مرقد الحسين")
+        let found = try #require(LocationLink.parse(url.absoluteString))
+        #expect(abs(found.coordinate.latitude - 32.6164) < 1e-6)
+        #expect(found.name == "مرقد الحسين")
+    }
+
     @Test func daldalLinks() {
         #expect(coordinate("daldal://place?lat=32.6164&lon=44.0324&name=Shrine")! == (32.6164, 44.0324))
     }

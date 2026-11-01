@@ -139,7 +139,7 @@ struct PlaceCard: View {
     /// An OpenStreetMap link opens anywhere, with or without Daldal installed.
     /// A Google Maps link: the one format every other app (Uber, Careem, WhatsApp...) understands,
     /// and Daldal reads it back when it's pasted or opened.
-    private var shareURL: URL { LocationLink.shareURL(for: place.coordinate) }
+    private var shareURL: URL { LocationLink.shareURL(for: place.coordinate, name: place.name) }
 }
 
 /// A place to visit: photo, a short description, a Listen button, and the Wikipedia credit.

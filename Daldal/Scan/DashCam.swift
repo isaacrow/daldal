@@ -137,16 +137,17 @@ final class ImpactDetector {
         motion.accelerometerUpdateInterval = 1.0 / 50
         motion.startAccelerometerUpdates(to: .main) { [weak self] data, _ in
             guard let a = data?.acceleration else { return }
-            MainActor.assumeIsolated {
-                guard let self else { return }
-                // Total acceleration minus gravity's 1 g.
-                let jolt = abs(sqrt(a.x * a.x + a.y * a.y + a.z * a.z) - 1)
-                if jolt > Self.threshold, Date.now.timeIntervalSince(self.lastImpact) > 30 {
-                    self.lastImpact = .now
-                    onImpact()
-                }
-            }
+            MainActor.assumeIsolated { self?.check(a, onImpact: onImpact) }
         }
+    }
+
+    private func check(_ a: CMAcceleration, onImpact: () -> Void) {
+        // Total acceleration minus gravity's 1 g.
+        let squared: Double = a.x * a.x + a.y * a.y + a.z * a.z
+        let jolt: Double = abs(squared.squareRoot() - 1)
+        guard jolt > Self.threshold, Date.now.timeIntervalSince(lastImpact) > 30 else { return }
+        lastImpact = .now
+        onImpact()
     }
 
     func stop() {

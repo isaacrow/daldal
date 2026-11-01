@@ -34,6 +34,11 @@ enum LocationLink {
             // Google: /@lat,lon,zoom or !3dLAT!4dLON; Waze/Apple: ll=lat,lon; others: q=lat,lon / query= / daddr= / destination=
             if let match = firstMatch(#"!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)"#, in: decoded) { return found(match.0, match.1, name: name) }
             if let match = firstMatch(#"@(-?\d+\.\d+),(-?\d+\.\d+)"#, in: decoded) { return found(match.0, match.1, name: name) }
+            // Daldal's web links (isaacrow.github.io/daldal/?lat=..&lon=..&name=..)
+            if let lat = items.first(where: { $0.name == "lat" })?.value.flatMap(Double.init),
+               let lon = items.first(where: { $0.name == "lon" })?.value.flatMap(Double.init) {
+                return found(lat, lon, name: items.first { $0.name == "name" }?.value)
+            }
             if let lat = items.first(where: { $0.name == "mlat" })?.value.flatMap(Double.init),
                let lon = items.first(where: { $0.name == "mlon" })?.value.flatMap(Double.init) {
                 return found(lat, lon, name: name) // OpenStreetMap links
@@ -64,9 +69,14 @@ enum LocationLink {
         return parse(final.absoluteString)
     }
 
-    /// A link other apps understand (Google Maps opens it, and Daldal reads it back).
-    static func shareURL(for coordinate: CLLocationCoordinate2D) -> URL {
-        URL(string: String(format: "https://maps.google.com/?q=%.6f,%.6f", coordinate.latitude, coordinate.longitude))!
+    /// Daldal's web page for a place: a map with "Open in Daldal" (and Google Maps for people without the app).
+    /// Every app shows it as an ordinary link, and Daldal reads it back when pasted.
+    static func shareURL(for coordinate: CLLocationCoordinate2D, name: String? = nil) -> URL {
+        var components = URLComponents(string: "https://isaacrow.github.io/daldal/")!
+        components.queryItems = [URLQueryItem(name: "lat", value: String(format: "%.6f", coordinate.latitude)),
+                                 URLQueryItem(name: "lon", value: String(format: "%.6f", coordinate.longitude))]
+            + (name.map { [URLQueryItem(name: "name", value: $0)] } ?? [])
+        return components.url!
     }
 
     // MARK: Helpers
