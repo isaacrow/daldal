@@ -9,10 +9,21 @@ final class DriveMapOverlay {
     /// The route being driven, coloured by live traffic.
     var route: [CLLocationCoordinate2D] = []
 
+    private var carLayer: ModelLayer?
+
+    /// Our car on the map: a smooth Tesla-style model drawn with Metal, turned with the direction of travel and
+    /// kept readable at driving zoom.
     func showCar(_ location: UserLocation?) {
         guard let style, let location else { return }
+        if carLayer == nil || style.layer(withIdentifier: "car-3d") == nil {
+            let layer = ModelLayer(identifier: "car-3d")
+            style.addLayer(layer) // On top: never lose your own car behind a building.
+            layer.add("car") { device in CarMesh.meshes(device: device) }
+            carLayer = layer
+        }
         let heading = location.courseOverGround.map { Double($0.degrees) } ?? 0
-        UserCarLayer.update(in: style, at: location.coordinates.coordinate2D, heading: heading)
+        carLayer?.set("car", placement: ModelLayer.Placement(coordinate: location.coordinates.coordinate2D, heading: heading,
+                                                            height: 1.45, minimumPoints: 26))
     }
 
     func showRoughSpots(_ spots: [RoughSpot]) {

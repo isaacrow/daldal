@@ -93,7 +93,7 @@ enum RouteTraffic {
         line.lineJoin = NSExpression(forConstantValue: "round")
         if let routeLayer, let route = style.layer(withIdentifier: routeLayer) {
             style.insertLayer(line, above: route)
-        } else if let car = style.layer(withIdentifier: UserCarLayer.layer) {
+        } else if let car = style.layer(withIdentifier: "car-3d") {
             style.insertLayer(line, below: car)
         } else {
             style.addLayer(line)

@@ -181,6 +181,48 @@ final class MapController {
     static let landmarkModelLayer = "landmark-models"
     static let pinsLayer = "result-pins"
     static let landmarkGroundLayer = "landmark-ground"
+    static let landmarkModelsLayer = "landmark-3d"
+
+    @ObservationIgnored private var modelLayer: ModelLayer?
+    /// Downloaded model files and their placements, kept across style reloads.
+    @ObservationIgnored private var modelFiles: [String: URL] = [:]
+    @ObservationIgnored private var modelPlacements: [String: ModelLayer.Placement] = [:]
+
+    /// The real 3D models, drawn into the map with Metal so they stand on the ground among the buildings.
+    private func installModelLayer(in style: MLNStyle) {
+        guard style.layer(withIdentifier: Self.landmarkModelsLayer) == nil else { return }
+        let layer = ModelLayer(identifier: Self.landmarkModelsLayer)
+        if let names = style.layer(withIdentifier: Self.guideLabelLayer) {
+            style.insertLayer(layer, below: names)
+        } else {
+            style.addLayer(layer)
+        }
+        modelLayer = layer
+        for (id, url) in modelFiles {
+            layer.load(id, from: url)
+            layer.set(id, placement: modelPlacements[id])
+        }
+    }
+
+    /// From street zoom, the nearest monuments (up to six within 3 km of the view) download their model and stand
+    /// on the map at their real size.
+    func updateLandmarkModels(center: CLLocationCoordinate2D, zoom: Double, store: LandmarkModelStore) async {
+        guard zoom >= 14.5, let layer = modelLayer else { return }
+        let here = CLLocation(latitude: center.latitude, longitude: center.longitude)
+        let nearest = landmarkIcons
+            .map { ($0, CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude).distance(from: here)) }
+            .filter { $0.1 < 3_000 }
+            .sorted { $0.1 < $1.1 }
+            .prefix(6)
+        for (icon, _) in nearest where modelFiles[icon.id] == nil {
+            guard let model = store.models[icon.id], let url = try? await store.localModel(model) else { continue }
+            let placement = ModelLayer.Placement(coordinate: icon.coordinate, height: model.height ?? 20)
+            modelFiles[icon.id] = url
+            modelPlacements[icon.id] = placement
+            layer.load(icon.id, from: url)
+            layer.set(icon.id, placement: placement)
+        }
+    }
 
     /// From street zoom, each model lies on the ground at its real size, seen from above, and turns and tilts
     /// with the map like the buildings around it. (MapLibre can't draw 3D meshes, so this is the closest true-size
@@ -331,14 +373,14 @@ final class MapController {
             layer.iconScale = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
                                            [11: 0.35, 14: 0.7, 17: 1.3])
             layer.minimumZoomLevel = 11
-            layer.maximumZoomLevel = 15.5
+            layer.maximumZoomLevel = 15
             if let names = style.layer(withIdentifier: Self.guideLabelLayer) {
                 style.insertLayer(layer, below: names)
             } else {
                 style.addLayer(layer)
             }
         }
-        installLandmarkGround(in: style)
+        installModelLayer(in: style)
         let modelled = landmarkIcons.filter(\.isGuide).map(\.id)
         if let ziggurats = style.layer(withIdentifier: Self.guideLayer) as? MLNFillExtrusionStyleLayer {
             ziggurats.predicate = NSPredicate(format: "NOT (gid IN %@)", modelled)

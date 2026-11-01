@@ -106,6 +106,7 @@ struct ExploreView: View {
                 guard zoom >= 11 else { return }
                 Task { await live.refresh(around: center) }
                 if zoom >= 13 { Task { await roadFeatures.refresh(around: center) } }
+                if zoom >= 14.5 { Task { await map.updateLandmarkModels(center: center, zoom: zoom, store: landmarks) } }
             }
         )
         .ignoresSafeArea()
