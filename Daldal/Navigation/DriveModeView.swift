@@ -13,6 +13,7 @@ struct DriveModeView: View {
     @Environment(RoadFeatureStore.self) private var roadFeatures
     @Environment(LocationService.self) private var location
     @State private var osmLimit = SpeedLimitLookup()
+    @State private var liveActivity = NavigationActivity()
     @Environment(\.colorScheme) private var colorScheme
     @State private var camera: MapViewCamera = .automotiveNavigation(zoom: 17, pitch: 55)
     @State private var confirmingEnd = false
@@ -79,7 +80,20 @@ struct DriveModeView: View {
             if split { scanner?.start() }
         }
         .onChange(of: split) { _, on in on ? scanner?.start() : scanner?.stop() }
-        .onDisappear { scanner?.stop() }
+        .onDisappear {
+            scanner?.stop()
+            liveActivity.end()
+        }
+        .task {
+            // The trip on the lock screen while driving.
+            try? await Task.sleep(for: .seconds(2))
+            if let state = activityState {
+                liveActivity.start(destination: nav.destination?.name ?? String(localized: "Destination"), state: state)
+            }
+        }
+        .onChange(of: nav.phase) { _, phase in
+            if phase != .navigating { liveActivity.end() }
+        }
         .overlay(alignment: .top) {
             VStack(spacing: Theme.Spacing.s) {
                 if nav.phase == .arrived {
@@ -147,6 +161,7 @@ struct DriveModeView: View {
         .onChange(of: nav.state?.preferredUserLocation) {
             overlay.showCar(nav.state?.preferredUserLocation)
             warnAboutRoadFeatures()
+            if let state = activityState { liveActivity.update(state) }
         }
         .onChange(of: roadFeatures.features) { overlay.showRoadFeatures(roadFeatures.features) }
         .onChange(of: live.traffic) { overlay.apply(live) }
@@ -190,6 +205,21 @@ struct DriveModeView: View {
 
     /// Speed cameras and stop signs on the route ahead: fetched around the car, announced once each.
     /// The route's own limit when it has one, else OpenStreetMap's for the road we're on.
+    /// The trip for the lock screen and Dynamic Island.
+    private var activityState: NavigationActivityAttributes.ContentState? {
+        guard let progress = nav.state?.currentProgress else { return nil }
+        var instruction = upcoming.map { phraser.action($0.maneuver) } ?? ""
+        if let road = upcoming?.maneuver.roadName, !road.isEmpty {
+            instruction += languageCode == "ar" ? " إلى \(road)" : " onto \(road)"
+        }
+        return NavigationActivityAttributes.ContentState(
+            instruction: instruction,
+            distanceToTurn: upcoming?.distance ?? progress.distanceRemaining,
+            distanceRemaining: progress.distanceRemaining,
+            arrival: Date.now.addingTimeInterval(progress.durationRemaining),
+            rightToLeft: languageCode == "ar")
+    }
+
     private var speedLimit: Measurement<UnitSpeed>? {
         nav.speedLimit ?? osmLimit.limitKmh.map { Measurement(value: Double($0), unit: UnitSpeed.kilometersPerHour) }
     }

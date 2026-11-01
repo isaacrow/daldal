@@ -64,6 +64,8 @@ targets:
         product: ValhallaConfigModels
       # "Share -> Daldal" in other apps (WhatsApp, Uber, Google Maps, Safari...).
       - target: DaldalShare
+      # Turn-by-turn on the lock screen and in the Dynamic Island.
+      - target: DaldalWidgets
     info:
       path: Daldal/Info.plist
       properties:
@@ -96,6 +98,7 @@ targets:
           - CFBundleURLName: app.daldal.location
             CFBundleURLSchemes: [daldal]
         NSLocationAlwaysAndWhenInUseUsageDescription: "With Always, Daldal tells you when you arrive at a monument you can explore in AR, even when the app is closed."
+        NSSupportsLiveActivities: true
         NSPhotoLibraryAddUsageDescription: "Daldal saves dash-cam clips to your Photos when you ask, or after a sudden impact."
         NSMotionUsageDescription: "Daldal uses motion sensors to follow your car smoothly between GPS updates in Drive Scan."
         NSSpeechRecognitionUsageDescription: "Daldal turns what you say to the assistant into text, on your iPhone."
@@ -139,6 +142,25 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.daldal.ios.share
+        TARGETED_DEVICE_FAMILY: "1"
+
+  DaldalWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: DaldalWidgets
+      - path: Daldal/LiveActivity/NavigationActivityAttributes.swift
+    info:
+      path: DaldalWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: دلدل
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.daldal.ios.widgets
         TARGETED_DEVICE_FAMILY: "1"
 
   DaldalTests:
