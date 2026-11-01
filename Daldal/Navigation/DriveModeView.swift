@@ -1,3 +1,4 @@
+import CoreLocation
 @preconcurrency import FerrostarCore
 @preconcurrency import FerrostarCoreFFI
 import FerrostarMapLibreUI
