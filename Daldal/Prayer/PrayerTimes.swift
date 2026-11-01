@@ -84,11 +84,11 @@ nonisolated struct PrayerTimes: Sendable {
         maghrib = method.maghribAngle.map { sunAngleTime($0, maghrib / 24, beforeNoon: false) } ?? sunset
         isha = sunAngleTime(method.ishaAngle, isha / 24, beforeNoon: false)
 
-        func date(_ hours: Double) -> Date {
+        func clock(_ hours: Double) -> Date {
             midnight.addingTimeInterval((hours + offset - lon / 15) * 3600)
         }
-        times = [.fajr: date(fajr), .sunrise: date(sunrise), .dhuhr: date(dhuhr), .asr: date(asr),
-                 .maghrib: date(maghrib), .isha: date(isha)]
+        times = [.fajr: clock(fajr), .sunrise: clock(sunrise), .dhuhr: clock(dhuhr), .asr: clock(asr),
+                 .maghrib: clock(maghrib), .isha: clock(isha)]
     }
 
     /// The next prayer from `now` (sunrise counts as a time, not a prayer).
