@@ -124,8 +124,12 @@ final class PlaceCardButtonsUITests: XCTestCase {
         shot("assistant")
     }
 
-    func testDriveScanOpensWithCardShowing() {
-        let app = launchWithCard()
+    func testDriveScanOpensFromMenu() {
+        // The big Daldal button sits at the bottom of the bare map (it steps aside while a card is open).
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)"]
+        app.launch()
+        XCTAssertTrue(app.buttons["map.menu"].waitForExistence(timeout: 10), "no Daldal button")
         app.buttons["map.menu"].tap() // Drive Scan lives in the Daldal menu.
         XCTAssertTrue(app.buttons["map.scan"].waitForExistence(timeout: 5), "the menu didn't open")
         shot("menu")
