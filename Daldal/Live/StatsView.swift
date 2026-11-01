@@ -27,6 +27,7 @@ struct StatsView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                    LanguageSwitch()
                     AppCredit()
                         .padding(.top, Theme.Spacing.xl)
                 }
@@ -115,5 +116,37 @@ struct AppCredit: View {
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("app.credit")
+    }
+}
+
+/// Arabic or English for the whole app (menus, voice, place names). iOS applies an app's language when it starts,
+/// so switching asks the user to reopen Daldal.
+struct LanguageSwitch: View {
+    @State private var chosen = AppLanguage.code
+    @State private var askReopen = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            Text("Language").font(.headline)
+            Picker("Language", selection: $chosen) {
+                Text(verbatim: "العربية").tag("ar")
+                Text(verbatim: "English").tag("en")
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier("settings.language")
+        }
+        .padding(Theme.Spacing.l)
+        .background(Color.secondary.opacity(0.08), in: .rect(cornerRadius: Theme.cornerRadius))
+        .onChange(of: chosen) { _, code in
+            guard code != AppLanguage.code else { return }
+            UserDefaults.standard.set([code], forKey: "AppleLanguages")
+            askReopen = true
+        }
+        .alert(chosen == "ar" ? "أغلق دلدل وافتحه مجدداً" : "Close Daldal and open it again", isPresented: $askReopen) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(verbatim: chosen == "ar" ? "سيظهر التطبيق بالعربية عند فتحه مجدداً."
+                                          : "The app will be in English the next time it opens.")
+        }
     }
 }

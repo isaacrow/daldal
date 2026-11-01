@@ -97,3 +97,20 @@ struct HandIndicator: View {
         .ignoresSafeArea()
     }
 }
+
+/// Sometimes the camera starts black: the session runs (motion and the floor are tracked) but no picture arrives,
+/// usually because the camera was still being released by the previous AR screen. Reopening fixes it, so this does
+/// the same automatically: if no camera frame has arrived after a moment, restart the session once or twice.
+enum ARCameraWatchdog {
+    static func watch(_ session: ARSession, configuration: ARConfiguration, attempts: Int = 2) {
+        Task { @MainActor in
+            for _ in 0..<attempts {
+                try? await Task.sleep(for: .seconds(2.5))
+                if session.currentFrame != nil { return }
+                session.pause()
+                try? await Task.sleep(for: .milliseconds(300))
+                session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+            }
+        }
+    }
+}

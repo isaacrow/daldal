@@ -80,6 +80,8 @@ final class DriveScanModel: NSObject {
     @ObservationIgnored private let queue = DispatchQueue(label: "app.daldal.scan", qos: .userInitiated)
     /// Set once before the session starts, then only read on the scan queue.
     @ObservationIgnored nonisolated(unsafe) private var detector: ScanDetector?
+    /// The rolling dash-cam loop, when turned on. Set on the main actor, read on the scan queue.
+    @ObservationIgnored nonisolated(unsafe) var dashCam: DashCam?
     @ObservationIgnored private let voice: VoiceGuide
     @ObservationIgnored private var lastWarning = Date.distantPast
 
@@ -103,6 +105,7 @@ final class DriveScanModel: NSObject {
         session.delegateQueue = queue
         session.delegate = self
         session.run(config)
+        ARCameraWatchdog.watch(session, configuration: config)
         status = .running
     }
 
@@ -128,6 +131,7 @@ final class DriveScanModel: NSObject {
 extension DriveScanModel: ARSessionDelegate {
     /// Runs on the scan queue. Frames are processed synchronously and never kept, as ARKit requires.
     nonisolated func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        dashCam?.append(frame.capturedImage, at: frame.timestamp)
         guard let detector, detector.shouldProcess(frame.timestamp), let result = detector.process(frame) else { return }
         Task { @MainActor in self.apply(result) }
     }

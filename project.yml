@@ -96,6 +96,7 @@ targets:
           - CFBundleURLName: app.daldal.location
             CFBundleURLSchemes: [daldal]
         NSLocationAlwaysAndWhenInUseUsageDescription: "With Always, Daldal tells you when you arrive at a monument you can explore in AR, even when the app is closed."
+        NSPhotoLibraryAddUsageDescription: "Daldal saves dash-cam clips to your Photos when you ask, or after a sudden impact."
         NSMotionUsageDescription: "Daldal uses motion sensors to follow your car smoothly between GPS updates in Drive Scan."
         NSSpeechRecognitionUsageDescription: "Daldal turns what you say to the assistant into text, on your iPhone."
     settings:

@@ -109,7 +109,8 @@ struct MapCanvas: UIViewRepresentable {
                 return
             }
             // A landmark's 3D model on the map opens its card.
-            let models = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.landmarkModelLayer])
+            let models = mapView.visibleFeatures(in: hitArea, styleLayerIdentifiers: [MapController.landmarkModelLayer,
+                                                                                      MapController.landmarkGroundLayer])
             if let id = models.first?.attribute(forKey: "gid") as? String {
                 parent.onSelectGuide(id)
                 return

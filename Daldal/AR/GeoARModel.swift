@@ -91,6 +91,7 @@ final class GeoARModel {
             config.frameSemantics.insert(.personSegmentationWithDepth)
         }
         view.session.run(config)
+        ARCameraWatchdog.watch(view.session, configuration: config)
 
         updateSubscription = view.scene.subscribe(to: SceneEvents.Update.self) { [weak self] _ in
             self?.updateRelativeBearing()

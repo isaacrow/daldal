@@ -180,6 +180,47 @@ final class MapController {
 
     static let landmarkModelLayer = "landmark-models"
     static let pinsLayer = "result-pins"
+    static let landmarkGroundLayer = "landmark-ground"
+
+    /// From street zoom, each model lies on the ground at its real size, seen from above, and turns and tilts
+    /// with the map like the buildings around it. (MapLibre can't draw 3D meshes, so this is the closest true-size
+    /// view; the 3D model itself is on the place card and in AR.)
+    private func installLandmarkGround(in style: MLNStyle) {
+        let grounded = landmarkIcons.filter { $0.top != nil && ($0.footprintWidth ?? 0) > 0 }
+        guard !grounded.isEmpty else { return }
+        let features = grounded.map { icon in
+            style.setImage(icon.top!, forName: "landmark-top-\(icon.id)")
+            let feature = MLNPointFeature()
+            feature.coordinate = icon.coordinate
+            // The picture is 128 points wide; at zoom z one point covers 40,075,017 * cos(lat) / (512 * 2^z) metres.
+            // So its scale is k * 2^z with k = width * 512 / (40,075,017 * cos(lat) * 128).
+            let k = icon.footprintWidth! * 512 / (40_075_017 * cos(icon.coordinate.latitude * .pi / 180) * 128)
+            feature.attributes = ["icon": "landmark-top-\(icon.id)", "k": k, icon.isGuide ? "gid" : "hid": icon.id]
+            return feature
+        }
+        let shape = MLNShapeCollectionFeature(shapes: features)
+        if let source = style.source(withIdentifier: Self.landmarkGroundLayer) as? MLNShapeSource {
+            source.shape = shape
+            return
+        }
+        let source = MLNShapeSource(identifier: Self.landmarkGroundLayer, shape: shape, options: nil)
+        style.addSource(source)
+        let layer = MLNSymbolStyleLayer(identifier: Self.landmarkGroundLayer, source: source)
+        layer.iconImageName = NSExpression(forKeyPath: "icon")
+        layer.iconAllowsOverlap = NSExpression(forConstantValue: true)
+        layer.iconIgnoresPlacement = NSExpression(forConstantValue: true)
+        layer.iconRotationAlignment = NSExpression(forConstantValue: "map")
+        layer.iconPitchAlignment = NSExpression(forConstantValue: "map")
+        layer.iconScale = NSExpression(
+            format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'exponential', 2, %@)",
+            [15: NSExpression(format: "k * 32768"), 22: NSExpression(format: "k * 4194304")])
+        layer.minimumZoomLevel = 15.5
+        if let names = style.layer(withIdentifier: Self.guideLabelLayer) {
+            style.insertLayer(layer, below: names)
+        } else {
+            style.addLayer(layer)
+        }
+    }
 
     @ObservationIgnored private var pins: [Place] = []
     @ObservationIgnored private var roadFeatures: [RoadFeature] = []
@@ -243,6 +284,9 @@ final class MapController {
         let id: String
         let coordinate: CLLocationCoordinate2D
         let image: UIImage
+        /// From straight above, with the real footprint in metres: drawn flat on the ground at street zoom.
+        var top: UIImage? = nil
+        var footprintWidth: Double? = nil
         /// A city-guide place (else a heritage site): decides which card a tap opens.
         let isGuide: Bool
     }
@@ -278,12 +322,14 @@ final class MapController {
             layer.iconScale = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
                                            [11: 0.35, 14: 0.7, 17: 1.3])
             layer.minimumZoomLevel = 11
+            layer.maximumZoomLevel = 15.5
             if let names = style.layer(withIdentifier: Self.guideLabelLayer) {
                 style.insertLayer(layer, below: names)
             } else {
                 style.addLayer(layer)
             }
         }
+        installLandmarkGround(in: style)
         let modelled = landmarkIcons.filter(\.isGuide).map(\.id)
         if let ziggurats = style.layer(withIdentifier: Self.guideLayer) as? MLNFillExtrusionStyleLayer {
             ziggurats.predicate = NSPredicate(format: "NOT (gid IN %@)", modelled)

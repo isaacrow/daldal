@@ -8,6 +8,10 @@ struct DriveScanView: View {
     @Environment(LocationService.self) private var location
     @State private var model: DriveScanModel
     @State private var mount = MountGuide()
+    @AppStorage("scan.dashCam") private var dashCamOn = false
+    @State private var impacts = ImpactDetector()
+    @State private var saving = false
+    @State private var savedMessage: LocalizedStringKey?
 
     init(voice: VoiceGuide) {
         _model = State(initialValue: DriveScanModel(voice: voice))
@@ -52,6 +56,8 @@ struct DriveScanView: View {
             UIApplication.shared.isIdleTimerDisabled = true
         }
         .onDisappear {
+            impacts.stop()
+            model.dashCam?.stop()
             model.stop()
             mount.stop()
             UIApplication.shared.isIdleTimerDisabled = false
@@ -107,12 +113,69 @@ struct DriveScanView: View {
                 .padding(Theme.Spacing.l)
                 .glassEffect(.regular, in: .rect(cornerRadius: 24))
             }
+            dashCamBar
             Text("Mount your phone facing the road. Keep your eyes on the road; Daldal will speak if a car gets close.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
         .padding(Theme.Spacing.m)
+    }
+
+    /// Dash cam: on/off, a recording dot, and "Save clip" for the last 20 seconds.
+    private var dashCamBar: some View {
+        HStack(spacing: Theme.Spacing.m) {
+            Toggle(isOn: $dashCamOn) {
+                HStack(spacing: 6) {
+                    if dashCamOn {
+                        Circle().fill(.red).frame(width: 9, height: 9)
+                    }
+                    Text(dashCamOn ? "Dash cam: last 20 s" : "Dash cam").font(.subheadline.weight(.semibold))
+                }
+            }
+            .fixedSize()
+            .accessibilityIdentifier("scan.dashCam")
+            Spacer(minLength: 0)
+            if let savedMessage {
+                Text(savedMessage).font(.caption).foregroundStyle(.secondary)
+            } else if dashCamOn {
+                Button {
+                    Task { await saveClip() }
+                } label: {
+                    Text(saving ? "Saving…" : "Save clip").font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.glassProminent)
+                .tint(.red)
+                .disabled(saving)
+            }
+        }
+        .padding(Theme.Spacing.m)
+        .glassEffect(.regular, in: .rect(cornerRadius: 20))
+        .onChange(of: dashCamOn, initial: true) { _, on in setDashCam(on) }
+    }
+
+    private func setDashCam(_ on: Bool) {
+        if on {
+            if model.dashCam == nil { model.dashCam = DashCam() }
+            impacts.start { Task { await saveClip(impact: true) } }
+        } else {
+            impacts.stop()
+            model.dashCam?.stop()
+            model.dashCam = nil
+        }
+    }
+
+    private func saveClip(impact: Bool = false) async {
+        guard let dashCam = model.dashCam, !saving else { return }
+        saving = true
+        if impact { UINotificationFeedbackGenerator().notificationOccurred(.error) }
+        let saved = await dashCam.saveClip()
+        saving = false
+        savedMessage = saved ? (impact ? "Impact: last 20 s saved to Photos" : "Saved to Photos") : "Couldn't save the clip"
+        Task {
+            try? await Task.sleep(for: .seconds(4))
+            savedMessage = nil
+        }
     }
 
     private var statusLine: LocalizedStringKey {

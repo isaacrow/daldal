@@ -88,16 +88,18 @@ struct PlaceCard: View {
                 if site != nil {
                     actionButton("View in AR", icon: .arView, id: "place.ar") { onOpenAR(place) }
                 }
-                if site != nil || guidePlace != nil
-                    || !history.events(near: place.coordinate, languageCode: AppLanguage.code).isEmpty {
-                    actionButton("History in AR", icon: .history, id: "place.history") { onHistory(place) }
-                }
-                if BattleSceneModel.isNear(place.coordinate) {
-                    // The battle opens on the battlefield itself.
-                    let there = location.location.map { BattleSceneModel.isNear($0.coordinate) } ?? false
-                    actionButton(there ? "Battle of Karbala in AR" : "Battle of Karbala: unlocks in Karbala",
-                                 icon: .history, id: "place.battle") { onBattle() }
-                        .disabled(!there)
+                // History and the battle are for monuments and places to visit (not a café or a toilet nearby),
+                // and like the 3D models they open only on site.
+                if site != nil || guidePlace != nil {
+                    let onSite = LandmarkModelStore.isUnlocked(place.coordinate, from: location.location)
+                    actionButton(onSite ? "History in AR" : "History in AR: unlocks on site",
+                                 icon: .history, id: "place.history") { onHistory(place) }
+                        .disabled(!onSite)
+                    if BattleSceneModel.isNear(place.coordinate) {
+                        actionButton(onSite ? "Battle of Karbala in AR" : "Battle of Karbala: unlocks on site",
+                                     icon: .history, id: "place.battle") { onBattle() }
+                            .disabled(!onSite)
+                    }
                 }
                 ShareLink(item: shareURL, subject: Text(place.name)) {
                     Label { Text("Share") } icon: { Icon(.share, size: 18) }

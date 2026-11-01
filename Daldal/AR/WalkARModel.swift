@@ -88,6 +88,7 @@ final class WalkARModel {
             config.frameSemantics.insert(.personSegmentationWithDepth)
         }
         view.session.run(config)
+        ARCameraWatchdog.watch(view.session, configuration: config)
         buildEntities()
         updateSubscription = view.scene.subscribe(to: SceneEvents.Update.self) { [weak self] _ in
             self?.updateRelativeBearing()

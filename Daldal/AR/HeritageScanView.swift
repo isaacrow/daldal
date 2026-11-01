@@ -129,6 +129,7 @@ final class HeritageScanModel {
             config.frameSemantics.insert(.personSegmentationWithDepth)
         }
         view.session.run(config)
+        ARCameraWatchdog.watch(view.session, configuration: config)
         hands.attach(to: view.session)
         hands.onHand = { [weak self] hand in self?.hand = hand }
         hands.onDrag = { [weak self] delta in self?.handDrag(delta) }

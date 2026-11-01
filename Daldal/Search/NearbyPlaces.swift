@@ -86,9 +86,15 @@ enum NearbyCategory: String, CaseIterable, Identifiable, Sendable {
 /// Live OpenStreetMap data through the public Overpass API: nearby places by category, and road features
 /// (stop signs, speed cameras) around a point.
 enum Overpass {
-    static let endpoint = URL(string: "https://overpass-api.de/api/interpreter")!
+    /// Public Overpass servers. The main one is often busy; asking all at once and taking the first answer
+    /// keeps "toilets near you" quick.
+    static let endpoints = [
+        "https://overpass-api.de/api/interpreter",
+        "https://overpass.kumi.systems/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter",
+    ].compactMap(URL.init(string:))
 
-    struct Element: Decodable, Sendable {
+    nonisolated struct Element: Decodable, Sendable {
         let type: String
         let id: Int64
         let lat: Double?
@@ -96,7 +102,7 @@ enum Overpass {
         let center: Center?
         let tags: [String: String]?
 
-        struct Center: Decodable, Sendable { let lat: Double; let lon: Double }
+        nonisolated struct Center: Decodable, Sendable { let lat: Double; let lon: Double }
 
         var coordinate: CLLocationCoordinate2D? {
             if let lat, let lon { return CLLocationCoordinate2D(latitude: lat, longitude: lon) }
@@ -104,12 +110,27 @@ enum Overpass {
         }
     }
 
-    private struct Response: Decodable { let elements: [Element] }
+    nonisolated private struct Response: Decodable { let elements: [Element] }
 
     static func run(_ query: String) async throws -> [Element] {
-        var request = URLRequest(url: endpoint, timeoutInterval: 25)
+        try await withThrowingTaskGroup(of: [Element]?.self) { group in
+            for endpoint in endpoints {
+                group.addTask { try? await run(query, at: endpoint) }
+            }
+            for try await result in group {
+                if let result {
+                    group.cancelAll()
+                    return result
+                }
+            }
+            throw URLError(.cannotConnectToHost)
+        }
+    }
+
+    nonisolated private static func run(_ query: String, at endpoint: URL) async throws -> [Element] {
+        var request = URLRequest(url: endpoint, timeoutInterval: 12)
         request.httpMethod = "POST"
-        request.setValue(SearchConfig.userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue("Daldal/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         let body = "data=" + (query.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? "")
         request.httpBody = Data(body.utf8)
@@ -120,17 +141,46 @@ enum Overpass {
 
     /// The nearest places of a kind, widening the search from 2 km up to 15 km until something turns up.
     static func nearby(_ category: NearbyCategory, around here: CLLocationCoordinate2D, languageCode: String) async throws -> [Place] {
-        for radius in [2_000, 6_000, 15_000] {
-            let around = "(around:\(radius),\(here.latitude),\(here.longitude))"
-            let parts = category.filters.flatMap { ["node\($0)\(around);", "way\($0)\(around);"] }.joined()
-            let elements = try await run("[out:json][timeout:20];(\(parts));out center 60;")
-            let places = elements.compactMap { place(from: $0, category: category, languageCode: languageCode) }
-            if !places.isEmpty {
-                let origin = CLLocation(latitude: here.latitude, longitude: here.longitude)
-                return places.sorted { ($0.distance(from: origin) ?? 0) < ($1.distance(from: origin) ?? 0) }.prefix(30).map { $0 }
+        let origin = CLLocation(latitude: here.latitude, longitude: here.longitude)
+        do {
+            for radius in [1_500, 5_000, 15_000] {
+                let around = "(around:\(radius),\(here.latitude),\(here.longitude))"
+                let parts = category.filters.flatMap { ["node\($0)\(around);", "way\($0)\(around);"] }.joined()
+                let elements = try await run("[out:json][timeout:10];(\(parts));out center 60;")
+                let places = elements.compactMap { place(from: $0, category: category, languageCode: languageCode) }
+                if !places.isEmpty {
+                    return places.sorted { ($0.distance(from: origin) ?? 0) < ($1.distance(from: origin) ?? 0) }.prefix(30).map { $0 }
+                }
             }
+            return []
+        } catch {
+            // Every Overpass server busy: ask the geocoder instead, filtered to the same OpenStreetMap tag.
+            return try await photonFallback(category, around: here, origin: origin)
         }
-        return []
+    }
+
+    /// Photon (the search service) by OpenStreetMap tag, biased to where the user is.
+    private static func photonFallback(_ category: NearbyCategory, around here: CLLocationCoordinate2D,
+                                       origin: CLLocation) async throws -> [Place] {
+        var places: [Place] = []
+        for filter in category.filters {
+            // "[amenity=toilets]" -> "amenity:toilets"; filters with two tags keep just the first.
+            let tag = filter.split(separator: "]").first.map { $0.dropFirst().replacingOccurrences(of: "=", with: ":") } ?? ""
+            let word = tag.split(separator: ":").last.map(String.init) ?? ""
+            var components = URLComponents(url: SearchConfig.photonBaseURL.appending(path: "api"), resolvingAgainstBaseURL: false)!
+            components.queryItems = [URLQueryItem(name: "q", value: word.replacingOccurrences(of: "_", with: " ")),
+                                     URLQueryItem(name: "osm_tag", value: tag),
+                                     URLQueryItem(name: "lat", value: String(here.latitude)),
+                                     URLQueryItem(name: "lon", value: String(here.longitude)),
+                                     URLQueryItem(name: "limit", value: "30")]
+            guard let url = components.url else { continue }
+            guard let (data, _) = try? await URLSession.shared.data(from: url) else { continue }
+            places += (try? PhotonSearchService.places(from: data)) ?? []
+        }
+        guard !places.isEmpty else { throw URLError(.cannotConnectToHost) }
+        return places.filter { ($0.distance(from: origin) ?? .infinity) < 20_000 }
+            .sorted { ($0.distance(from: origin) ?? 0) < ($1.distance(from: origin) ?? 0) }
+            .prefix(30).map { $0 }
     }
 
     static func place(from element: Element, category: NearbyCategory, languageCode: String) -> Place? {

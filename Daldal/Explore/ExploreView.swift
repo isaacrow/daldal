@@ -160,11 +160,15 @@ struct ExploreView: View {
                                coordinate: BattleSceneModel.site.coordinate))
             arAlerts.setSpots(spots)
             map.showLandmarkIcons(landmarks.icons.compactMap { id, image in
+                let model = landmarks.models[id]
+                let top = landmarks.tops[id], width = model?.footprint?.first
                 if let place = guide.place(id: id) {
-                    return MapController.LandmarkIcon(id: id, coordinate: place.coordinate, image: image, isGuide: true)
+                    return MapController.LandmarkIcon(id: id, coordinate: place.coordinate, image: image, top: top,
+                                                      footprintWidth: width, isGuide: true)
                 }
                 if let site = heritage.site(id: id) {
-                    return MapController.LandmarkIcon(id: id, coordinate: site.coordinate, image: image, isGuide: false)
+                    return MapController.LandmarkIcon(id: id, coordinate: site.coordinate, image: image, top: top,
+                                                      footprintWidth: width, isGuide: false)
                 }
                 return nil
             })

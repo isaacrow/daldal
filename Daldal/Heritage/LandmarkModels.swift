@@ -18,6 +18,10 @@ nonisolated struct LandmarkModel: Codable, Hashable, Sendable {
     let height: Double?
     /// How it was made: "TripoSR (MIT), from one photo" or "Hand-built from the monument's documented proportions".
     let generator: String?
+    /// A picture of the model from straight above, and its real width and depth in metres (east-west, north-south),
+    /// for drawing it on the map flat on the ground at true size.
+    let top: String?
+    let footprint: [Double]?
 
     var isHandBuilt: Bool { generator?.hasPrefix("Hand-built") ?? false }
 
@@ -34,6 +38,8 @@ final class LandmarkModelStore {
     private(set) var models: [String: LandmarkModel] = [:]
     /// Map icons (a 3/4 view of each model), by id, once downloaded.
     private(set) var icons: [String: UIImage] = [:]
+    /// Top-down pictures, by id, for the true-size models on the ground at street zoom.
+    private(set) var tops: [String: UIImage] = [:]
 
     @ObservationIgnored private var loading = false
     @ObservationIgnored private let folder: URL = {
@@ -68,16 +74,16 @@ final class LandmarkModelStore {
         guard let data = try? Data(contentsOf: saved),
               let list = try? JSONDecoder().decode([LandmarkModel].self, from: data) else { return }
         models = Dictionary(list.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        await loadIcons(list)
+        icons = await loadImages(list.compactMap { model in model.icon.map { (model, $0) } })
+        tops = await loadImages(list.compactMap { model in model.top.map { (model, $0) } })
     }
 
-    private func loadIcons(_ list: [LandmarkModel]) async {
+    private func loadImages(_ list: [(LandmarkModel, String)]) async -> [String: UIImage] {
         let folder = folder.appending(path: "icons")
         let base = Self.base
         var loaded: [String: UIImage] = [:]
         await withTaskGroup(of: (String, Data?).self) { group in
-            for model in list {
-                guard let icon = model.icon else { continue }
+            for (model, icon) in list {
                 // Named after the model's fingerprint, so a rebuilt model brings its new picture.
                 let file = folder.appending(path: "\(model.sha256.prefix(12))-\(icon)")
                 group.addTask {
@@ -92,7 +98,7 @@ final class LandmarkModelStore {
                 if let data, let image = UIImage(data: data, scale: 2) { loaded[id] = image }
             }
         }
-        icons = loaded
+        return loaded
     }
 
     /// The model on disk, downloading and checking it the first time.

@@ -71,6 +71,16 @@
           }
         }
       }
+    },
+    "NSPhotoLibraryAddUsageDescription": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يحفظ دلدل مقاطع كاميرا القيادة في صورك عند طلبك أو بعد اصطدام مفاجئ."
+          }
+        }
+      }
     }
   }
 }

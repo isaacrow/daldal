@@ -2619,6 +2619,106 @@
           }
         }
       }
+    },
+    "History in AR: unlocks on site": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التاريخ بالواقع المعزز: يُفتح في الموقع"
+          }
+        }
+      }
+    },
+    "Battle of Karbala: unlocks on site": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معركة كربلاء: تُفتح في الموقع"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللغة"
+          }
+        }
+      }
+    },
+    "Dash cam": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاميرا القيادة"
+          }
+        }
+      }
+    },
+    "Dash cam: last 20 s": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاميرا القيادة: آخر 20 ث"
+          }
+        }
+      }
+    },
+    "Save clip": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "احفظ المقطع"
+          }
+        }
+      }
+    },
+    "Saving…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ الحفظ…"
+          }
+        }
+      }
+    },
+    "Impact: last 20 s saved to Photos": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اصطدام: حُفظت آخر 20 ثانية في الصور"
+          }
+        }
+      }
+    },
+    "Saved to Photos": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حُفظ في الصور"
+          }
+        }
+      }
+    },
+    "Couldn't save the clip": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعذّر حفظ المقطع"
+          }
+        }
+      }
     }
   }
 }
