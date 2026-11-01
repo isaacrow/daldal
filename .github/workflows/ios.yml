@@ -30,6 +30,21 @@ jobs:
           sudo xcode-select -s "$XCODE"
           xcodebuild -version
 
+      - name: Bundle the Iraq search index
+        # Every street and place in Iraq (OpenStreetMap + Foursquare), so search is instant and offline from the
+        # first launch. Taken from the newest map release, checked against its SHA-256.
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, urllib.request
+          catalog = json.load(urllib.request.urlopen("https://github.com/isaacrow/daldal-maps/releases/latest/download/catalog.json"))
+          iraq = next(c for c in catalog["cities"] if c["id"] == "iraq")
+          entry = next(f for f in iraq["files"] if f["path"] == "search.sqlite")
+          data = urllib.request.urlopen(entry["url"]).read()
+          assert hashlib.sha256(data).hexdigest() == entry["sha256"], "search index checksum mismatch"
+          open("Daldal/Resources/Data/iraq-search.sqlite", "wb").write(data)
+          print(f"Iraq search index: {len(data) // 1_000_000} MB from {catalog['version']}")
+          PY
+
       - name: Generate the Xcode project
         run: |
           brew install xcodegen
@@ -88,6 +103,21 @@ jobs:
       - uses: actions/checkout@v4
       - name: Use the newest Xcode 26
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
+      - name: Bundle the Iraq search index
+        # Every street and place in Iraq (OpenStreetMap + Foursquare), so search is instant and offline from the
+        # first launch. Taken from the newest map release, checked against its SHA-256.
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, urllib.request
+          catalog = json.load(urllib.request.urlopen("https://github.com/isaacrow/daldal-maps/releases/latest/download/catalog.json"))
+          iraq = next(c for c in catalog["cities"] if c["id"] == "iraq")
+          entry = next(f for f in iraq["files"] if f["path"] == "search.sqlite")
+          data = urllib.request.urlopen(entry["url"]).read()
+          assert hashlib.sha256(data).hexdigest() == entry["sha256"], "search index checksum mismatch"
+          open("Daldal/Resources/Data/iraq-search.sqlite", "wb").write(data)
+          print(f"Iraq search index: {len(data) // 1_000_000} MB from {catalog['version']}")
+          PY
+
       - name: Generate the Xcode project
         run: |
           brew install xcodegen

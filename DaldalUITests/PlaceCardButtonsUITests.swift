@@ -126,6 +126,9 @@ final class PlaceCardButtonsUITests: XCTestCase {
 
     func testDriveScanOpensWithCardShowing() {
         let app = launchWithCard()
+        app.buttons["map.menu"].tap() // Drive Scan lives in the Daldal menu.
+        XCTAssertTrue(app.buttons["map.scan"].waitForExistence(timeout: 5), "the menu didn't open")
+        shot("menu")
         app.buttons["map.scan"].tap()
         let opened = app.staticTexts[noAR].waitForExistence(timeout: 15)
         shot("after-scan")

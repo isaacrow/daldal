@@ -15,3 +15,6 @@ Backend/build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Downloaded into the app by CI from the latest map release.
+Daldal/Resources/Data/iraq-search.sqlite

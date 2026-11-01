@@ -42,7 +42,8 @@ struct DaldalApp: App {
                         let all = cities.installedCities
                         let here = location.location.map { coordinate in all.filter { $0.contains(coordinate.coordinate) } } ?? []
                         let ordered = here + all.filter { city in !here.contains(city) }
-                        return ordered.compactMap { try? OfflineSearchCache.service(for: $0) }
+                        // Then the whole-Iraq index built into the app: instant search everywhere, from the first launch.
+                        return ordered.compactMap { try? OfflineSearchCache.service(for: $0) } + [OfflineSearchCache.bundled].compactMap(\.self)
                     }
                 }
                 .onOpenURL { url in
@@ -66,6 +67,10 @@ struct DaldalApp: App {
 /// Opens each city's search index once per version instead of on every keystroke.
 enum OfflineSearchCache {
     private static var cached: [String: OfflineSearchService] = [:]
+
+    /// The whole-Iraq search index shipped inside the app (CI bundles the newest one from the map release).
+    static let bundled: OfflineSearchService? = Bundle.main.url(forResource: "iraq-search", withExtension: "sqlite")
+        .flatMap { try? OfflineSearchService(index: $0, languageCode: AppLanguage.code) }
 
     static func service(for city: InstalledCity) throws -> OfflineSearchService {
         let key = "\(city.id)/\(city.version)"

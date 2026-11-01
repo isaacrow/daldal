@@ -3139,6 +3139,26 @@
           }
         }
       }
+    },
+    "Menu": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "القائمة"
+          }
+        }
+      }
+    },
+    "Close menu": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إغلاق القائمة"
+          }
+        }
+      }
     }
   }
 }

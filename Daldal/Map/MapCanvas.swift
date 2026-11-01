@@ -34,8 +34,8 @@ struct MapCanvas: UIViewRepresentable {
         // Our own glass controls replace the compass; attribution stays visible (required by ODbL).
         mapView.compassView.isHidden = true
         mapView.logoView.isHidden = true
-        mapView.attributionButtonPosition = .bottomLeft
-        mapView.attributionButtonMargins = CGPoint(x: 12, y: 12)
+        mapView.attributionButtonPosition = .bottomRight
+        mapView.attributionButtonMargins = CGPoint(x: 26, y: 110) // Above the assistant button.
 
         let press = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
         press.minimumPressDuration = 0.45

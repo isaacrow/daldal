@@ -51,6 +51,8 @@ struct ExploreView: View {
     @State private var battleFromBanner = false
     /// Drive Scan. Presented from the panel when one is open, else from the map, so it never collides with it.
     @State private var scanning = false
+    /// The Daldal menu (offline maps, Drive Scan, satellite, theme, 3D) is open.
+    @State private var menuOpen = false
     /// Heritage AR opened from the "You're at" banner (no panel showing).
     @State private var bannerARSite: HeritageSite?
     @Namespace private var glass
@@ -112,12 +114,35 @@ struct ExploreView: View {
         .ignoresSafeArea()
         .overlay(alignment: .top) {
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                SearchBarButton { show(.search, at: .large) }
-                PilgrimChip { show(.pilgrim, at: .large) }
-                    .padding(.leading, Theme.Spacing.l)
+                // Search, with the profile beside it.
+                HStack(spacing: Theme.Spacing.s) {
+                    SearchBarButton { show(.search, at: .large) }
+                    GlassIconButton(icon: .profile, label: "My driving") { show(.stats, at: .large) }
+                        .accessibilityIdentifier("map.stats")
+                        .padding(.trailing, Theme.Spacing.l)
+                }
+                // Pilgrim walk and Discover, under the search bar.
+                HStack(spacing: Theme.Spacing.s) {
+                    PilgrimChip { show(.pilgrim, at: .large) }
+                    Button { show(.discover, at: .large) } label: {
+                        HStack(spacing: 6) {
+                            Icon(.heritage, size: 14)
+                            Text("Discover").font(.footnote.weight(.semibold))
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 7)
+                    }
+                    .buttonStyle(.plain)
+                    .glassEffect(.regular, in: .capsule)
+                    .accessibilityIdentifier("map.discover")
+                    Spacer(minLength: 0)
+                }
+                .padding(.leading, Theme.Spacing.l)
             }
         }
-        .overlay(alignment: .topTrailing) { controls.padding(.top, 72) }
+        .overlay(alignment: .topTrailing) { controls.padding(.top, 118) }
+        .overlay(alignment: .bottomTrailing) { if panel == nil { assistantButton } }
+        .overlay(alignment: .bottomLeading) { if panel == nil { locateButton } }
         .overlay(alignment: .bottom) { arrivalBanner }
         .sheet(isPresented: panelPresented) {
             panelContent
@@ -337,48 +362,69 @@ struct ExploreView: View {
 
     // MARK: Floating controls
 
+    /// The Daldal menu (logo, top right): offline maps, Drive Scan, satellite, theme and 3D, folded into one button
+    /// that turns into an X while open.
     private var controls: some View {
         GlassEffectContainer(spacing: Theme.Spacing.s) {
             VStack(spacing: Theme.Spacing.s) {
-                GlassIconButton(icon: .download, label: "Offline maps",
-                                isActive: !cities.installedCities.isEmpty) {
-                    show(.maps, at: .large)
+                Button {
+                    withAnimation(.smooth(duration: 0.3)) { menuOpen.toggle() }
+                } label: {
+                    ZStack {
+                        if menuOpen {
+                            Icon(.close, size: 18)
+                        } else {
+                            Image("LaunchLogo")
+                                .renderingMode(.template)
+                                .resizable()
+                                .scaledToFit()
+                                .padding(9)
+                        }
+                    }
+                    .foregroundStyle(.primary)
+                    .frame(width: 48, height: 48)
+                    .contentShape(.circle)
                 }
-                .glassEffectID("offline", in: glass)
+                .buttonStyle(.plain)
+                .glassEffect(.regular.interactive(), in: .circle)
+                .glassEffectID("menu", in: glass)
+                .accessibilityLabel(menuOpen ? Text("Close menu") : Text("Menu"))
+                .accessibilityIdentifier("map.menu")
 
-                GlassIconButton(icon: .assistant, label: "Voice assistant") { show(.assistant, at: .large) }
-                    .glassEffectID("assistant", in: glass)
-                    .accessibilityIdentifier("map.assistant")
+                if menuOpen {
+                    GlassIconButton(icon: .download, label: "Offline maps",
+                                    isActive: !cities.installedCities.isEmpty) {
+                        menuOpen = false
+                        show(.maps, at: .large)
+                    }
+                    .glassEffectID("offline", in: glass)
+                    .accessibilityIdentifier("map.offline")
 
-                GlassIconButton(icon: .profile, label: "My driving") { show(.stats, at: .large) }
-                    .glassEffectID("stats", in: glass)
-                    .accessibilityIdentifier("map.stats")
-
-                GlassIconButton(icon: .heritage, label: "Discover") { show(.discover, at: .large) }
-                    .glassEffectID("discover", in: glass)
-                    .accessibilityIdentifier("map.discover")
-
-                GlassIconButton(icon: .scan, label: "Drive Scan") { scanning = true }
+                    GlassIconButton(icon: .scan, label: "Drive Scan") {
+                        menuOpen = false
+                        scanning = true
+                    }
                     .glassEffectID("scan", in: glass)
                     .accessibilityIdentifier("map.scan")
 
-                GlassIconButton(icon: .layers, label: map.base == .satellite ? "Show map" : "Show satellite",
-                                isActive: map.base == .satellite) {
-                    map.base = map.base == .satellite ? .standard : .satellite
-                }
-                .glassEffectID("satellite", in: glass)
+                    GlassIconButton(icon: .layers, label: map.base == .satellite ? "Show map" : "Show satellite",
+                                    isActive: map.base == .satellite) {
+                        map.base = map.base == .satellite ? .standard : .satellite
+                    }
+                    .glassEffectID("satellite", in: glass)
 
-                GlassIconButton(icon: map.appearance.icon, label: appearanceLabel) {
-                    map.appearance = map.appearance.next
-                }
-                .glassEffectID("appearance", in: glass)
+                    GlassIconButton(icon: map.appearance.icon, label: appearanceLabel) {
+                        map.appearance = map.appearance.next
+                    }
+                    .glassEffectID("appearance", in: glass)
 
-                GlassIconButton(icon: map.is3D ? .cube : .square,
-                                label: map.is3D ? "Switch to 2D" : "Switch to 3D",
-                                isActive: map.is3D) {
-                    map.toggle3D()
+                    GlassIconButton(icon: map.is3D ? .cube : .square,
+                                    label: map.is3D ? "Switch to 2D" : "Switch to 3D",
+                                    isActive: map.is3D) {
+                        map.toggle3D()
+                    }
+                    .glassEffectID("dimension", in: glass)
                 }
-                .glassEffectID("dimension", in: glass)
 
                 if map.isRotated {
                     GlassIconButton(icon: .compass, label: "Point north") { map.resetNorth() }
@@ -386,17 +432,29 @@ struct ExploreView: View {
                         .glassEffectID("compass", in: glass)
                         .glassEffectTransition(.matchedGeometry)
                 }
-
-                GlassIconButton(icon: map.isFollowingUser ? .locateFill : .locate,
-                                label: "Show my location",
-                                isActive: map.isFollowingUser) {
-                    map.followUser()
-                }
-                .glassEffectID("locate", in: glass)
             }
         }
         .padding(.trailing, Theme.Spacing.l)
         .animation(.smooth, value: map.isRotated)
+    }
+
+    /// Bottom right: talk to the assistant.
+    private var assistantButton: some View {
+        GlassIconButton(icon: .assistant, label: "Voice assistant") { show(.assistant, at: .large) }
+            .accessibilityIdentifier("map.assistant")
+            .padding(.trailing, Theme.Spacing.l)
+            .padding(.bottom, Theme.Spacing.xl)
+    }
+
+    /// Bottom left: back to where I am.
+    private var locateButton: some View {
+        GlassIconButton(icon: map.isFollowingUser ? .locateFill : .locate,
+                        label: "Show my location",
+                        isActive: map.isFollowingUser) {
+            map.followUser()
+        }
+        .padding(.leading, Theme.Spacing.l)
+        .padding(.bottom, Theme.Spacing.xl)
     }
 
     private var appearanceLabel: LocalizedStringKey {
@@ -510,7 +568,7 @@ private struct SearchBarButton: View {
         }
         .buttonStyle(.plain)
         .glassEffect(.regular.interactive(), in: .capsule)
-        .padding(.horizontal, Theme.Spacing.l)
+        .padding(.leading, Theme.Spacing.l)
         .accessibilityLabel("Search")
     }
 }
